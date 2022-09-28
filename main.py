@@ -15,6 +15,7 @@ reserved_words = {
     'write':'WRITE',
     'int':'INT',
     'float':'FLOAT',
+    'char': 'CHAR',
     'var':'VAR',
     'void':'VOID',
     'classes':'CLASSES',
@@ -26,13 +27,14 @@ reserved_words = {
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
-           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS',
+           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
            'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUAL', 'PLUS' , 'MINUS', 
            'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
 
 
 t_ignore = ' \t'
-t_CTEI = r'[0-9]+'
+# ID'S MUST BE AT LEAST TWO CHARACTERS
+t_ID = r'[a-zA-Z][a-zA-Z0-9]+'
 t_CTEF = r'[+-]?([0-9]*[.])?[0-9]+'
 t_SIGNBOARD = r'["][a-zA-Z_][a-zA-Z0-9_]*["]'
 t_COLON = r'\:'
@@ -43,6 +45,8 @@ t_LEFTCURLYBRACE = r'\{'
 t_RIGHTCURLYBRACE = r'\}'
 t_LEFTPARENTHESIS = r'\('
 t_RIGHTPARENTHESIS = r'\)'
+t_LEFTBRACKET = r'\['
+t_RIGHTBRACKET = r'\]'
 t_GT = r'\>'
 t_LT = r'\<'
 t_GTOE = r'[>=]'
@@ -151,6 +155,11 @@ def t_NEW(t):
     t.type = reserved_words.get(t.value,'new')   
     return t
 
+def t_CTEI(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t 
+
 def t_ignore_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count('\n')
@@ -162,7 +171,122 @@ def t_error(t):
 lexer = lex()
 
 
+test1 = 'sks[1][3]'
 
 
 
+def p_variable(p):
+    '''
+    variable : ID variable2
+    '''
+    p[0] = ('rule variable: ', p[1], p[2])
 
+def p_variable2(p):
+    '''
+    variable2 : LEFTBRACKET CTEI RIGHTBRACKET variable3
+              | empty
+    '''
+    if (len(p) == 5):
+        p[0] = ('rule variable2: ', p[1], p[2], p[3],p[4])    
+    else:
+        p[0] = ('rule variable2: ', p[1])  
+
+def p_variable3(p):
+    '''
+    variable3 : LEFTBRACKET CTEI RIGHTBRACKET
+              | empty
+    '''
+    if (len(p) == 4):
+        p[0] = ('rule variable2: ', p[1], p[2], p[3])    
+    else:
+        p[0] = ('rule variable2: ', p[1]) 
+
+def p_call_obj(p):
+    '''
+    call_obj : ID PERIOD ID LEFTPARENTHESIS call_obj2 RIGHTPARENTHESIS
+    '''
+    p[0] = ('rule call_obj: ', p[1], p[2], p[3],p[4],p[5],p[6])
+
+def p_call_obj2(p):
+    '''
+    call_obj2 : call_obj3 
+              | empty
+    '''
+    p[0] = ('rule call_obj2: ', p[1])
+
+
+def p_call_obj3(p):
+    '''
+    call_obj3 : ID call_obj4 	 
+              | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule call_obj3: ', p[1], p[2])
+    else:
+        p[0] = ('rule call_obj3: ', p[1])
+
+def p_call_obj4(p):
+    '''
+    call_obj4 : COMMA ID call_obj4  	 
+              | empty
+    '''
+    if (len(p) == 4):
+        p[0] = ('rule call_obj4: ', p[1], p[2], p[3])
+    else:
+        p[0] = ('rule call_obj4: ', p[1])
+
+
+
+def p_call(p):
+    '''
+    call : ID LEFTPARENTHESIS call2 RIGHTPARENTHESIS 
+    '''
+    p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
+
+def p_call2(p):
+    '''
+    call2 : ID call3
+          | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule call2:', p[1], p[2])
+    else:
+        p[0] = ('rule call2:', p[1])
+
+def p_call3(p):
+    '''
+    call3 : COMMA ID call3
+          | empty
+    '''
+    if (len(p) == 4):
+        p[0] = ('rule call3:', p[1], p[2], p[3])
+    else:
+        p[0] = ('rule call3:', p[1])
+
+def p_c_type(p):
+    '''
+    c_type : CL COLON ID
+    '''
+    p[0] = ('rule c_type: ', p[1], p[2], p[3])
+
+def p_s_type(p):
+    '''
+    s_type : INT
+	       | FLOAT
+	       | CHAR
+    '''
+    p[0] = ('rule s_type: ', p[1])
+
+
+
+def p_empty(p):
+     'empty :'
+     pass
+
+def p_error(p):
+    print(f'Syntax error at {p.value!r}')
+
+parser = yacc()
+
+case_correct_01 = parser.parse(test1)
+print(case_correct_01)

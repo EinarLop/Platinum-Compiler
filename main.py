@@ -3,6 +3,7 @@ from ply.lex import lex
 from ply.yacc import yacc
 
 reserved_words = {
+    'classes':'CLASSES',
     'class' : 'CLASS',
     'main' : 'MAIN',
     'if': 'IF',
@@ -18,7 +19,6 @@ reserved_words = {
     'char': 'CHAR',
     'var':'VAR',
     'void':'VOID',
-    'classes':'CLASSES',
     'vars':'VARS',
     'functions':'FUNCTIONS',
     'cl':'CL',
@@ -63,6 +63,12 @@ t_DIVISION = r'\/'
 t_AND = r'[&&]'
 t_OR = r'[||]'
 
+
+def t_CLASSES(t):
+    r'classes'
+    t.type = reserved_words.get(t.value,'classes')   
+    return t
+
 def t_CLASS(t):
     r'class'
     t.type = reserved_words.get(t.value,'class')   
@@ -91,6 +97,11 @@ def t_FOR(t):
 def t_WHILE(t):
     r'while'
     t.type = reserved_words.get(t.value,'while')   
+    return t
+
+def t_FUNCTIONS(t):
+    r'functions'
+    t.type = reserved_words.get(t.value,'functions')   
     return t
 
 def t_FUNC(t):
@@ -123,30 +134,23 @@ def t_FLOAT(t):
     t.type = reserved_words.get(t.value,'float')   
     return t
 
-def t_VAR(t):
-    r'var'
-    t.type = reserved_words.get(t.value,'var')   
-    return t
-
 def t_VOID(t):
     r'void'
     t.type = reserved_words.get(t.value,'void')   
     return t
 
-def t_CLASSES(t):
-    r'classes'
-    t.type = reserved_words.get(t.value,'classes')   
-    return t
+
 
 def t_VARS(t):
     r'vars'
     t.type = reserved_words.get(t.value,'vars')   
     return t
 
-def t_FUNCTION(t):
-    r'function'
-    t.type = reserved_words.get(t.value,'function')   
+def t_VAR(t):
+    r'var'
+    t.type = reserved_words.get(t.value,'var')   
     return t
+
 
 def t_CL(t):
     r'cl'
@@ -184,11 +188,45 @@ def t_error(t):
 
 lexer = lex()
 
+test1 = """
+class main {
+    classes {
+        class cars{
+            vars{
+                var int xxx;
+            }
+            functions{
+                 func int test(int ii){
+                    vars{
+                        var int jj;
+                    }
+                    {
+                    ab == ac;
+                    }
+                   return 1 
+                 }
+                
+                
+            }
+            ii+1
+           
+        } 
+        vars{
+            var float jj
+        }
+        functions{
+            func test(){
+                    return 1
+            }
+        }
+        ii+1
+            }
+        }
+        """
 
-test1 = '1'
 def p_main(p):
     '''
-    main: CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
+    main : CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
     '''
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
@@ -272,8 +310,8 @@ def p_var_dec4(p):
 
 def p_var_dec5(p):
     '''
-    var_dec5 : LEFTBRACKET CTE_I RIGHTBRACKET
-	         | LEFTBRACKET CTE_I RIGHTBRACKET LEFTBRACKET CTE_I RIGHTBRACKET
+    var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET
+	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET
              | empty
     '''
     if (len(p) == 7):
@@ -301,8 +339,8 @@ def p_var_dec7(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS h_exp RIGHTPARENTHESIS
-           | CTE I
-           | CTE F
+           | CTEI
+           | CTEF
            | variable
            | call
     '''
@@ -583,7 +621,7 @@ def p_statement(p):
 
 def p_block(p):
     '''
-    block : RIGHTCURLYBRACE statement block2 LEFTCURLYBRACE
+    block : LEFTCURLYBRACE statement block2 RIGHTCURLYBRACE
 
     '''
     p[0] = ('rule block : ', p[1],p[2],p[3],p[4])

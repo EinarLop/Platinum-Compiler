@@ -23,12 +23,14 @@ reserved_words = {
     'functions':'FUNCTIONS',
     'cl':'CL',
     'new':'NEW',
+    'do' : 'DO',
+    'to' : 'TO',
 }
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
            'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
-           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUAL', 'PLUS' , 'MINUS', 
+           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUAL', 'EQUALITY', 'PLUS' , 'MINUS', 
            'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
 
 
@@ -52,6 +54,7 @@ t_LT = r'\<'
 t_GTOE = r'[>=]'
 t_LTOE = r'[<=]'
 t_NE = r'[<>]'
+t_EQUALITY = r'[==]'
 t_EQUAL = r'\='
 t_PLUS = r'\+'
 t_MINUS = r'\-'
@@ -155,6 +158,17 @@ def t_NEW(t):
     t.type = reserved_words.get(t.value,'new')   
     return t
 
+
+def t_DO(t):
+    r'do'
+    t.type = reserved_words.get(t.value,'do')   
+    return t
+
+def t_TO(t):
+    r'to'
+    t.type = reserved_words.get(t.value,'to')   
+    return t
+
 def t_CTEI(t):
     r'\d+'
     t.value = int(t.value)
@@ -171,10 +185,203 @@ def t_error(t):
 lexer = lex()
 
 
-test1 = 'sks[1][3]'
+test1 = '1'
+def p_main(p):
+    '''
+    main: CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
+    '''
+    p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
 
+def p_class_dec(p):
+    '''
+    class_dec : CLASS ID LEFTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE RIGHTCURLYBRACE class_dec2
+    '''
+    p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
+def p_class_dec2(p):
+    '''
+    class_dec2 : class_dec
+               | empty
+    '''
+    p[0] = ('rule class_dec2: ', p[1])
+
+def p_param(p):
+    '''
+    param : s_type ID param2
+    '''
+    p[0] = ('rule param: ', p[1], p[2], p[3])
+
+def p_param2(p): 
+    '''
+    param2 : COMMA param 
+           | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule param2: ', p[1], p[2])
+    else:
+        p[0] = ('rule param2: ', p[1])
+
+def p_func_dec(p):
+    '''
+    func_dec : FUNC func_dec2 ID LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE block RETURN h_exp RIGHTCURLYBRACE func_dec3
+    '''
+    p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
+
+def p_func_dec2(p):
+    '''
+    func_dec2 : s_type
+              | VOID
+    '''
+    p[0] = ('rule func_dec2: ', p[1])
+
+def p_func_dec3(p):
+    '''
+    func_dec3 : func_dec
+              | empty
+    '''
+    p[0] = ('rule func_dec3: ', p[1])
+
+def p_var_dec(p):
+    '''
+    var_dec : VAR var_dec6 SEMICOLON
+    '''
+    p[0] = ('rule var_dec: ', p[1], p[2], p[3])
+
+def p_var_dec2(p):
+    '''
+    var_dec2 : c_type var_dec4
+    '''
+    p[0] = ('rule var_dec2: ', p[1], p[2])
+
+def p_var_dec3(p):
+    '''
+    var_dec3 : s_type ID var_dec5 
+    '''
+    p[0] = ('rule var_dec3: ', p[1], p[2], p[3])
+
+def p_var_dec4(p):
+    '''
+    var_dec4 : ID COMMA var_dec4
+             | ID
+    '''
+    if (len(p) == 4):
+        p[0] = ('rule var_dec4: ', p[1], p[2], p[3])
+    else:
+        p[0] = ('rule var_dec4: ', p[1])
+
+def p_var_dec5(p):
+    '''
+    var_dec5 : LEFTBRACKET CTE_I RIGHTBRACKET
+	         | LEFTBRACKET CTE_I RIGHTBRACKET LEFTBRACKET CTE_I RIGHTBRACKET
+             | empty
+    '''
+    if (len(p) == 7):
+        p[0] = ('rule var_dec5: ', p[1], p[2], p[3], p[4], p[5], p[6])
+    elif (len(p) == 4):
+        p[0] = ('rule var_dec5: ', p[1], p[2], p[3])
+    else:
+        p[0] = ('rule var_dec5: ', p[1])
+
+def p_var_dec6(p):
+    '''
+    var_dec6 : var_dec2 var_dec7
+             | var_dec3 var_dec7 
+    '''
+    p[0] = ('rule var_dec6: ', p[1], p[2])
+
+def p_var_dec7(p):
+    '''
+    var_dec7 : var_dec6 
+             | empty 
+    '''
+    p[0] = ('rule var_dec7: ', p[1])
+
+
+def p_factor(p):
+    '''
+    factor : LEFTPARENTHESIS h_exp RIGHTPARENTHESIS
+           | CTE I
+           | CTE F
+           | variable
+           | call
+    '''
+    if (len(p) == 4):
+        p[0] = ('rule factor: ', p[1], p[2], p[3])
+    else:
+        p[0] = ('rule factor: ', p[1])
+    
+def p_t(p):
+    '''
+    t : factor t2
+    '''
+    p[0] = ('rule term: ', p[1], p[2])
+
+def p_t2(p):
+    '''
+    t2 : MULTIPLICATION t
+       | DIVISION t
+       | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule term2: ', p[1], p[2])
+    else:
+        p[0] = ('rule term2: ', p[1])
+
+def p_exp(p):
+    '''
+    exp : t exp2
+    '''
+    p[0] = ('rule exp: ', p[1], p[2],p[3])
+
+def p_exp2(p):
+    '''
+    exp2 : PLUS exp
+         | MINUS exp
+         | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule exp2: ', p[1], p[2])
+    else:
+        p[0] = ('rule exp2: ', p[1])
+
+def p_s_exp(p):
+    '''
+    s_exp : exp s_exp2
+    '''
+    p[0] = ('rule s_exp2: ', p[1], p[2]) 
+    
+def p_s_exp2(p):
+    '''
+    s_exp2 : LT exp
+           | GT exp
+           | LTOE exp
+           | GTOE exp
+           | NE exp
+           | EQUALITY exp
+           | empty
+    '''
+    if (len(p) == 3):
+        p[0] = ('rule s_exp2: ', p[1], p[2])
+    else:
+        p[0] = ('rule s_exp2: ', p[1])
+ 
+def p_h_exp(p):
+    '''
+    h_exp : s_exp h_exp2
+    '''
+    p[0] = ('rule h_exp: ', p[1],p[2]) 
+
+def p_h_exp2(p):
+    '''
+    h_exp2 : AND s_exp
+           | OR s_exp
+           | empty
+    '''
+    if(len(p)  == 3):
+        p[0] = ('rule h_exp2: ', p[1],p[2]) 
+    else:
+        p[0] = ('rule h_exp2: ', p[1]) 
 def p_variable(p):
     '''
     variable : ID variable2
@@ -217,7 +424,7 @@ def p_call_obj2(p):
 
 def p_call_obj3(p):
     '''
-    call_obj3 : ID call_obj4 	 
+    call_obj3 : h_exp call_obj4 	 
               | empty
     '''
     if (len(p) == 3):
@@ -227,7 +434,7 @@ def p_call_obj3(p):
 
 def p_call_obj4(p):
     '''
-    call_obj4 : COMMA ID call_obj4  	 
+    call_obj4 : COMMA h_exp call_obj4  	 
               | empty
     '''
     if (len(p) == 4):
@@ -245,7 +452,7 @@ def p_call(p):
 
 def p_call2(p):
     '''
-    call2 : ID call3
+    call2 : h_exp call3
           | empty
     '''
     if (len(p) == 3):
@@ -255,7 +462,7 @@ def p_call2(p):
 
 def p_call3(p):
     '''
-    call3 : COMMA ID call3
+    call3 : COMMA h_exp call3
           | empty
     '''
     if (len(p) == 4):
@@ -277,7 +484,121 @@ def p_s_type(p):
     '''
     p[0] = ('rule s_type: ', p[1])
 
+def p_assignment(p):
+    '''
+    assignment : variable EQUAL assignment2
 
+    '''
+    p[0] = ('rule assignment: ', p[1],p[2],p[3])
+
+def p_assignment2(p):
+    '''
+    assignment2 : exp 
+                | NEW ID
+
+    '''
+    if(len(p) == 2):
+        p[0] = ('rule assignment2 : ', p[1])
+    else:
+        p[0] = ('rule assignment2 : ', p[1],p[2]) 
+
+def p_read(p):
+    '''
+    read : READ variable 
+
+    '''
+    p[0] = ('rule read : ', p[1],p[2],p[3])
+
+def p_write(p):
+    '''
+    write : WRITE LEFTPARENTHESIS write2 RIGHTPARENTHESIS
+
+    '''
+    p[0] = ('rule write :',p[1],p[2],p[3],p[4])
+
+def p_write2(p):
+    '''
+    write2 : h_exp write3
+            | SIGNBOARD 
+
+    '''
+    p[0] = ('rule write2 :',p[1],p[2])
+
+def p_write3(p):
+    '''
+    write3 : COMMA h_exp 
+           | COMMA SIGNBOARD
+           | empty 
+
+    '''    
+    if(len(p) == 3):
+        p[0] = ('rule write3 :',p[1],p[2])
+    else:
+        p[0] = ('rule write3 :',p[1])
+
+def p_condition(p):
+    '''
+    condition : IF LEFTPARENTHESIS h_exp RIGHTPARENTHESIS block condition2 SEMICOLON
+    '''
+    p[0] = ('rule condition: ', p[1],p[2],p[3],p[4],p[5],p[6],p[7])
+
+def p_condition2(p):
+    '''
+    condition2 : ELSE block
+               | empty
+
+    '''
+    if(len(p) == 3):
+        p[0] = ('rule condition2 : ', p[1],p[2])
+    else:
+        p[0] = ('rule condition2 : ', p[1]) 
+
+def p_loop_w(p):
+    '''
+    loop_w : WHILE LEFTPARENTHESIS h_exp RIGHTPARENTHESIS DO block SEMICOLON
+
+    '''
+    p[0] = ('rule loopW : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7]) 
+
+def p_loop_f(p):
+    '''
+    loop_f : FOR LEFTPARENTHESIS variable EQUAL h_exp SEMICOLON TO h_exp RIGHTPARENTHESIS DO block
+
+    '''
+    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10],p[11]) 
+
+def p_statement(p):
+    '''
+    statement : assignment
+              | call
+              | call_obj
+              | read
+              | write
+              | condition
+              | loop_w
+              | loop_f
+
+    '''
+    p[0] = ('rule statement : ', p[1])
+
+def p_block(p):
+    '''
+    block : RIGHTCURLYBRACE statement block2 LEFTCURLYBRACE
+
+    '''
+    p[0] = ('rule block : ', p[1],p[2],p[3],p[4])
+
+def p_block2(p):
+    '''
+    block2 : statement block2
+           | empty
+
+    '''
+    if(len(p) == 3):
+        p[0] = ('rule block2 : ', p[1],p[2])
+    else:
+        p[0] = ('rule block2 : ', p[1])
+        
 
 def p_empty(p):
      'empty :'

@@ -2,7 +2,9 @@ class main {
     classes {
         class cars{
             vars{
-                var int xxx,cc,dd;
+                var int xxx,cc,dd[1][100];
+                var float xxx[1][100];
+                var char eee[2], ss, ff[2][2];
             }
             functions{
                 func int test(int ii){
@@ -10,7 +12,9 @@ class main {
                         var int jj;
                     }
                     {
-                        test()
+                        for(ij = 1 to 10)do{
+                            ii = 1
+                        }
                     }
                     return 1
                 }    

@@ -24,14 +24,14 @@ reserved_words = {
     'cl':'CL',
     'new':'NEW',
     'do' : 'DO',
-    'to' : 'TO',
+    'to' : 'TO'
 }
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
-           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
-           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUAL', 'EQUALITY', 'PLUS' , 'MINUS', 
-           'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
+           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET',
+           'GT', 'LT', 'GTOE', 'LTOE', 'NE','EQUALITY','EQUAL', 'PLUS' , 'MINUS',
+           'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] +list(reserved_words.values())
 
 
 t_ignore = ' \t'
@@ -54,8 +54,6 @@ t_LT = r'\<'
 t_GTOE = r'[>=]'
 t_LTOE = r'[<=]'
 t_NE = r'[<>]'
-t_EQUALITY = r'[==]'
-t_EQUAL = r'\='
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_MULTIPLICATION = r'\*'
@@ -64,119 +62,129 @@ t_AND = r'[&&]'
 t_OR = r'[||]'
 
 
+def t_EQUALITY(t):
+    r'=='
+    return t
+
+def t_EQUAL(t):
+    r'='
+    return t
+
+
+
 def t_CLASSES(t):
     r'classes'
-    t.type = reserved_words.get(t.value,'classes')   
+    t.type = reserved_words.get(t.value,'classes')
     return t
 
 def t_CLASS(t):
     r'class'
-    t.type = reserved_words.get(t.value,'class')   
+    t.type = reserved_words.get(t.value,'class')
     return t
 
 def t_MAIN(t):
     r'main'
-    t.type = reserved_words.get(t.value,'main')   
+    t.type = reserved_words.get(t.value,'main')
     return t
 
 def t_IF(t):
     r'if'
-    t.type = reserved_words.get(t.value,'if')   
+    t.type = reserved_words.get(t.value,'if')
     return t
 
 def t_ELSE(t):
     r'else'
-    t.type = reserved_words.get(t.value,'else')   
+    t.type = reserved_words.get(t.value,'else')
     return t
 
 def t_FOR(t):
     r'for'
-    t.type = reserved_words.get(t.value,'for')   
+    t.type = reserved_words.get(t.value,'for')
     return t
 
 def t_WHILE(t):
     r'while'
-    t.type = reserved_words.get(t.value,'while')   
+    t.type = reserved_words.get(t.value,'while')
     return t
 
 def t_FUNCTIONS(t):
     r'functions'
-    t.type = reserved_words.get(t.value,'functions')   
+    t.type = reserved_words.get(t.value,'functions')
     return t
 
 def t_FUNC(t):
     r'func'
-    t.type = reserved_words.get(t.value,'func')   
+    t.type = reserved_words.get(t.value,'func')
     return t
 
 def t_RETURN(t):
     r'return'
-    t.type = reserved_words.get(t.value,'return')   
+    t.type = reserved_words.get(t.value,'return')
     return t
 
 def t_READ(t):
     r'read'
-    t.type = reserved_words.get(t.value,'read')   
+    t.type = reserved_words.get(t.value,'read')
     return t
 
 def t_WRITE(t):
     r'write'
-    t.type = reserved_words.get(t.value,'write')   
+    t.type = reserved_words.get(t.value,'write')
     return t
 
 def t_INT(t):
     r'int'
-    t.type = reserved_words.get(t.value,'int')   
+    t.type = reserved_words.get(t.value,'int')
     return t
 
 def t_FLOAT(t):
     r'float'
-    t.type = reserved_words.get(t.value,'float')   
+    t.type = reserved_words.get(t.value,'float')
     return t
 
 def t_VOID(t):
     r'void'
-    t.type = reserved_words.get(t.value,'void')   
+    t.type = reserved_words.get(t.value,'void')
     return t
 
 
 
 def t_VARS(t):
     r'vars'
-    t.type = reserved_words.get(t.value,'vars')   
+    t.type = reserved_words.get(t.value,'vars')
     return t
 
 def t_VAR(t):
     r'var'
-    t.type = reserved_words.get(t.value,'var')   
+    t.type = reserved_words.get(t.value,'var')
     return t
 
 
 def t_CL(t):
     r'cl'
-    t.type = reserved_words.get(t.value,'cl')   
+    t.type = reserved_words.get(t.value,'cl')
     return t
 
 def t_NEW(t):
     r'new'
-    t.type = reserved_words.get(t.value,'new')   
+    t.type = reserved_words.get(t.value,'new')
     return t
 
 
 def t_DO(t):
     r'do'
-    t.type = reserved_words.get(t.value,'do')   
+    t.type = reserved_words.get(t.value,'do')
     return t
 
 def t_TO(t):
     r'to'
-    t.type = reserved_words.get(t.value,'to')   
+    t.type = reserved_words.get(t.value,'to')
     return t
 
 def t_CTEI(t):
     r'\d+'
     t.value = int(t.value)
-    return t 
+    return t
 
 def t_ignore_newline(t):
     r'\n+'
@@ -218,9 +226,9 @@ def p_param(p):
     '''
     p[0] = ('rule param: ', p[1], p[2], p[3])
 
-def p_param2(p): 
+def p_param2(p):
     '''
-    param2 : COMMA param 
+    param2 : COMMA param
            | empty
     '''
     if (len(p) == 3):
@@ -295,14 +303,14 @@ def p_var_dec5(p):
 def p_var_dec6(p):
     '''
     var_dec6 : var_dec2 var_dec7
-             | var_dec3 var_dec7 
+             | var_dec3 var_dec7
     '''
     p[0] = ('rule var_dec6: ', p[1], p[2])
 
 def p_var_dec7(p):
     '''
-    var_dec7 : var_dec6 
-             | empty 
+    var_dec7 : var_dec6
+             | empty
     '''
     p[0] = ('rule var_dec7: ', p[1])
 
@@ -317,9 +325,9 @@ def p_factor(p):
     '''
     if (len(p) == 4):
         p[0] = ('rule factor: ', p[1], p[2], p[3])
-    else:
+    elif(len(p) == 2):
         p[0] = ('rule factor: ', p[1])
-    
+
 def p_t(p):
     '''
     t : factor t2
@@ -358,8 +366,8 @@ def p_s_exp(p):
     '''
     s_exp : exp s_exp2
     '''
-    p[0] = ('rule s_exp2: ', p[1], p[2]) 
-    
+    p[0] = ('rule s_exp2: ', p[1], p[2])
+
 def p_s_exp2(p):
     '''
     s_exp2 : LT exp
@@ -374,23 +382,23 @@ def p_s_exp2(p):
         p[0] = ('rule s_exp2: ', p[1], p[2])
     else:
         p[0] = ('rule s_exp2: ', p[1])
- 
+
 def p_h_exp(p):
     '''
     h_exp : s_exp h_exp2
     '''
-    p[0] = ('rule h_exp: ', p[1],p[2]) 
+    p[0] = ('rule h_exp: ', p[1],p[2])
 
 def p_h_exp2(p):
     '''
-    h_exp2 : AND s_exp
-           | OR s_exp
+    h_exp2 : AND s_exp h_exp2
+           | OR s_exp h_exp2
            | empty
     '''
-    if(len(p)  == 3):
-        p[0] = ('rule h_exp2: ', p[1],p[2]) 
+    if(len(p)  == 4):
+        p[0] = ('rule h_exp2: ', p[1],p[2],p[3])
     else:
-        p[0] = ('rule h_exp2: ', p[1]) 
+        p[0] = ('rule h_exp2: ', p[1])
 def p_variable(p):
     '''
     variable : ID variable2
@@ -403,9 +411,9 @@ def p_variable2(p):
               | empty
     '''
     if (len(p) == 5):
-        p[0] = ('rule variable2: ', p[1], p[2], p[3],p[4])    
-    else:
-        p[0] = ('rule variable2: ', p[1])  
+        p[0] = ('rule variable2: ', p[1], p[2], p[3],p[4])
+    elif(len(p) == 2):
+        p[0] = ('rule variable2: ', p[1])
 
 def p_variable3(p):
     '''
@@ -413,9 +421,9 @@ def p_variable3(p):
               | empty
     '''
     if (len(p) == 4):
-        p[0] = ('rule variable2: ', p[1], p[2], p[3])    
-    else:
-        p[0] = ('rule variable2: ', p[1]) 
+        p[0] = ('rule variable2: ', p[1], p[2], p[3])
+    elif (len(p) == 2):
+        p[0] = ('rule variable2: ', p[1])
 
 def p_call_obj(p):
     '''
@@ -425,7 +433,7 @@ def p_call_obj(p):
 
 def p_call_obj2(p):
     '''
-    call_obj2 : call_obj3 
+    call_obj2 : call_obj3
               | empty
     '''
     p[0] = ('rule call_obj2: ', p[1])
@@ -433,7 +441,7 @@ def p_call_obj2(p):
 
 def p_call_obj3(p):
     '''
-    call_obj3 : h_exp call_obj4 	 
+    call_obj3 : h_exp call_obj4
               | empty
     '''
     if (len(p) == 3):
@@ -443,7 +451,7 @@ def p_call_obj3(p):
 
 def p_call_obj4(p):
     '''
-    call_obj4 : COMMA h_exp call_obj4  	 
+    call_obj4 : COMMA h_exp call_obj4
               | empty
     '''
     if (len(p) == 4):
@@ -455,7 +463,7 @@ def p_call_obj4(p):
 
 def p_call(p):
     '''
-    call : ID LEFTPARENTHESIS call2 RIGHTPARENTHESIS 
+    call : ID LEFTPARENTHESIS call2 RIGHTPARENTHESIS
     '''
     p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
 
@@ -495,28 +503,27 @@ def p_s_type(p):
 
 def p_assignment(p):
     '''
-    assignment : variable EQUAL assignment2
-
+    assignment : variable  assignment2
     '''
-    p[0] = ('rule assignment: ', p[1],p[2],p[3])
+    p[0] = ('rule assignment: ', p[1],p[2])
 
 def p_assignment2(p):
     '''
-    assignment2 : exp 
+    assignment2 : exp
                 | NEW ID
 
     '''
     if(len(p) == 2):
         p[0] = ('rule assignment2 : ', p[1])
     else:
-        p[0] = ('rule assignment2 : ', p[1],p[2]) 
+        p[0] = ('rule assignment2 : ', p[1],p[2])
 
 def p_read(p):
     '''
-    read : READ variable 
+    read : READ variable
 
     '''
-    p[0] = ('rule read : ', p[1],p[2],p[3])
+    p[0] = ('rule read : ', p[1],p[2])
 
 def p_write(p):
     '''
@@ -528,18 +535,18 @@ def p_write(p):
 def p_write2(p):
     '''
     write2 : h_exp write3
-            | SIGNBOARD 
+            | SIGNBOARD
 
     '''
     p[0] = ('rule write2 :',p[1],p[2])
 
 def p_write3(p):
     '''
-    write3 : COMMA h_exp 
+    write3 : COMMA h_exp
            | COMMA SIGNBOARD
-           | empty 
+           | empty
 
-    '''    
+    '''
     if(len(p) == 3):
         p[0] = ('rule write3 :',p[1],p[2])
     else:
@@ -560,21 +567,21 @@ def p_condition2(p):
     if(len(p) == 3):
         p[0] = ('rule condition2 : ', p[1],p[2])
     else:
-        p[0] = ('rule condition2 : ', p[1]) 
+        p[0] = ('rule condition2 : ', p[1])
 
 def p_loop_w(p):
     '''
     loop_w : WHILE LEFTPARENTHESIS h_exp RIGHTPARENTHESIS DO block SEMICOLON
 
     '''
-    p[0] = ('rule loopW : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7]) 
+    p[0] = ('rule loopW : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7])
 
 def p_loop_f(p):
     '''
     loop_f : FOR LEFTPARENTHESIS variable EQUAL h_exp SEMICOLON TO h_exp RIGHTPARENTHESIS DO block
 
     '''
-    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10],p[11]) 
+    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10],p[11])
 
 def p_statement(p):
     '''
@@ -607,7 +614,7 @@ def p_block2(p):
         p[0] = ('rule block2 : ', p[1],p[2])
     else:
         p[0] = ('rule block2 : ', p[1])
-        
+
 
 def p_empty(p):
      'empty :'

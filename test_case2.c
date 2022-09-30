@@ -12,9 +12,16 @@ class main {
                         var int jj;
                     }
                     {
-                        for(ij = 1 to 10)do{
+                        for(ij = 1 to 10) do {
                             ii = 1
                         }
+                        for(ij = 1 to 10) do {
+                            ii = 1
+                        }
+                        call()
+                        call.charlet()
+                        read(jjj)
+                        write(sjs)
                     }
                     return 1
                 }    

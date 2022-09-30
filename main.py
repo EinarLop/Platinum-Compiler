@@ -262,17 +262,20 @@ def p_var_dec2(p):
 
 def p_var_dec3(p):
     '''
-    var_dec3 : s_type ID var_dec5 
+    var_dec3 : s_type var_dec4
     '''
-    p[0] = ('rule var_dec3: ', p[1], p[2], p[3])
+    p[0] = ('rule var_dec3: ', p[1], p[2])
 
 def p_var_dec4(p):
     '''
     var_dec4 : ID COMMA var_dec4
+             | ID var_dec5
              | ID
     '''
     if (len(p) == 4):
         p[0] = ('rule var_dec4: ', p[1], p[2], p[3])
+    elif(len(p) == 3):
+        p[0] = ('rule var_dec4: ', p[1], p[2])
     else:
         p[0] = ('rule var_dec4: ', p[1])
 
@@ -615,7 +618,7 @@ def p_error(p):
 
 parser = yacc()
 
-f = open('test_case1.c', 'r')
+f = open('test_case3.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 print(case_correct_01)

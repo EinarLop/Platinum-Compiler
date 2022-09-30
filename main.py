@@ -29,7 +29,6 @@ reserved_words = {
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
-
            'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
            'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS', 
            'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
@@ -38,7 +37,6 @@ tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
 
 t_ignore = ' \t'
 # ID'S MUST BE AT LEAST TWO CHARACTERS
-t_ID = r'[a-zA-Z][a-zA-Z0-9]+'
 t_CTEF = r'[+-]?([0-9]*[.])?[0-9]+'
 t_SIGNBOARD = r'["][a-zA-Z_][a-zA-Z0-9_]*["]'
 t_COLON = r'\:'
@@ -63,10 +61,10 @@ t_DIVISION = r'\/'
 t_AND = r'[&&]'
 t_OR = r'[||]'
 
-
-
-
-
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]+'
+    t.type = reserved_words.get(t.value,'ID')    # Check for reserved words
+    return t
 
 def t_CLASSES(t):
     r'classes'
@@ -195,6 +193,7 @@ def t_EQUALITY(t):
 def t_EQUAL(t):
     r'='  
     return t
+
 
 def t_ignore_newline(t):
     r'\n+'
@@ -529,7 +528,7 @@ def p_s_type(p):
 
 def p_assignment(p):
     '''
-    assignment : variable  assignment2
+    assignment : variable EQUAL assignment2
     '''
     p[0] = ('rule assignment: ', p[1],p[2])
 
@@ -546,7 +545,7 @@ def p_assignment2(p):
 
 def p_read(p):
     '''
-    read : READ variable
+    read : READ LEFTPARENTHESIS variable RIGHTPARENTHESIS
 
     '''
     p[0] = ('rule read : ', p[1],p[2])
@@ -649,7 +648,7 @@ def p_empty(p):
      pass
 
 def p_error(p):
-    print(f'Syntax error at {p.value!r} on line {p.lineno}')
+    print(f'Syntax error at {p.value!r} on line {p.lineno} of type {p}')
 
 parser = yacc()
 

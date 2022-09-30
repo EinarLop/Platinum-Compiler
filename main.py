@@ -188,41 +188,9 @@ def t_error(t):
 
 lexer = lex()
 
-test1 = """
-class main {
-    classes {
-        class cars{
-            vars{
-                var int xxx;
-            }
-            functions{
-                 func int test(int ii){
-                    vars{
-                        var int jj;
-                    }
-                    {
-                    ab == ac;
-                    }
-                   return 1 
-                 }
-                
-                
-            }
-            ii+1
-           
-        } 
-        vars{
-            var float jj
-        }
-        functions{
-            func test(){
-                    return 1
-            }
-        }
-        ii+1
-            }
-        }
-        """
+
+
+
 
 def p_main(p):
     '''
@@ -370,7 +338,7 @@ def p_exp(p):
     '''
     exp : t exp2
     '''
-    p[0] = ('rule exp: ', p[1], p[2],p[3])
+    p[0] = ('rule exp: ', p[1], p[2])
 
 def p_exp2(p):
     '''
@@ -643,9 +611,11 @@ def p_empty(p):
      pass
 
 def p_error(p):
-    print(f'Syntax error at {p.value!r}')
+    print(f'Syntax error at {p.value!r} on line {p.lineno}')
 
 parser = yacc()
 
-case_correct_01 = parser.parse(test1)
+f = open('test_case1.c', 'r')
+content = f.read()
+case_correct_01 = parser.parse(content)
 print(case_correct_01)

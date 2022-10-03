@@ -29,8 +29,8 @@ reserved_words = {
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
-           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
-           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS', 
+           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET',
+           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS',
            'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
 
 
@@ -133,7 +133,7 @@ def t_INT(t):
 
 def t_CHAR(t):
     r'char'
-    t.type = reserved_words.get(t.value,'char')   
+    t.type = reserved_words.get(t.value,'char')
     return t
 
 
@@ -187,12 +187,13 @@ def t_CTEI(t):
     return t
 
 def t_EQUALITY(t):
-    r'=='  
+    r'=='
     return t
 
 def t_EQUAL(t):
-    r'='  
+    r'='
     return t
+
 
 
 def t_ignore_newline(t):
@@ -326,14 +327,14 @@ def p_var_dec7(p):
 def p_var_dec8(p):
     '''
     var_dec8 : var_dec
-             | empty 
+             | empty
     '''
     p[0] = ('rule var_dec8: ', p[1])
 
 def p_var_dec9(p):
     '''
     var_dec9 : COMMA var_dec4
-             | empty 
+             | empty
     '''
     if (len(p) == 3):
         p[0] = ('rule param2: ', p[1], p[2])
@@ -560,7 +561,7 @@ def p_write(p):
 def p_write2(p):
     '''
     write2 : h_exp write3
-            | SIGNBOARD
+            | SIGNBOARD write3
 
     '''
     p[0] = ('rule write2 :',p[1],p[2])
@@ -607,7 +608,7 @@ def p_loop_f(p):
 
     '''
 
-    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10]) 
+    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10])
 
 
 def p_statement(p):
@@ -652,7 +653,7 @@ def p_error(p):
 
 parser = yacc()
 
-f = open('test_case2.c', 'r')
+f = open('test_case3.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 print(case_correct_01)

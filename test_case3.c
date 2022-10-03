@@ -7,10 +7,29 @@ class main {
             functions{
                 func int test(int ii){
                     vars{
-                        var int jj;
+                        var int jj, ss;
                     }
                     {
-                        jj = idd
+                        jj = doing
+
+                      if(1 < 4){
+                        doing()
+
+                        for(ij = 1 to 10) do {
+                            ii = 1
+                        }
+                      }
+
+                      else{
+                        call2(1)
+                      };
+
+
+                      while(id < num2) do{
+                        write("hola",id)
+                      };
+
+
                     }
                     return 1
                 }

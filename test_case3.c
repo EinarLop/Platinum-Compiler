@@ -38,6 +38,7 @@ class main {
     }
     vars{
         var float jj;
+        var cl:car carr;
     }
     functions{
         func int test(int ii){
@@ -45,6 +46,9 @@ class main {
                 var int jjj;
             }
             {
+              carr= new Car
+
+              carr.year()
                 test()
             }
             return 1

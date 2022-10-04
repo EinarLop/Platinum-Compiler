@@ -5,15 +5,15 @@ class main {
                 var int xxx;
             }
             functions{
-                func int test(int ii){
+                func int test(int ii,float yy){
                     vars{
                         var int jj, ss;
                     }
                     {
-                        jj = doing
+                        jj = dodge
 
-                      if(1 < 4){
-                        doing()
+                      if(1 == 4){
+                        doing(dog,yes)
 
                         for(ij = 1 to 10) do {
                             ii = 1

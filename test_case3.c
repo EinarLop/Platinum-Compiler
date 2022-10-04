@@ -12,7 +12,7 @@ class main {
                     {
                         jj = dodge
 
-                      if(1 == 4){
+                      if(1 <= 4){
                         doing(dog,yes)
 
                         for(ij = 1 to 10) do {
@@ -25,7 +25,7 @@ class main {
                       };
 
 
-                      while(id < num2) do{
+                      while(id && num2) do{
                         write("hola",id)
                       };
 

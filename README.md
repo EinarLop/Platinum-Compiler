@@ -70,4 +70,16 @@ Se utiliza la terminación .c para facilitar el desarrollo en un editor de texto
 
 Actualmente todas las pruebas se pueden correr correctamente y están incluidos prácticamente todos los elementos del lenguaje. No descartamos que con pruebas mucho más complejas salgan errores pero consideramos que con las pruebas que hicimos se incluyen los elementos básicos hasta el momento.
 
+Para probar los distintos archivos de prueba es necesario modificar el número de test en las últimas lineas del archivo main.py, de igual forma, si se desea crear nuevas pruebas solo es necesario crear un archivo con cualquier extensión (recomendamos .c) y definir en main.py que ese es el test que se desea correr. 
+
+Para correr el compilador es necesario descargar todos los archivos del repositorio, el cual continene los siguientes archivos/carpetas:
+1. Carpeta - ply: Contiene los archivos necesarios de la liberería PLY 
+2. Archivo - main.py: Contiene la implementación del lexer y parser, incluido los tokens, palabras reservadas, expresiones regulares y gramáticas
+3. Archivos - test_case#.c: Contienen ejemplos de programas aceptados por el lexer y parser
+
+Y correr el archivo main.py de la siguiente forma
+
+```bash
+python3 main.py
+```
 

@@ -1,6 +1,9 @@
 from pickle import TRUE
+
 from ply.lex import lex
 from ply.yacc import yacc
+from VarsTable import VarsTable
+from SemanticCube import SemanticCube
 
 reserved_words = {
     'classes':'CLASSES',
@@ -656,4 +659,28 @@ parser = yacc()
 f = open('test_case3.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
-print(case_correct_01)
+
+varsTable = VarsTable()
+semanticCube = SemanticCube()
+
+err = varsTable.add('hello', 'int', 'global')
+err2 = varsTable.add('hello', 'int', 'global')
+
+if err2:
+    print(err2.type)
+else:
+    print("Added")
+    
+
+var1, err  = varsTable.search('hells')
+if err:
+    print(err.type)
+else:
+    print(var1.type, var1.scope)
+
+type, err = semanticCube.semantic('int', 'int', '+')
+
+if err:
+    print(err.type)
+else:
+    print(type)

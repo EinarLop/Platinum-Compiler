@@ -665,15 +665,15 @@ def p_np_set_var_type_arr(p):
     np_set_var_type_arr : empty
     '''
     global current_var_type
-    current_var_type += ' array ' + str(p[-2])
+    current_var_type += '['+ str(p[-2])+']'
 
 def p_np_set_var_type_matrix(p):
     '''
     np_set_var_type_matrix : empty
     '''
     global current_var_type
-    current_var_type += ' matrix ' + str(p[-5])+ " "+ str(p[-2])
 
+    current_var_type += '['+ str(p[-5])+']'+'['+ str(p[-2])+']'
 
 def p_np_get_var_name(p):
     '''
@@ -707,7 +707,10 @@ def p_np_save_var(p):
     '''
     np_save_var : empty
     '''
+    global current_var_type
     varsTable.add(current_var_name, current_var_type, current_var_scope)
+    current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
+
 
 parser = yacc()
 f = open('test_case4.c', 'r')

@@ -108,7 +108,6 @@ None
 ```
 B) impresión con busqueda de una sola función para ver si existe en la tabla de funciones, se busca con su nombre
 ###functionSearch###
-name:create
 aa: float, class
 vv: float[1000000], class
 zz: float, class

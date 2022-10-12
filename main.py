@@ -648,11 +648,6 @@ def p_error(p):
 
 ##### NEURALGIC POINTS ######
 
-parser = yacc()
-
-f = open('test_case3.c', 'r')
-content = f.read()
-#case_correct_01 = parser.parse(content)
 
 
 def p_np_get_var_type(p):
@@ -704,8 +699,6 @@ def p_np_set_var_scope_function(p):
     '''
     global current_var_scope
     current_var_scope = 'function'
-
-
 
 def p_np_save_var(p):
     '''

@@ -730,16 +730,21 @@ case_correct_01 = parser.parse(content)
 
 print(varsTable.toString())
 
+
+print("###functionSearch###")
 param1=Parameter('int','eggs')
 #test_func= Function()
-functionsTable.add("create","int",[param1],varsTable)
-functionsTable.add("doingg","void",[{'lets':'int'},{'dog','float'}],varsTable)
+functionsTable.add("create","int",[param1,Parameter('int','shoes')],varsTable)
+functionsTable.add("doingg","void",[Parameter('int','dog'),Parameter('int','pencil')],varsTable)
 
 func1,testbool=functionsTable.search("create")
 if testbool:
     print(testbool.type)
 else:
-    print(func1.type,func1.parameters,varsTable.table)
+    print("type:"+func1.type,varsTable.toString())
+    print("##parameters##")
+    for param in func1.parameters:
+        print(param.type+":"+param.id)
 # type, err = semanticCube.semantic('int', 'int', '+')
 # if err:
 #     print(err.type)

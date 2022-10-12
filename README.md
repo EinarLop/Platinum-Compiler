@@ -91,7 +91,9 @@ Actualmente nuestro compilador tiene clases nuevas como lo son para las Var, Var
 De momento se han agregado puntos neurálgicos solo para la parte de variables, hay métodos con los cuales ya se identifican el id, tipo y se marca que tipo de función es en nuestro testcase4.c y todo está reflejado igualmente en la gramática y con esa información que se detecta en la gramática, se va almacenando para posteriormente agregar dicha variable con la información obtenida de la gramática a la tabla de variables.
 
 Ahora mismo la salida que recibimos en consola con los tests que hemos hecho se ven de la siguiente manera.
+```
 A) impresion de la tabla de variables para ver que variables hay en una sola tabla
+
 aa: float, class
 vv: float[1000000], class
 zz: float, class
@@ -101,7 +103,9 @@ cc: float, function
 dd: float, global
 ff: int, function
 None
+```
 
+```
 B) impresión con busqueda de una sola función para ver si existe en la tabla de funciones, se busca con su nombre
 ###functionSearch###
 name:create
@@ -117,3 +121,4 @@ type:int None
 ##parameters##
 int:eggs
 int:shoes
+```

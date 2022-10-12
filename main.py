@@ -4,9 +4,12 @@ from ply.lex import lex
 from ply.yacc import yacc
 from VarsTable import VarsTable
 from SemanticCube import SemanticCube
-
+from Function import Function
+from FunctionsTable import FunctionsTable
+from Parameter import Parameter
 varsTable = VarsTable()
 semanticCube = SemanticCube()
+functionsTable= FunctionsTable()
 
 reserved_words = {
     'classes':'CLASSES',
@@ -263,7 +266,7 @@ def p_func_dec3(p):
 
 def p_var_dec(p):
     '''
-    var_dec : VAR var_dec6 SEMICOLON np_save_var var_dec8 
+    var_dec : VAR var_dec6 SEMICOLON np_save_var var_dec8
     '''
     p[0] = ('rule var_dec: ', p[1], p[2], p[3])
 
@@ -282,7 +285,7 @@ def p_var_dec3(p):
 def p_var_dec4(p):
     '''
     var_dec4 : ID np_get_var_name COMMA np_save_var var_dec4
-             | ID np_get_var_name var_dec5 
+             | ID np_get_var_name var_dec5
     '''
     if (len(p) == 4):
         p[0] = ('rule var_dec4: ', p[1], p[2], p[3])
@@ -295,7 +298,7 @@ def p_var_dec5(p):
     '''
     var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_arr var_dec9
 	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_matrix var_dec9
-             | empty 
+             | empty
     '''
     if (len(p) == 7):
         p[0] = ('rule var_dec5: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7])
@@ -329,7 +332,7 @@ def p_var_dec9(p):
     '''
 
     var_dec9 : COMMA np_save_var var_dec4
-             | empty 
+             | empty
     '''
     if (len(p) == 3):
         p[0] = ('rule param2: ', p[1], p[2])
@@ -670,7 +673,7 @@ def p_np_set_var_type_matrix(p):
     '''
     global current_var_type
     current_var_type += ' matrix ' + str(p[-5])+ " "+ str(p[-2])
-    
+
 
 def p_np_get_var_name(p):
     '''
@@ -724,6 +727,16 @@ case_correct_01 = parser.parse(content)
 
 print(varsTable.toString())
 
+param1=Parameter('int','eggs')
+#test_func= Function()
+functionsTable.add("create","int",[param1],varsTable)
+functionsTable.add("doingg","void",[{'lets':'int'},{'dog','float'}],varsTable)
+
+func1,testbool=functionsTable.search("create")
+if testbool:
+    print(testbool.type)
+else:
+    print(func1.type,func1.parameters,varsTable.table)
 # type, err = semanticCube.semantic('int', 'int', '+')
 # if err:
 #     print(err.type)

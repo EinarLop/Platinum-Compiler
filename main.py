@@ -35,8 +35,8 @@ reserved_words = {
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
-           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET', 
-           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS', 
+           'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET',
+           'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS',
            'MULTIPLICATION', 'DIVISION', 'AND', 'OR'] + list(reserved_words.values())
 
 
@@ -57,15 +57,15 @@ t_LEFTBRACKET = r'\['
 t_RIGHTBRACKET = r'\]'
 t_GT = r'\>'
 t_LT = r'\<'
-t_GTOE = r'[>=]'
-t_LTOE = r'[<=]'
-t_NE = r'[<>]'
+t_GTOE = r'\>\='
+t_LTOE = r'\<\='
+t_NE = r'\<\>'
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_MULTIPLICATION = r'\*'
 t_DIVISION = r'\/'
-t_AND = r'[&&]'
-t_OR = r'[||]'
+t_AND = r'\&\&'
+t_OR = r'\|\|'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]+'
@@ -139,7 +139,7 @@ def t_INT(t):
 
 def t_CHAR(t):
     r'char'
-    t.type = reserved_words.get(t.value,'char')   
+    t.type = reserved_words.get(t.value,'char')
     return t
 
 def t_FLOAT(t):
@@ -188,11 +188,11 @@ def t_CTEI(t):
     return t
 
 def t_EQUALITY(t):
-    r'=='  
+    r'=='
     return t
 
 def t_EQUAL(t):
-    r'='  
+    r'='
     return t
 
 def t_ignore_newline(t):
@@ -321,12 +321,13 @@ def p_var_dec7(p):
 def p_var_dec8(p):
     '''
     var_dec8 : var_dec
-             | empty 
+             | empty
     '''
     p[0] = ('rule var_dec8: ', p[1])
 
 def p_var_dec9(p):
     '''
+
     var_dec9 : COMMA np_save_var var_dec4
              | empty 
     '''
@@ -554,7 +555,7 @@ def p_write(p):
 def p_write2(p):
     '''
     write2 : h_exp write3
-            | SIGNBOARD
+            | SIGNBOARD write3
 
     '''
     p[0] = ('rule write2 :',p[1],p[2])
@@ -601,7 +602,7 @@ def p_loop_f(p):
 
     '''
 
-    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10]) 
+    p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10])
 
 
 def p_statement(p):
@@ -644,7 +645,15 @@ def p_empty(p):
 def p_error(p):
     print(f'Syntax error at {p.value!r} on line {p.lineno} of type {p}')
 
+
 ##### NEURALGIC POINTS ######
+
+parser = yacc()
+
+f = open('test_case3.c', 'r')
+content = f.read()
+#case_correct_01 = parser.parse(content)
+
 
 def p_np_get_var_type(p):
     '''

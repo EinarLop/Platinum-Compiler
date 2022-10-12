@@ -18,3 +18,7 @@ class VarsTable:
         if name in self.table:
             return self.table[name], None
         else: return None, Error('Variable not declared')
+
+    def toString(self):
+        for key in self.table:
+            print(f"{key}: {self.table[key].type}, {self.table[key].scope} ")

@@ -5,6 +5,9 @@ from ply.yacc import yacc
 from VarsTable import VarsTable
 from SemanticCube import SemanticCube
 
+varsTable = VarsTable()
+semanticCube = SemanticCube()
+
 reserved_words = {
     'classes':'CLASSES',
     'class' : 'CLASS',
@@ -139,7 +142,6 @@ def t_CHAR(t):
     t.type = reserved_words.get(t.value,'char')   
     return t
 
-
 def t_FLOAT(t):
     r'float'
     t.type = reserved_words.get(t.value,'float')
@@ -149,8 +151,6 @@ def t_VOID(t):
     r'void'
     t.type = reserved_words.get(t.value,'void')
     return t
-
-
 
 def t_VARS(t):
     r'vars'
@@ -162,7 +162,6 @@ def t_VAR(t):
     t.type = reserved_words.get(t.value,'var')
     return t
 
-
 def t_CL(t):
     r'cl'
     t.type = reserved_words.get(t.value,'cl')
@@ -172,7 +171,6 @@ def t_NEW(t):
     r'new'
     t.type = reserved_words.get(t.value,'new')
     return t
-
 
 def t_DO(t):
     r'do'
@@ -197,7 +195,6 @@ def t_EQUAL(t):
     r'='  
     return t
 
-
 def t_ignore_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count('\n')
@@ -208,20 +205,16 @@ def t_error(t):
 
 lexer = lex()
 
-
-
-
-
 def p_main(p):
     '''
-    main : CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
+    main : CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
     '''
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
 
 def p_class_dec(p):
     '''
-    class_dec : CLASS ID LEFTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE RIGHTCURLYBRACE class_dec2
+    class_dec : CLASS ID LEFTCURLYBRACE VARS np_set_var_scope_class LEFTCURLYBRACE var_dec RIGHTCURLYBRACE FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE RIGHTCURLYBRACE class_dec2
     '''
     p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
@@ -250,7 +243,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2 ID LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS LEFTCURLYBRACE var_dec RIGHTCURLYBRACE block RETURN h_exp RIGHTCURLYBRACE func_dec3
+    func_dec : FUNC func_dec2 ID LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE block RETURN h_exp RIGHTCURLYBRACE func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -270,7 +263,7 @@ def p_func_dec3(p):
 
 def p_var_dec(p):
     '''
-    var_dec : VAR var_dec6 SEMICOLON var_dec8
+    var_dec : VAR var_dec6 SEMICOLON np_save_var var_dec8 
     '''
     p[0] = ('rule var_dec: ', p[1], p[2], p[3])
 
@@ -288,9 +281,8 @@ def p_var_dec3(p):
 
 def p_var_dec4(p):
     '''
-    var_dec4 : ID COMMA var_dec4
-             | ID var_dec5
-             | ID
+    var_dec4 : ID np_get_var_name COMMA np_save_var var_dec4
+             | ID np_get_var_name var_dec5 
     '''
     if (len(p) == 4):
         p[0] = ('rule var_dec4: ', p[1], p[2], p[3])
@@ -301,9 +293,9 @@ def p_var_dec4(p):
 
 def p_var_dec5(p):
     '''
-    var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET var_dec9
-	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET var_dec9
-             | empty
+    var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_arr var_dec9
+	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_matrix var_dec9
+             | empty 
     '''
     if (len(p) == 7):
         p[0] = ('rule var_dec5: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7])
@@ -335,7 +327,7 @@ def p_var_dec8(p):
 
 def p_var_dec9(p):
     '''
-    var_dec9 : COMMA var_dec4
+    var_dec9 : COMMA np_save_var var_dec4
              | empty 
     '''
     if (len(p) == 3):
@@ -488,7 +480,6 @@ def p_call_obj4(p):
         p[0] = ('rule call_obj4: ', p[1])
 
 
-
 def p_call(p):
     '''
     call : ID LEFTPARENTHESIS call2 RIGHTPARENTHESIS
@@ -523,8 +514,8 @@ def p_c_type(p):
 
 def p_s_type(p):
     '''
-    s_type : INT
-	       | FLOAT
+    s_type : INT np_get_var_type
+	       | FLOAT np_get_var_type
 	       | CHAR
     '''
     p[0] = ('rule s_type: ', p[1])
@@ -653,33 +644,86 @@ def p_empty(p):
 def p_error(p):
     print(f'Syntax error at {p.value!r} on line {p.lineno} of type {p}')
 
-parser = yacc()
+##### NEURALGIC POINTS ######
 
-f = open('test_case2.c', 'r')
-content = f.read()
-case_correct_01 = parser.parse(content)
+def p_np_get_var_type(p):
+    '''
+    np_get_var_type : empty
+    '''
+    global current_var_type
+    current_var_type = p[-1]
 
-varsTable = VarsTable()
-semanticCube = SemanticCube()
+def p_np_set_var_type_arr(p):
+    '''
+    np_set_var_type_arr : empty
+    '''
+    global current_var_type
+    current_var_type += ' array ' + str(p[-2])
 
-err = varsTable.add('hello', 'int', 'global')
-err2 = varsTable.add('hello', 'int', 'global')
-
-if err2:
-    print(err2.type)
-else:
-    print("Added")
+def p_np_set_var_type_matrix(p):
+    '''
+    np_set_var_type_matrix : empty
+    '''
+    global current_var_type
+    current_var_type += ' matrix ' + str(p[-5])+ " "+ str(p[-2])
     
 
-var1, err  = varsTable.search('hells')
-if err:
-    print(err.type)
-else:
-    print(var1.type, var1.scope)
+def p_np_get_var_name(p):
+    '''
+    np_get_var_name : empty
+    '''
+    global current_var_name
+    current_var_name = p[-1]
 
-type, err = semanticCube.semantic('int', 'int', '+')
+def p_np_set_var_scope_global(p):
+    '''
+    np_set_var_scope_global : empty
+    '''
+    global current_var_scope
+    current_var_scope = 'global'
 
-if err:
-    print(err.type)
-else:
-    print(type)
+def p_np_set_var_scope_class(p):
+    '''
+    np_set_var_scope_class : empty
+    '''
+    global current_var_scope
+    current_var_scope = 'class'
+
+def p_np_set_var_scope_function(p):
+    '''
+    np_set_var_scope_function : empty
+    '''
+    global current_var_scope
+    current_var_scope = 'function'
+
+
+
+def p_np_save_var(p):
+    '''
+    np_save_var : empty
+    '''
+    varsTable.add(current_var_name, current_var_type, current_var_scope)
+
+parser = yacc()
+f = open('test_case4.c', 'r')
+content = f.read()
+case_correct_01 = parser.parse(content)
+# print(case_correct_01)
+
+# print("type", current_var_type)
+# print("name", current_var_name)
+# print("scope", current_var_scope)
+
+# var1, err  = varsTable.search('hello')
+# if err:
+#     print(err.type)
+# else:
+#     print(var1.type, var1.scope)
+
+print(varsTable.toString())
+
+# type, err = semanticCube.semantic('int', 'int', '+')
+# if err:
+#     print(err.type)
+# else:
+#     print(type)

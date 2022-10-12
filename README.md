@@ -83,3 +83,37 @@ Y correr el archivo main.py de la siguiente forma
 python3 main.py
 ```
 
+
+### Avance 2:
+Actualmente nuestro compilador tiene clases nuevas como lo son para las Var, VarsTable, Function, FunctionsTable,Parameters,SemanticCube con los cuales hicimos pruebas para poder verificar que al crear una variable individual y hacer un add a la tabla de variables funcionara al igual que con function, se puede realizar búsqueda para ambas funciones, pero se debe especificar el parámetro como objeto para que en consola pueda desplegarse correctamente.
+
+
+De momento se han agregado puntos neurálgicos solo para la parte de variables, hay métodos con los cuales ya se identifican el id, tipo y se marca que tipo de función es en nuestro testcase4.c y todo está reflejado igualmente en la gramática y con esa información que se detecta en la gramática, se va almacenando para posteriormente agregar dicha variable con la información obtenida de la gramática a la tabla de variables.
+
+Ahora mismo la salida que recibimos en consola con los tests que hemos hecho se ven de la siguiente manera.
+A) impresion de la tabla de variables para ver que variables hay en una sola tabla
+aa: float, class
+vv: float[1000000], class
+zz: float, class
+ww: int[100000][10], class
+jj: int, class
+cc: float, function
+dd: float, global
+ff: int, function
+None
+
+B) impresión con busqueda de una sola función para ver si existe en la tabla de funciones, se busca con su nombre
+###functionSearch###
+name:create
+aa: float, class
+vv: float[1000000], class
+zz: float, class
+ww: int[100000][10], class
+jj: int, class
+cc: float, function
+dd: float, global
+ff: int, function
+type:int None
+##parameters##
+int:eggs
+int:shoes

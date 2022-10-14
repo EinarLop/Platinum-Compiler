@@ -228,15 +228,17 @@ def p_class_dec2(p):
     '''
     p[0] = ('rule class_dec2: ', p[1])
 
+#duda
 def p_param(p):
     '''
-    param : s_type ID param2
+    param : s_type ID np_get_func_parameter np_add_parameter_to_list param2
     '''
     p[0] = ('rule param: ', p[1], p[2], p[3])
 
+#dudaa
 def p_param2(p):
     '''
-    param2 : COMMA param
+    param2 : COMMA np_add_parameter_to_list param
            | empty
     '''
     if (len(p) == 3):
@@ -246,7 +248,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2 ID LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE block RETURN h_exp RIGHTCURLYBRACE func_dec3
+    func_dec : FUNC func_dec2 np_get_func_type ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE block RETURN h_exp RIGHTCURLYBRACE func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -711,7 +713,47 @@ def p_np_save_var(p):
     varsTable.add(current_var_name, current_var_type, current_var_scope)
     current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
 
+def p_np_get_func_name(p):
+    '''
+    np_get_func_name : empty
+    '''
 
+    global current_func_name
+    current_func_name = str(p[-1])
+
+def p_np_get_func_type(p):
+    '''
+    np_get_func_type : empty
+    '''
+
+    global current_func_type
+    current_func_type = str(p[-1])
+
+def p_np_get_func_parameter(p):
+    '''
+    np_get_func_parameter : empty
+    '''
+
+    global current_parameter
+    current_parameter=Parameter(str(p[-2]),str(p[-1]))
+
+def p_np_add_parameter_to_list(p):
+    '''
+    np_add_parameter_to_list : empty
+    '''
+
+    global current_parameters_list=[]
+    current_parameters_list.append(current_parameter)
+
+#tabla de variables limpiar?
+
+def p_np_save_func(p):
+    '''
+    np_save_func : empty
+    '''
+
+    functionsTable.add(current_func_name,current_func_type,current_parameters_list,varsTable)
+###########################################################################################3
 parser = yacc()
 f = open('test_case4.c', 'r')
 content = f.read()
@@ -730,7 +772,7 @@ case_correct_01 = parser.parse(content)
 
 print(varsTable.toString())
 
-
+'''
 print("###functionSearch###")
 param1=Parameter('int','eggs')
 #test_func= Function()
@@ -745,6 +787,9 @@ else:
     print("##parameters##")
     for param in func1.parameters:
         print(param.type+":"+param.id)
+'''
+
+
 # type, err = semanticCube.semantic('int', 'int', '+')
 # if err:
 #     print(err.type)

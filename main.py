@@ -650,11 +650,14 @@ f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
+
+
+
+program.toString()
+
+print("###############QuadrupleTests###############")
 for quad in quadrupleList.operatorsStack:
     print(quad)
-
-
-#program.toString()
 
 # functionsTable = FunctionsTable()
 # functionsTable.add("test", "int", [Parameter("int", "param"), Parameter("float", "param2")], varsTable)

@@ -1,4 +1,3 @@
-
 from ClassesTable import ClassesTable
 from ply.yacc import yacc
 from VarsTable import VarsTable
@@ -136,7 +135,6 @@ def p_var_dec8(p):
 
 def p_var_dec9(p):
     '''
-
     var_dec9 : COMMA np_save_var var_dec4
              | empty
     '''
@@ -340,7 +338,6 @@ def p_assignment2(p):
     '''
     assignment2 : exp
                 | NEW ID
-
     '''
     if(len(p) == 2):
         p[0] = ('rule assignment2 : ', p[1])
@@ -350,14 +347,12 @@ def p_assignment2(p):
 def p_read(p):
     '''
     read : READ LEFTPARENTHESIS variable RIGHTPARENTHESIS
-
     '''
     p[0] = ('rule read : ', p[1],p[2])
 
 def p_write(p):
     '''
     write : WRITE LEFTPARENTHESIS write2 RIGHTPARENTHESIS
-
     '''
     p[0] = ('rule write :',p[1],p[2],p[3],p[4])
 
@@ -365,7 +360,6 @@ def p_write2(p):
     '''
     write2 : h_exp write3
             | SIGNBOARD write3
-
     '''
     p[0] = ('rule write2 :',p[1],p[2])
 
@@ -374,7 +368,6 @@ def p_write3(p):
     write3 : COMMA h_exp
            | COMMA SIGNBOARD
            | empty
-
     '''
     if(len(p) == 3):
         p[0] = ('rule write3 :',p[1],p[2])
@@ -391,7 +384,6 @@ def p_condition2(p):
     '''
     condition2 : ELSE block
                | empty
-
     '''
     if(len(p) == 3):
         p[0] = ('rule condition2 : ', p[1],p[2])
@@ -401,14 +393,12 @@ def p_condition2(p):
 def p_loop_w(p):
     '''
     loop_w : WHILE LEFTPARENTHESIS h_exp RIGHTPARENTHESIS DO block SEMICOLON
-
     '''
     p[0] = ('rule loopW : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7])
 
 def p_loop_f(p):
     '''
     loop_f : FOR LEFTPARENTHESIS variable EQUAL h_exp TO h_exp RIGHTPARENTHESIS DO block
-
     '''
 
     p[0] = ('rule loopF : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10])
@@ -424,14 +414,12 @@ def p_statement(p):
               | condition
               | loop_w
               | loop_f
-
     '''
     p[0] = ('rule statement : ', p[1])
 
 def p_block(p):
     '''
     block : LEFTCURLYBRACE statement block2 RIGHTCURLYBRACE
-
     '''
     p[0] = ('rule block : ', p[1],p[2],p[3],p[4])
 
@@ -439,7 +427,6 @@ def p_block2(p):
     '''
     block2 : statement block2
            | empty
-
     '''
     if(len(p) == 3):
         p[0] = ('rule block2 : ', p[1],p[2])
@@ -487,7 +474,7 @@ def p_np_create_functionsTable(p):
 
 def p_np_destroy_varsTable(p):
     '''
-    np_destroy_varsTable : empty 
+    np_destroy_varsTable : empty
     '''
     varsTablesPile.append(current_varsTable)
     del globals()['current_varsTable']
@@ -609,5 +596,3 @@ classesTable.toString()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
 # classTable.toString()
-
-

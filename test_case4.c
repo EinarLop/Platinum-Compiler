@@ -1,12 +1,12 @@
 class main {
     classes {
         class cars{
-            vars{
+            vars {
                 var float aa, vv[1000000], zz;
                 var int ww[100000][10], jj;
             }
             functions{
-                func int test(int bb){
+                func int test1(int bb){
                     vars{
                         var float cc;
                     }
@@ -22,7 +22,7 @@ class main {
         var float dd;
     }
     functions{
-        func int test(int ee){
+        func int test2(int ee){
             vars{
                 var int ff;
             }

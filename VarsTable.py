@@ -11,7 +11,7 @@ class VarsTable:
         if name in self.table:
             return Error("Variable already declared")
         else:
-            self.table[name] = currentVar 
+            self.table[name] = currentVar
             return None
 
     def search(self, name):

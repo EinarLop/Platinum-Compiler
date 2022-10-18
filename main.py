@@ -6,12 +6,15 @@ from VarsTable import VarsTable
 from SemanticCube import SemanticCube
 from Function import Function
 from FunctionsTable import FunctionsTable
+from QuadruplesList import QuadruplesList
 from Parameter import Parameter
 from Lexer import *
 semanticCube = SemanticCube()
 classesTable = ClassesTable()
 varsTablesPile = []
 functionsTablesPile = []
+quadrupleList = QuadruplesList()
+
 
 def p_main(p):
     '''
@@ -150,7 +153,7 @@ def p_factor(p):
     factor : LEFTPARENTHESIS h_exp RIGHTPARENTHESIS
            | CTEI
            | CTEF
-           | variable
+           | variable np_push_id_type
            | call
     '''
     if (len(p) == 4):
@@ -166,8 +169,8 @@ def p_t(p):
 
 def p_t2(p):
     '''
-    t2 : MULTIPLICATION t
-       | DIVISION t
+    t2 : MULTIPLICATION np_push_operand_times_divide t
+       | DIVISION np_push_operand_times_divide t
        | empty
     '''
     if (len(p) == 3):
@@ -177,14 +180,14 @@ def p_t2(p):
 
 def p_exp(p):
     '''
-    exp : t exp2
+    exp : t np_solve_plus_minus_operand exp2
     '''
     p[0] = ('rule exp: ', p[1], p[2])
 
 def p_exp2(p):
     '''
-    exp2 : PLUS exp
-         | MINUS exp
+    exp2 : PLUS np_push_operand_plus_minus exp
+         | MINUS np_push_operand_plus_minus exp
          | empty
     '''
     if (len(p) == 3):
@@ -487,7 +490,7 @@ def p_np_create_functionsTable(p):
 
 def p_np_destroy_functionsTable(p):
     '''
-    np_destroy_functionsTable : empty 
+    np_destroy_functionsTable : empty
     '''
     functionsTablesPile.append(current_functionsTable)
     del globals()['current_functionsTable']
@@ -501,7 +504,7 @@ def p_np_create_varsTable(p):
 
 def p_np_destroy_varsTable(p):
     '''
-    np_destroy_varsTable : empty 
+    np_destroy_varsTable : empty
     '''
     varsTablesPile.append(current_varsTable)
     del globals()['current_varsTable']
@@ -605,13 +608,56 @@ def p_np_save_function(p):
     '''
     global current_functionsTable
     current_functionsTable.add(current_func_name,current_func_type,current_parameters_list,varsTablesPile.pop(-1))
+
+
+##########Quadruples##########
+
+#first rules from fact,term,exp
+def p_np_push_id_type(p):
+    '''
+    np_push_id_type : empty
+    '''
+    global idPush
+    idPush = p[-1]
+    quadrupleList.operatorsStack.append(idPush)
+
+def p_np_push_operand_times_divide(p):
+    '''
+    np_push_operand_times_divide : empty
+    '''
+
+    global operPush
+    operPush = p[-1]
+    quadrupleList.operandsStack.append(operPush)
+
+def p_np_push_operand_plus_minus(p):
+    '''
+    np_push_operand_plus_minus : empty
+    '''
+
+    global operPush
+    operPush = p[-1]
+    quadrupleList.operandsStack.append(operPush)
+
+def p_np_solve_plus_minus_operand(p):
+    '''
+    np_solve_plus_minus_operand : empty
+    '''
+    #quadrupleList.checkOperandPlusMinus()
 ###########################################################################################3
 parser = yacc()
-f = open('test_case4.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
+
+
+
 program.toString()
+
+print("###############QuadrupleTests###############")
+for quad in quadrupleList.operatorsStack:
+    print(quad)
 
 # functionsTable = FunctionsTable()
 # functionsTable.add("test", "int", [Parameter("int", "param"), Parameter("float", "param2")], varsTable)
@@ -623,5 +669,3 @@ program.toString()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
 # classTable.toString()
-
-

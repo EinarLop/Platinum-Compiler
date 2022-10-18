@@ -10,18 +10,17 @@ from Lexer import *
 semanticCube = SemanticCube()
 classesTable = ClassesTable()
 varsTablesPile = []
-functionsTablePile = []
+functionsTablesPile = []
 
 def p_main(p):
     '''
-    main :  CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  FUNCTIONS LEFTCURLYBRACE func_dec RIGHTCURLYBRACE block RIGHTCURLYBRACE
+    main :  CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE
     '''
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
-
 def p_class_dec(p):
     '''
-    class_dec : CLASS ID np_get_class_name LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE RIGHTCURLYBRACE np_save_class class_dec2
+    class_dec : CLASS ID np_get_class_name LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
     '''
     p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
@@ -52,13 +51,13 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2 np_get_func_type ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
 def p_func_dec2(p):
     '''
-    func_dec2 : s_type
+    func_dec2 : s_type np_get_func_type
               | VOID
     '''
     p[0] = ('rule func_dec2: ', p[1])
@@ -468,15 +467,7 @@ def p_np_save_class(p):
     '''
     np_save_class : empty
     '''
-    classesTable.add(current_class_name, current_functionsTable, varsTablesPile.pop(-1))
-
-
-def p_np_create_varsTable(p):
-    '''
-    np_create_varsTable : empty
-    '''
-    global current_varsTable
-    current_varsTable = VarsTable()
+    classesTable.add(current_class_name, functionsTablesPile.pop(-1), varsTablesPile.pop(-1))
 
 def p_np_create_functionsTable(p):
     '''
@@ -484,6 +475,20 @@ def p_np_create_functionsTable(p):
     '''
     global current_functionsTable
     current_functionsTable = FunctionsTable()
+
+def p_np_destroy_functionsTable(p):
+    '''
+    np_destroy_functionsTable : empty 
+    '''
+    functionsTablesPile.append(current_functionsTable)
+    del globals()['current_functionsTable']
+
+def p_np_create_varsTable(p):
+    '''
+    np_create_varsTable : empty
+    '''
+    global current_varsTable
+    current_varsTable = VarsTable()
 
 def p_np_destroy_varsTable(p):
     '''
@@ -563,7 +568,7 @@ def p_np_get_func_type(p):
     '''
 
     global current_func_type
-    current_func_type = str(p[-1])
+    current_func_type = str(p[-1][1])
 
 def p_np_get_func_parameter(p):
     '''
@@ -571,7 +576,7 @@ def p_np_get_func_parameter(p):
     '''
 
     global current_parameter
-    current_parameter=Parameter(str(p[-2]),str(p[-1]))
+    current_parameter=Parameter(str(p[-2][1]),str(p[-1]))
 
 def p_np_add_parameter_to_list(p):
     '''

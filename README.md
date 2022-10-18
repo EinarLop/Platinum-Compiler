@@ -121,3 +121,8 @@ type:int None
 int:eggs
 int:shoes
 ```
+
+
+### Avance 3:
+El avance tres no se ha completado el avance de esta semana respecto a los cuadruplos, se realizo una refactorización ademas de que se creo la clase 'class' donde se almacenan las funciones consecuentemente con sus propias tablas de variables, el avance de cuadruplos se tiene creadas las clases de Quadruple y QuadrupleList ademas de los primeros pasos de puntos neuralgicos vistos en clase para almacenar en stack de lista de operadores y operandos. El avance se prevee que se termine en los proximos dias a partir del dia actual 17/10/2022.
+

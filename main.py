@@ -1,5 +1,6 @@
 
 from ClassesTable import ClassesTable
+from Program import Program
 from ply.yacc import yacc
 from VarsTable import VarsTable
 from SemanticCube import SemanticCube
@@ -14,7 +15,7 @@ functionsTablesPile = []
 
 def p_main(p):
     '''
-    main :  CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE
+    main :  CLASS MAIN LEFTCURLYBRACE CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
     '''
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
@@ -456,6 +457,14 @@ def p_error(p):
 
 ##### NEURALGIC POINTS ######
 
+def p_np_create_program(p):
+    '''
+    np_create_program : empty
+    '''
+    global program
+    program = Program(classesTable, varsTablesPile.pop(-1), functionsTablesPile.pop(-1))
+
+
 def p_np_get_class_name(p):
     '''
     np_get_class_name : empty
@@ -602,7 +611,7 @@ f = open('test_case4.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
-classesTable.toString()
+program.toString()
 
 # functionsTable = FunctionsTable()
 # functionsTable.add("test", "int", [Parameter("int", "param"), Parameter("float", "param2")], varsTable)

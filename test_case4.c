@@ -56,10 +56,10 @@ class main {
 
     } 
     vars{
-        var float dd;
+        var float dddd;
     }
     functions{
-        func int test2(int ee){
+        func int test66(int ee){
             vars{
                 var int ff;
             }

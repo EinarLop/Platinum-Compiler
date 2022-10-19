@@ -11,16 +11,25 @@ class main {
                         var float cc;
                     }
                     {
-                        aa = cc+cc
+                        test()
                     }
-                    return 1
+                    return test()
                 }
                  func float test2(int rr){
                     vars{
                         var float uu;
                     }
                     {
-                        test()
+                        if(uu + bb < rr * cc)
+                        {
+                          jj=bb+rr
+                        }
+                        else
+                        {
+                          xx=zz-cc
+                        };
+
+                        ww=aa*xx+qq
                     }
                     return 1
                 }

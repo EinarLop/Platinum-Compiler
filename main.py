@@ -35,14 +35,14 @@ def p_class_dec2(p):
     '''
     p[0] = ('rule class_dec2: ', p[1])
 
-#duda
+
 def p_param(p):
     '''
     param : s_type ID np_get_func_parameter np_add_parameter_to_list param2
     '''
     p[0] = ('rule param: ', p[1], p[2], p[3])
 
-#dudaa
+
 def p_param2(p):
     '''
     param2 : COMMA np_add_parameter_to_list param
@@ -147,12 +147,12 @@ def p_var_dec9(p):
         p[0] = ('rule param2: ', p[1], p[2])
     else:
         p[0] = ('rule param2: ', p[1])
-
+#call? añadir call como cuadruplo?
 def p_factor(p):
     '''
-    factor : LEFTPARENTHESIS h_exp RIGHTPARENTHESIS
-           | CTEI
-           | CTEF
+    factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
+           | CTEI np_push_ctei
+           | CTEF np_push_ctef
            | variable np_push_id_type
            | call
     '''
@@ -163,14 +163,14 @@ def p_factor(p):
 
 def p_t(p):
     '''
-    t : factor t2
+    t : factor np_solve_times_divide_operator t2
     '''
     p[0] = ('rule term: ', p[1], p[2])
 
 def p_t2(p):
     '''
-    t2 : MULTIPLICATION np_push_operand_times_divide t
-       | DIVISION np_push_operand_times_divide t
+    t2 : MULTIPLICATION np_push_operator_times_divide t
+       | DIVISION np_push_operator_times_divide t
        | empty
     '''
     if (len(p) == 3):
@@ -180,14 +180,14 @@ def p_t2(p):
 
 def p_exp(p):
     '''
-    exp : t np_solve_plus_minus_operand exp2
+    exp : t np_solve_plus_minus_operator exp2
     '''
     p[0] = ('rule exp: ', p[1], p[2])
 
 def p_exp2(p):
     '''
-    exp2 : PLUS np_push_operand_plus_minus exp
-         | MINUS np_push_operand_plus_minus exp
+    exp2 : PLUS np_push_operator_plus_minus exp
+         | MINUS np_push_operator_plus_minus exp
          | empty
     '''
     if (len(p) == 3):
@@ -203,12 +203,12 @@ def p_s_exp(p):
 
 def p_s_exp2(p):
     '''
-    s_exp2 : LT exp
-           | GT exp
-           | LTOE exp
-           | GTOE exp
-           | NE exp
-           | EQUALITY exp
+    s_exp2 : LT np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
+           | GT np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
+           | LTOE np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
+           | GTOE np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
+           | NE np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
+           | EQUALITY np_push_operator_sexp np_define_LOperand_sexp exp np_define_ROperand_sexp
            | empty
     '''
     if (len(p) == 3):
@@ -224,8 +224,8 @@ def p_h_exp(p):
 
 def p_h_exp2(p):
     '''
-    h_exp2 : AND s_exp h_exp2
-           | OR s_exp h_exp2
+    h_exp2 : AND np_push_operator_hexp np_define_LOperand_hexp s_exp np_define_ROperand_hexp h_exp2
+           | OR np_push_operator_hexp np_define_LOperand_hexp s_exp np_define_ROperand_hexp h_exp2
            | empty
     '''
     if(len(p)  == 4):
@@ -335,13 +335,13 @@ def p_s_type(p):
 
 def p_assignment(p):
     '''
-    assignment : variable EQUAL assignment2
+    assignment : variable np_push_id_type  EQUAL np_push_assignation_operator assignment2
     '''
     p[0] = ('rule assignment: ', p[1],p[2])
-
+#cambio de gramatica p_assignment2
 def p_assignment2(p):
     '''
-    assignment2 : exp
+    assignment2 : h_exp np_result_assignation
                 | NEW ID
 
     '''
@@ -367,7 +367,7 @@ def p_write(p):
 def p_write2(p):
     '''
     write2 : h_exp write3
-            | SIGNBOARD write3
+           | SIGNBOARD write3
 
     '''
     p[0] = ('rule write2 :',p[1],p[2])
@@ -386,13 +386,13 @@ def p_write3(p):
 
 def p_condition(p):
     '''
-    condition : IF LEFTPARENTHESIS h_exp RIGHTPARENTHESIS block condition2 SEMICOLON
+    condition : IF LEFTPARENTHESIS h_exp RIGHTPARENTHESIS np_generate_gotoF_condition block condition2 SEMICOLON np_fill_gotoF_condition_if
     '''
     p[0] = ('rule condition: ', p[1],p[2],p[3],p[4],p[5],p[6],p[7])
 
 def p_condition2(p):
     '''
-    condition2 : ELSE block
+    condition2 : ELSE np_generate_goto_condition block
                | empty
 
     '''
@@ -599,9 +599,6 @@ def p_np_add_parameter_to_list(p):
     current_parameters_list = []
     current_parameters_list.append(current_parameter)
 
-#tabla de variables limpiar?
-
-
 def p_np_save_function(p):
     '''
     np_save_function : empty
@@ -619,45 +616,170 @@ def p_np_push_id_type(p):
     '''
     global idPush
     idPush = p[-1]
-    quadrupleList.operatorsStack.append(idPush)
+    quadrupleList.operandsStack.append(idPush)
 
-def p_np_push_operand_times_divide(p):
+
+def p_np_push_ctei(p):
     '''
-    np_push_operand_times_divide : empty
+    np_push_ctei : empty
+    '''
+
+    global cteiPush
+    cteiPush = p[-1]
+    quadrupleList.operandsStack.append(cteiPush)
+
+def p_np_push_ctef(p):
+    '''
+    np_push_ctef : empty
+    '''
+
+    global ctefPush
+    ctefPush = p[-1]
+    quadrupleList.operandsStack.append(ctefPush)
+
+def p_np_push_operator_times_divide(p):
+    '''
+    np_push_operator_times_divide : empty
     '''
 
     global operPush
     operPush = p[-1]
-    quadrupleList.operandsStack.append(operPush)
+    quadrupleList.operatorsStack.append(operPush)
 
-def p_np_push_operand_plus_minus(p):
+def p_np_push_operator_plus_minus(p):
     '''
-    np_push_operand_plus_minus : empty
+    np_push_operator_plus_minus : empty
     '''
 
     global operPush
     operPush = p[-1]
-    quadrupleList.operandsStack.append(operPush)
+    quadrupleList.operatorsStack.append(operPush)
 
-def p_np_solve_plus_minus_operand(p):
+def p_np_solve_plus_minus_operator(p):
     '''
-    np_solve_plus_minus_operand : empty
+    np_solve_plus_minus_operator : empty
     '''
-    #quadrupleList.checkOperandPlusMinus()
+    quadrupleList.checkOperatorPlusMinus()
+
+def p_np_solve_times_divide_operator(p):
+    '''
+    np_solve_times_divide_operator : empty
+    '''
+
+    quadrupleList.checkOperatorTimesDivide()
+
+def p_np_push_assignation_operator(p):
+    '''
+    np_push_assignation_operator : empty
+    '''
+
+    global operPush
+    operPush = p[-1]
+    quadrupleList.operatorsStack.append(operPush)
+
+def p_np_result_assignation(p):
+    '''
+    np_result_assignation : empty
+    '''
+
+    quadrupleList.makeAssignationResult()
+
+def p_np_create_fake_void(p):
+    '''
+    np_create_fake_void : empty
+    '''
+
+    global fakeVoid
+    fakeVoid= p[-1]
+    quadrupleList.operatorsStack.append(fakeVoid)
+
+def p_np_eliminate_fake_void(p):
+    '''
+    np_eliminate_fake_void : empty
+    '''
+    quadrupleList.eliminateFakeVoid()
+
+def p_np_push_operator_sexp(p):
+    '''
+    np_push_operator_sexp : empty
+    '''
+    global operPush
+    operPush = p[-1]
+    quadrupleList.operatorsStack.append(operPush)
+
+
+def p_np_push_operator_hexp(p):
+    '''
+    np_push_operator_hexp : empty
+    '''
+    global operPush
+    operPush = p[-1]
+    quadrupleList.operatorsStack.append(operPush)
+
+def p_np_define_LOperand_sexp(p):
+    '''
+    np_define_LOperand_sexp : empty
+    '''
+    global LOperandSexp
+    LOperandSexp = quadrupleList.operandsStack.pop()
+def p_np_define_ROperand_sexp(p):
+    '''
+    np_define_ROperand_sexp : empty
+    '''
+    quadrupleList.generate_sExp_quad(LOperandSexp)
+
+def p_np_define_LOperand_hexp(p):
+    '''
+    np_define_LOperand_hexp : empty
+    '''
+    global LOperandHexp
+    LOperandHexp = quadrupleList.operandsStack.pop()
+def p_np_define_ROperand_hexp(p):
+    '''
+    np_define_ROperand_hexp : empty
+    '''
+    quadrupleList.generate_hExp_quad(LOperandHexp)
+
+def p_np_generate_gotoF_condition(p):
+    '''
+    np_generate_gotoF_condition : empty
+    '''
+
+    quadrupleList.generateGoToFCondition()
+
+#fill de condicion if sola
+def p_np_fill_gotoF_condition_if(p):
+    '''
+    np_fill_gotoF_condition_if : empty
+    '''
+    quadrupleList.fillgotoF_IF()
+
+#else
+def p_np_generate_goto_condition(p):
+    '''
+    np_generate_goto_condition : empty
+    '''
+
+    quadrupleList.generateGoToCondition()
 ###########################################################################################3
 parser = yacc()
 f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
+'''
+duda en return con pila de operandos
+'''
 
-
-
-program.toString()
+#program.toString()
 
 print("###############QuadrupleTests###############")
-for quad in quadrupleList.operatorsStack:
-    print(quad)
+#quadrupleList.operatorsStackToString()
+#quadrupleList.operandsStackToString()
+quadrupleList.quadrupleListToString()
+#quadrupleList.jumpsStackToString()
+
+
 
 # functionsTable = FunctionsTable()
 # functionsTable.add("test", "int", [Parameter("int", "param"), Parameter("float", "param2")], varsTable)

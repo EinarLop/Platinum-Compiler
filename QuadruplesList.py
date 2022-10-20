@@ -23,6 +23,7 @@ class QuadruplesList:
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
         self.cont +=1
 
+    #if else
     def addQuadrupleCondition(self,operator,leftOperand,rightOperand,temporal):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)

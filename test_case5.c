@@ -2,25 +2,30 @@ class main {
     classes {
         class cars{
             vars {
-                var float aa, vv[1000000], zz;
-                var int ww[100000][10], jj;
+                var int cc;
+                var float bb;
+                var int aa;
             }
             functions{
-                func int test1(int bb){
+                func int test1(int notUsed){
                     vars{
-                        var float cc;
+                        var int cc;
+                        var int aa;
+                        var int abc;
                     }
                     {
-                        test()
+                        abc = cc + aa
                     }
                     return test()
                 }
                  func float test2(int rr){
                     vars{
-                        var float uu;
+                        var float uu,qq;
+                        var char cc;
+                        var int rr,jj,xx,zz,ww;
                     }
                     {
-                        if(uu + bb < rr * cc)
+                        if(cc + bb < rr * cc)
                         {
                           jj=bb+rr
                         }
@@ -34,35 +39,7 @@ class main {
                     return 1
                 }
             }
-        }
-        class booo{
-            vars {
-                var float aaa, vvv[1000000], zzz;
-                var int www[100000][10], jjj;
-            }
-            functions{
-                func int test1(int bbb){
-                    vars{
-                        var float ccc;
-                    }
-                    {
-                        test()
-                    }
-                    return 1
-                }
-                 func float test2(int rrr){
-                    vars{
-                        var float uuu;
-                    }
-                    {
-                        test()
-                    }
-                    return 1
-                }
-            }
-        }
-
-
+        } 
     }
     vars{
         var float dddd;
@@ -79,6 +56,6 @@ class main {
         }
     }
     {
-    test()
+        test()
     }
 }

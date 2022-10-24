@@ -1,5 +1,7 @@
 from SemanticCube import SemanticCube
 from Quadruple import Quadruple
+semanticCube = SemanticCube()
+
 class QuadruplesList:
     def __init__(self):
         self.operatorsStack = []
@@ -15,12 +17,14 @@ class QuadruplesList:
     #checar tipos
 
 
-    def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
+    def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)
-        if current_quadruple.operator is not "=" :
+        if current_quadruple.operator != "=" :
             self.temporals +=1
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
+            self.typesStack.append(typeTemp)
+            print(f"temporal {self.temporals-1} with type {typeTemp}")
         self.cont +=1
 
     #if else
@@ -38,7 +42,13 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                self.addQuadruple(operator,LOperand,Roperand,temporal)
+                RType = self.typesStack.pop()
+                LType = self.typesStack.pop()
+                typeTemp, err = semanticCube.semantic(RType, LType, operator)
+                if err != None:
+                    print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
+                    exit()
+                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
 
     def checkOperatorTimesDivide(self):
@@ -48,7 +58,13 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                self.addQuadruple(operator,LOperand,Roperand,temporal)
+                RType = self.typesStack.pop()
+                LType = self.typesStack.pop()
+                typeTemp, err = semanticCube.semantic(RType, LType, operator)
+                if err != None:
+                    print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
+                    exit()
+                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
         if len(self.operatorsStack) != 0:
@@ -101,7 +117,8 @@ class QuadruplesList:
     #######################toString#######################
     def quadrupleListToString(self):
         for quad in self.quadruples:
-            print(f"{quad.toString()}")
+            if quad.toString() != None:
+                print(f"{quad.toString()}")
 
     def operatorsStackToString(self):
         for operator in self.operatorsStack:
@@ -115,3 +132,8 @@ class QuadruplesList:
     def jumpsStackToString(self):
         for operand in self.jumpsStack:
             print(f"{operand}")
+
+    def typeStackToString(self):
+        for type in self.typesStack:
+            print(f"{type}")
+    

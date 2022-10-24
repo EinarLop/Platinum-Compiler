@@ -493,7 +493,7 @@ def p_np_destroy_functionsTable(p):
     np_destroy_functionsTable : empty
     '''
     functionsTablesPile.append(current_functionsTable)
-    del globals()['current_functionsTable']
+    # del globals()['current_functionsTable']
 
 def p_np_create_varsTable(p):
     '''
@@ -507,7 +507,7 @@ def p_np_destroy_varsTable(p):
     np_destroy_varsTable : empty
     '''
     varsTablesPile.append(current_varsTable)
-    del globals()['current_varsTable']
+    # del globals()['current_varsTable']
 
 def p_np_get_var_type(p):
     '''
@@ -615,8 +615,15 @@ def p_np_push_id_type(p):
     np_push_id_type : empty
     '''
     global idPush
-    idPush = p[-1]
+    idPush = p[-1][-2]
     quadrupleList.operandsStack.append(idPush)
+    for vt in reversed(varsTablesPile):
+        if idPush in vt.table:
+            print(idPush, vt.table[idPush].type)
+            quadrupleList.typesStack.append(vt.table[idPush].type)
+            return
+    print(f"Variable {idPush} not declared")
+    exit()
 
 
 def p_np_push_ctei(p):
@@ -777,7 +784,9 @@ print("###############QuadrupleTests###############")
 #quadrupleList.operatorsStackToString()
 #quadrupleList.operandsStackToString()
 quadrupleList.quadrupleListToString()
-#quadrupleList.jumpsStackToString()
+# print("sklsksl")
+# quadrupleList.typeStackToString()
+# quadrupleList.jumpsStackToString()
 
 
 
@@ -790,4 +799,4 @@ quadrupleList.quadrupleListToString()
 # classTable = ClassesTable()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
-# classTable.toString()
+classesTable.toString()

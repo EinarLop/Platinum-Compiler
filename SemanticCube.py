@@ -62,9 +62,9 @@ class SemanticCube:
             }
             
         }
-    def semantic(self, operand1, operand2, operand3):
-        if operand1 in self.cube and operand2 in self.cube[operand1] and operand3 in self.cube[operand1][operand2]:
-           return self.cube[operand1][operand2][operand3], None
+    def semantic(self, operand1, operand2, operator):
+        if operand1 in self.cube and operand2 in self.cube[operand1] and operator in self.cube[operand1][operand2]:
+           return self.cube[operand1][operand2][operator], None
         else: return None, Error('Type Mismatch')
 
 

@@ -16,15 +16,17 @@ class QuadruplesList:
     #push de cada uno
     #checar tipos
 
-
-    def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
+    #def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
+    def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
             self.temporals +=1
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
-            self.typesStack.append(typeTemp)
-            print(f"temporal {self.temporals-1} with type {typeTemp}")
+
+            #self.typesStack.append(typeTemp)
+            #print(f"temporal {self.temporals-1} with type {typeTemp}")
+
         self.cont +=1
 
     #if else
@@ -33,7 +35,16 @@ class QuadruplesList:
         self.quadruples.append(current_quadruple)
         self.cont +=1
 
-
+    #readWrite
+    def addQuadrupleReadWrite(self,operator,leftOperand,rightOperand,temporal):
+        current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+    #añade cuadruplo para ciclos while goto y gotof y seguramente tambien for
+    def addQuadrupleCycles(self,operator,leftOperand,rightOperand,temporal):
+        current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
 
     def checkOperatorPlusMinus(self):
         if len(self.operatorsStack) != 0:
@@ -42,6 +53,8 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
+
+                '''
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
@@ -49,6 +62,10 @@ class QuadruplesList:
                     print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
                     exit()
                 self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
+                '''
+
+                #temporal cambio
+                self.addQuadruple(operator,LOperand,Roperand,temporal)
 
 
     def checkOperatorTimesDivide(self):
@@ -58,22 +75,27 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
+
+                '''
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
                 if err != None:
                     print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
                     exit()
-                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
+                    self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
+                '''
+
+                self.addQuadruple(operator,LOperand,Roperand,temporal)
 
     def makeAssignationResult(self):
         if len(self.operatorsStack) != 0:
             if self.operatorsStack[-1] == "=":
                 result = self.operandsStack.pop()
-                LOperand = ''
+                ROperand = ''
                 operator = self.operatorsStack.pop()
                 temporal = self.operandsStack.pop()
-                self.addQuadruple(operator,LOperand,result,temporal)
+                self.addQuadruple(operator,result,ROperand,temporal)
 
 
     def generate_sExp_quad(self,leftOperator):
@@ -114,6 +136,63 @@ class QuadruplesList:
         self.addQuadrupleCondition("goto",'','',None)
         self.jumpsStack.append(self.cont-1)
         self.quadruples[false-1].temporal=self.cont
+
+    ######################while##########################
+    def generateGoToFWhile(self):
+        condition = self.operandsStack.pop()
+        #tipos
+        self.addQuadrupleCycles("gotoF",condition,'',None)
+        self.jumpsStack.append(self.cont-1)
+
+    def generateGoToWhile(self):
+        false = self.jumpsStack.pop()
+        retorno = self.jumpsStack.pop()
+        self.addQuadrupleCycles("goto",'','',retorno)
+        self.quadruples[false-1].temporal=self.cont
+
+    ######################FOR##########################
+    def generateVControlQuadruple(self):
+
+        #primeramente se hace pop de tipos , si no es numero type-typemismatch
+        #paso 1: expType=quadrupleList.typesStack.pop()
+        # si no es numero typemismatch
+
+        #else ----esto ya son los siguientes pasos
+        exp = self.operandsStack.pop()
+        Vcontrol = self.operandsStack[-1]
+        #tipos con semantica
+        self.addQuadrupleCycles("=",exp,'',Vcontrol)
+        self.addQuadrupleCycles("=",Vcontrol,'',"VControl")
+
+    def generateVFinalQuadruple(self):
+
+        #primeramente se hace pop de tipos , si no es numero type-typemismatch
+        #paso 1: expType=quadrupleList.typesStack.pop()
+        # si no es numero typemismatch
+
+        #else ----esto ya son los siguientes pasos
+        exp = self.operandsStack.pop()
+        self.addQuadrupleCycles("=",exp,'',"VFinal")
+
+        self.addQuadrupleCycles("<","VControl","VFinal",self.temporals)
+        self.jumpsStack.append(self.cont-1)
+        self.addQuadrupleCycles("GotoF",self.temporals,'',None)
+        self.jumpsStack.append(self.cont-1)
+        self.temporals+=1
+
+
+    def forChangeVC(self):
+        self.addQuadrupleCycles("+","VControl",1,self.temporals)
+        self.addQuadrupleCycles("=",self.temporals,'',"VControl")
+        self.addQuadrupleCycles("=",self.temporals,'',self.operandsStack[-1])
+        self.temporals+=1
+        FIN = self.jumpsStack.pop()
+        Retorno = self.jumpsStack.pop()
+        self.addQuadrupleCycles("Goto",'','',Retorno)
+        self.quadruples[FIN-1].temporal=Retorno
+        self.operandsStack.pop()
+        #popear el tipo tambien
+
     #######################toString#######################
     def quadrupleListToString(self):
         for quad in self.quadruples:
@@ -136,4 +215,3 @@ class QuadruplesList:
     def typeStackToString(self):
         for type in self.typesStack:
             print(f"{type}")
-    

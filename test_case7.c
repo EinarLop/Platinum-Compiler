@@ -14,7 +14,14 @@ class main {
                         var int abc;
                     }
                     {
-                        abc = cc + aa
+                        for(cc = 1 to cc+aa) do
+                        {
+                          read(cc)
+                          write("hola")
+                          aa= cc + abc*(aa-bb)
+
+                        };
+
                     }
                     return test()
                 }
@@ -25,16 +32,7 @@ class main {
                         var int rr,jj,xx,zz,ww;
                     }
                     {
-                        if(cc + bb < rr * cc)
-                        {
-                          jj=bb+rr
-                        }
-                        else
-                        {
-                          xx=zz-cc
-                        };
-
-                        ww=aa*xx+qq
+                        test()
                     }
                     return 1
                 }

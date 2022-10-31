@@ -341,7 +341,7 @@ def p_assignment(p):
 #cambio de gramatica p_assignment2
 def p_assignment2(p):
     '''
-    assignment2 : h_exp np_result_assignation
+    assignment2 : exp np_result_assignation
                 | NEW ID
 
     '''
@@ -352,7 +352,7 @@ def p_assignment2(p):
 
 def p_read(p):
     '''
-    read : READ LEFTPARENTHESIS variable RIGHTPARENTHESIS
+    read : READ LEFTPARENTHESIS variable np_generate_read_quadruple RIGHTPARENTHESIS
 
     '''
     p[0] = ('rule read : ', p[1],p[2])
@@ -366,16 +366,16 @@ def p_write(p):
 
 def p_write2(p):
     '''
-    write2 : h_exp write3
-           | SIGNBOARD write3
+    write2 : h_exp np_generate_write_quadruple write3
+           | SIGNBOARD np_push_signboard np_generate_write_quadruple write3
 
     '''
     p[0] = ('rule write2 :',p[1],p[2])
 
 def p_write3(p):
     '''
-    write3 : COMMA h_exp
-           | COMMA SIGNBOARD
+    write3 : COMMA h_exp write3 np_generate_write_quadruple
+           | COMMA SIGNBOARD np_push_signboard write3 np_generate_write_quadruple
            | empty
 
     '''
@@ -403,14 +403,15 @@ def p_condition2(p):
 
 def p_loop_w(p):
     '''
-    loop_w : WHILE LEFTPARENTHESIS h_exp RIGHTPARENTHESIS DO block SEMICOLON
+    loop_w : WHILE LEFTPARENTHESIS np_while_push_jumpStack h_exp np_while_generate_gotoF RIGHTPARENTHESIS DO block np_while_generate_goto SEMICOLON
 
     '''
     p[0] = ('rule loopW : ', p[1],p[2],p[3],p[4],p[5],p[6],p[7])
 
+#cambios de momento
 def p_loop_f(p):
     '''
-    loop_f : FOR LEFTPARENTHESIS variable EQUAL h_exp TO h_exp RIGHTPARENTHESIS DO block
+    loop_f : FOR LEFTPARENTHESIS variable np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
 
     '''
 
@@ -615,8 +616,9 @@ def p_np_push_id_type(p):
     np_push_id_type : empty
     '''
     global idPush
-    idPush = p[-1][-2]
+    idPush = p[-1][1]
     quadrupleList.operandsStack.append(idPush)
+    '''
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
             print(idPush, vt.table[idPush].type)
@@ -624,7 +626,7 @@ def p_np_push_id_type(p):
             return
     print(f"Variable {idPush} not declared")
     exit()
-
+    '''
 
 def p_np_push_ctei(p):
     '''
@@ -768,15 +770,93 @@ def p_np_generate_goto_condition(p):
     '''
 
     quadrupleList.generateGoToCondition()
+
+######nuevos####
+
+
+def p_np_push_signboard(p):
+    '''
+    np_push_signboard : empty
+    '''
+    global oper
+    oper=p[-1]
+    quadrupleList.operandsStack.append(oper)
+
+
+def p_np_generate_write_quadruple(p):
+    '''
+    np_generate_write_quadruple : empty
+    '''
+
+    quadrupleList.addQuadrupleReadWrite("WRITE",quadrupleList.operandsStack.pop(),'','')
+
+def p_np_generate_read_quadruple(p):
+    '''
+    np_generate_read_quadruple : empty
+    '''
+
+    global operand
+    operand=p[-1][1]
+    quadrupleList.addQuadrupleReadWrite("READ",operand,'','')
+
+def p_np_while_push_jumpStack(p):
+    '''
+    np_while_push_jumpStack : empty
+    '''
+    quadrupleList.jumpsStack.append(quadrupleList.cont)
+
+def p_np_while_generate_gotoF(p):
+    #faltaria aqui los tipos lo estoy haciendo sin tipos de momento
+    '''
+    np_while_generate_gotoF : empty
+    '''
+
+    quadrupleList.generateGoToFWhile()
+
+def p_np_while_generate_goto(p):
+    '''
+    np_while_generate_goto : empty
+    '''
+    quadrupleList.generateGoToWhile()
+
+#for
+def p_np_for_push_id(p):
+    '''
+    np_for_push_id : empty
+    '''
+    #pushear id y tipo pero aun no tiene tipos
+    global pushID
+    pushID= p[-1][1]
+    #si el tipo del id no es un numero entonces typemismatch
+    #if
+    #else
+    quadrupleList.operandsStack.append(pushID)
+
+def p_np_for_FIRSTexp(p):
+    '''
+    np_for_FIRSTexp : empty
+    '''
+    quadrupleList.generateVControlQuadruple()
+
+def p_np_for_SECONDexp(p):
+    '''
+    np_for_SECONDexp : empty
+    '''
+    quadrupleList.generateVFinalQuadruple()
+
+def p_np_for_changesVC(p):
+    '''
+    np_for_changesVC : empty
+    '''
+
+    quadrupleList.forChangeVC()
 ###########################################################################################3
 parser = yacc()
-f = open('test_case5.c', 'r')
+f = open('test_case7.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
-'''
-duda en return con pila de operandos
-'''
+
 
 #program.toString()
 
@@ -799,4 +879,4 @@ quadrupleList.quadrupleListToString()
 # classTable = ClassesTable()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
-classesTable.toString()
+#classesTable.toString()

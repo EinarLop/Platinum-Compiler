@@ -14,7 +14,13 @@ class main {
                         var int abc;
                     }
                     {
-                        abc = cc + aa
+                        while(aaa < bb*9) do
+                        {
+                          write("hola",pp*aa)
+                          read(cc)
+                          ff= 928 * ww
+                        };
+
                     }
                     return test()
                 }
@@ -25,16 +31,7 @@ class main {
                         var int rr,jj,xx,zz,ww;
                     }
                     {
-                        if(cc + bb < rr * cc)
-                        {
-                          jj=bb+rr
-                        }
-                        else
-                        {
-                          xx=zz-cc
-                        };
-
-                        ww=aa*xx+qq
+                        test()
                     }
                     return 1
                 }

@@ -128,4 +128,6 @@ El avance tres no se ha completado el avance de esta semana respecto a los cuád
 
 
 ### Avance 4:
-El avance tres ha sido completado, en gran parte se ha completado igualmente el avance 4, siguen faltando detalles respecto al chequeo de tipos y un detalle de temporales en la variable de control del ciclo for, pero fuera de eso se han completado toda la generación de cuadruplos sin incluir llamadas a funciones y llamada a atributos de objetos.
+El avance tres ha sido completado, en gran parte se ha completado igualmente el avance 4, siguen faltando detalles respecto al chequeo de tipos y un detalle de temporales en la variable de control del ciclo for, pero fuera de eso se han completado toda la generación de cuadruplos sin incluir llamadas a funciones y llamada a atributos de objetos. Se adjunta ejemplo de como se verian los cuadruplos generados.
+![image](https://user-images.githubusercontent.com/52212675/200008137-4852d4c7-97be-4b22-99c8-ade79b49b035.png)
+

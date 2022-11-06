@@ -8,6 +8,7 @@
 ### Bugs
 - [ ] No se puede usar || o && o < > en expresiones normales (fuera de ciclos, ifs)
 - [ ] Cubo semantico no tiene entradas para char y bool
+- [ ] Agregar = a cubo
 
 
 ### Avance 1:

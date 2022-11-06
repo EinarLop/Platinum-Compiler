@@ -4,6 +4,12 @@
 1. Einar López Altamirano A01656259
 2. Amauri Elian Pérez Cruz A01365611
 
+
+### Bugs
+[] No se puede usar || o && o < > en expresiones normales (fuera de ciclos, ifs)
+[] Cubo semantico no tiene entradas para char y bool
+
+
 ### Avance 1:
 Actualmente el parser y un lexer detectan las estructuras básicas del lenguaje:
 1. Clases

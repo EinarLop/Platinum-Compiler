@@ -14,6 +14,7 @@ reserved_words = {
     'int':'INT',
     'float':'FLOAT',
     'char': 'CHAR',
+    'bool': 'BOOL',
     'var':'VAR',
     'void':'VOID',
     'vars':'VARS',
@@ -133,6 +134,11 @@ def t_INT(t):
 def t_CHAR(t):
     r'char'
     t.type = reserved_words.get(t.value,'char')
+    return t
+
+def t_BOOL(t):
+    r'bool'
+    t.type = reserved_words.get(t.value,'bool')
     return t
 
 def t_FLOAT(t):

@@ -16,16 +16,16 @@ class QuadruplesList:
     #push de cada uno
     #checar tipos
 
-    #def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
-    def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
+    def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
+    # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
             self.temporals +=1
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
 
-            #self.typesStack.append(typeTemp)
-            #print(f"temporal {self.temporals-1} with type {typeTemp}")
+            self.typesStack.append(typeTemp)
+            print(f"temporal {self.temporals-1} with type {typeTemp}")
 
         self.cont +=1
 
@@ -54,18 +54,15 @@ class QuadruplesList:
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
 
-                '''
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
                 if err != None:
-                    print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
+                    print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
                 self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
-                '''
-
-                #temporal cambio
-                self.addQuadruple(operator,LOperand,Roperand,temporal)
+                
+                
 
 
     def checkOperatorTimesDivide(self):
@@ -75,18 +72,14 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-
-                '''
+                
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
                 if err != None:
-                    print(f"Type miss match between {Roperand} ({RType}) and {LOperand} ({LType})")
+                    print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
-                    self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
-                '''
-
-                self.addQuadruple(operator,LOperand,Roperand,temporal)
+                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
         if len(self.operatorsStack) != 0:
@@ -95,7 +88,15 @@ class QuadruplesList:
                 ROperand = ''
                 operator = self.operatorsStack.pop()
                 temporal = self.operandsStack.pop()
-                self.addQuadruple(operator,result,ROperand,temporal)
+                RType = self.typesStack.pop()
+                LType = self.typesStack.pop()
+                typeTemp, err = semanticCube.semantic(RType, LType, operator)
+                if err != None:
+                    print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
+                    exit()
+                self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
+
+                
 
 
     def generate_sExp_quad(self,leftOperator):
@@ -106,7 +107,16 @@ class QuadruplesList:
                 LOperand = leftOperator
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                self.addQuadruple(operator,LOperand,ROperand,temporal)
+                
+                RType = self.typesStack.pop()
+                LType = self.typesStack.pop()
+
+                typeTemp, err = semanticCube.semantic(RType, LType, operator)
+                if err != None:
+                    print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType})")
+                    exit()
+
+                self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
 
     def generate_hExp_quad(self,leftOperator):
         listOperandsHexp = ["&&","||"]
@@ -116,7 +126,17 @@ class QuadruplesList:
                 LOperand = leftOperator
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                self.addQuadruple(operator,LOperand,ROperand,temporal)
+                RType = self.typesStack.pop()
+                LType = self.typesStack.pop()
+
+                typeTemp, err = semanticCube.semantic(RType, LType, operator)
+                if err != None:
+                    print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType})")
+                    exit()
+
+                self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
+
+
     #######################fondo falso#######################
     def eliminateFakeVoid(self):
         self.operatorsStack.pop()

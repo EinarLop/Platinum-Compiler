@@ -3,38 +3,32 @@ class main {
         class cars{
             vars {
                 var int cc;
-                var float bb;
-                var int aa;
+                var int bb;
             }
             functions{
-                func int test1(int notUsed){
+                func int test1(char notUsed, int notUsed2, int notUsed3){
                     vars{
                         var int cc;
                         var int aa;
                         var int abc;
+                        var int abss;
+                        var int bb;
+                        var int notUsed;
+                        var int popo;
                     }
                     {
-                        abc = cc + aa
+                       bb = bb
                     }
                     return test()
                 }
                  func float test2(int rr){
                     vars{
                         var float uu,qq;
-                        var char cc;
+                        var  float cc;
                         var int rr,jj,xx,zz,ww;
                     }
                     {
-                        if(cc + bb < rr * cc)
-                        {
-                          jj=bb+rr
-                        }
-                        else
-                        {
-                          xx=zz-cc
-                        };
-
-                        ww=aa*xx+qq
+                        cc = cc
                     }
                     return 1
                 }

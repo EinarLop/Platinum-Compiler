@@ -55,7 +55,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -329,7 +329,8 @@ def p_s_type(p):
     '''
     s_type : INT np_get_var_type
 	       | FLOAT np_get_var_type
-	       | CHAR
+	       | CHAR np_get_var_type
+           | BOOL np_get_var_type
     '''
     p[0] = ('rule s_type: ', p[1])
 
@@ -457,6 +458,7 @@ def p_empty(p):
 
 def p_error(p):
     print(f'Syntax error at {p.value!r} on line {p.lineno} of type {p}')
+    exit()
 
 
 ##### NEURALGIC POINTS ######
@@ -493,6 +495,7 @@ def p_np_destroy_functionsTable(p):
     '''
     np_destroy_functionsTable : empty
     '''
+    print("Inside destroy func")
     functionsTablesPile.append(current_functionsTable)
     # del globals()['current_functionsTable']
 
@@ -566,6 +569,7 @@ def p_np_save_var(p):
     global current_var_type
     current_varsTable.add(current_var_name, current_var_type, current_var_scope)
     current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
+    
 
 def p_np_get_func_name(p):
     '''
@@ -595,18 +599,27 @@ def p_np_add_parameter_to_list(p):
     '''
     np_add_parameter_to_list : empty
     '''
-
+    
     global current_parameters_list
-    current_parameters_list = []
-    current_parameters_list.append(current_parameter)
+
+    temp = "current_parameters_list" in globals()
+    if (temp):
+        current_parameters_list.append(current_parameter)
+    else: 
+        current_parameters_list = []
 
 def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
-    global current_functionsTable
-    current_functionsTable.add(current_func_name,current_func_type,current_parameters_list,varsTablesPile.pop(-1))
+    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1))
 
+
+def p_np_get_func_params(p):
+    '''
+    np_get_func_params : empty
+    '''
+    print("hello", [current_parameters_list[0].id, current_parameters_list[1].id, current_parameters_list[2].id, current_parameters_list[3].id])
 
 ##########Quadruples##########
 
@@ -618,15 +631,26 @@ def p_np_push_id_type(p):
     global idPush
     idPush = p[-1][1]
     quadrupleList.operandsStack.append(idPush)
-    '''
+
+   
+    ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
+        print(1)
         if idPush in vt.table:
             print(idPush, vt.table[idPush].type)
             quadrupleList.typesStack.append(vt.table[idPush].type)
             return
+ 
+    ## Intercambiar si se quiere cambiar la regla
+    for parameter in current_parameters_list:
+        if idPush == parameter.id:
+            print(idPush, parameter.type)
+            quadrupleList.typesStack.append(parameter.type)
+            return
+
     print(f"Variable {idPush} not declared")
     exit()
-    '''
+    
 
 def p_np_push_ctei(p):
     '''
@@ -773,7 +797,6 @@ def p_np_generate_goto_condition(p):
 
 ######nuevos####
 
-
 def p_np_push_signboard(p):
     '''
     np_push_signboard : empty
@@ -852,7 +875,7 @@ def p_np_for_changesVC(p):
     quadrupleList.forChangeVC()
 ###########################################################################################3
 parser = yacc()
-f = open('test_case7.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -880,3 +903,5 @@ quadrupleList.quadrupleListToString()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
 #classesTable.toString()
+
+print("aaa", classesTable.table["cars"].functionsTable.table["test1"].varsTable.table)

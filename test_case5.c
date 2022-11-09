@@ -19,16 +19,19 @@ class main {
                     {
                        bb = bb
                     }
-                    return test()
+                    return 1
                 }
-                 func float test2(int rr){
+                 func float test2(int rr, int jeje){
                     vars{
                         var float uu,qq;
                         var  float cc;
-                        var int rr,jj,xx,zz,ww;
+                        var char rr,jj,xx,zz,ww;
+                        var bool popo;
+                        var int eins, zwei;
                     }
                     {
-                        cc = cc
+                        test1(rr,eins, zwei)
+                     
                     }
                     return 1
                 }
@@ -36,20 +39,21 @@ class main {
         }
     }
     vars{
-        var float dddd;
+        var int dddd;
     }
     functions{
         func int test66(int ee){
             vars{
-                var int ff;
+                var char ff;
             }
             {
-                test()
+                ff = ff
             }
             return 1
         }
     }
+
     {
-        test()
+           test66(dddd)
     }
 }

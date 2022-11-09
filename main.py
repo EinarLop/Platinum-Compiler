@@ -45,7 +45,7 @@ def p_param(p):
 
 def p_param2(p):
     '''
-    param2 : COMMA np_add_parameter_to_list param
+    param2 : COMMA param
            | empty
     '''
     if (len(p) == 3):
@@ -295,14 +295,15 @@ def p_call_obj4(p):
 
 def p_call(p):
     '''
-    call : ID LEFTPARENTHESIS call2 RIGHTPARENTHESIS
+    call : ID np_check_func_exists LEFTPARENTHESIS call2 RIGHTPARENTHESIS np_check_func_params
     '''
     p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
+    
 
 def p_call2(p):
     '''
-    call2 : h_exp call3
-          | empty
+    call2 : h_exp np_check_func_params_counter call3
+          | empty 
     '''
     if (len(p) == 3):
         p[0] = ('rule call2:', p[1], p[2])
@@ -311,7 +312,7 @@ def p_call2(p):
 
 def p_call3(p):
     '''
-    call3 : COMMA h_exp call3
+    call3 : COMMA h_exp np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 4):
@@ -495,8 +496,9 @@ def p_np_destroy_functionsTable(p):
     '''
     np_destroy_functionsTable : empty
     '''
-    print("Inside destroy func")
+    
     functionsTablesPile.append(current_functionsTable)
+    
     # del globals()['current_functionsTable']
 
 def p_np_create_varsTable(p):
@@ -607,19 +609,19 @@ def p_np_add_parameter_to_list(p):
         current_parameters_list.append(current_parameter)
     else: 
         current_parameters_list = []
+        current_parameters_list.append(current_parameter)
 
 def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
     current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1))
-
+    del globals()["current_parameters_list"]
 
 def p_np_get_func_params(p):
     '''
     np_get_func_params : empty
     '''
-    print("hello", [current_parameters_list[0].id, current_parameters_list[1].id, current_parameters_list[2].id, current_parameters_list[3].id])
 
 ##########Quadruples##########
 
@@ -635,7 +637,6 @@ def p_np_push_id_type(p):
    
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
-        print(1)
         if idPush in vt.table:
             print(idPush, vt.table[idPush].type)
             quadrupleList.typesStack.append(vt.table[idPush].type)
@@ -873,6 +874,57 @@ def p_np_for_changesVC(p):
     '''
 
     quadrupleList.forChangeVC()
+
+
+def p_np_check_func_exists(p):
+    '''
+    np_check_func_exists : empty
+    '''
+
+    functionId = p[-1] 
+    if not functionId in current_functionsTable.table:
+          print(f"Function {functionId} not declared")
+          exit()
+
+    global parameter_counter
+    parameter_counter = 0
+    
+def p_np_check_func_params(p):
+    '''
+    np_check_func_params : empty
+    '''
+    functionId = p[-5]
+    paramsInDirectory = [param.type for param in current_functionsTable.table[functionId].parameters]
+    currentCallParams = [quadrupleList.typesStack.pop(-1) for x in range(parameter_counter)]
+    currentCallParams = currentCallParams[::-1] 
+
+    if not len(paramsInDirectory)==len(currentCallParams):
+        print(f"Wrong number of arguments in {functionId} expected {len(paramsInDirectory)}, given {len(currentCallParams)}")
+        exit()
+    else:
+        print("CLEAR # Args")
+
+    if not paramsInDirectory == currentCallParams:
+       print(f"At least one type mismatch in parameters in {functionId} call")
+       exit() 
+    else:
+        print("CLEAR Types Args")
+
+    del globals()["parameter_counter"]
+
+
+def p_np_check_func_params_counter(p):
+    '''
+    np_check_func_params_counter : empty
+    '''
+    global parameter_counter
+    parameter_counter +=1
+
+    
+
+
+
+
 ###########################################################################################3
 parser = yacc()
 f = open('test_case5.c', 'r')

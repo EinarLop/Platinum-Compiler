@@ -9,6 +9,8 @@ class QuadruplesList:
         self.operandsStack = []
         self.jumpsStack = []
         self.quadruples = []
+        self.controlledTemporals = []
+        self.endFuncQuads = []
         self.cont = 1 #siempre al cuadruplo siguiente
         self.temporals = 1 #t1--tn
 
@@ -43,6 +45,22 @@ class QuadruplesList:
     #añade cuadruplo para ciclos while goto y gotof y seguramente tambien for
     def addQuadrupleCycles(self,operator,leftOperand,rightOperand,temporal):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+
+    def addQuadrupleEndFuncModule(self):
+        current_quadruple= Quadruple('ENDFUNC','','','')
+        self.quadruples.append(current_quadruple)
+        self.endFuncQuads.append(self.cont)
+        self.cont +=1
+
+    def addQuadrupleERAFuncCall(self,funcName):
+        current_quadruple= Quadruple('ERA',funcName,'','')
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+
+    def addQuadrupleGoSubFuncCall(self,funcName,initialQuad):
+        current_quadruple= Quadruple('goSub',funcName,'',initialQuad)
         self.quadruples.append(current_quadruple)
         self.cont +=1
 
@@ -193,6 +211,15 @@ class QuadruplesList:
         self.operandsStack.pop()
         #popear el tipo tambien
 
+    #######################funciones#######################
+    def generateEndFuncModule(self):
+        self.addQuadrupleEndFuncModule()
+
+    def generateERAFuncCall(self,funcName):
+        self.addQuadrupleERAFuncCall(funcName)
+
+    def generateGoSubFuncCall(self,funcName,initialQuad):
+        self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
     #######################toString#######################
     def quadrupleListToString(self):
         for quad in self.quadruples:

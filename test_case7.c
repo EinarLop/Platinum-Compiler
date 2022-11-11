@@ -18,7 +18,7 @@ class main {
                         {
                           read(cc)
                           write("hola")
-                          aa= cc + abc*(aa-bb)
+                          aa= ccc + abc*(aa-bb)
 
                         };
 

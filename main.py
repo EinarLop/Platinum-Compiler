@@ -55,7 +55,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -615,7 +615,7 @@ def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
-    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1))
+    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1), current_funcTempTable)
     del globals()["current_parameters_list"]
 
 def p_np_get_func_params(p):
@@ -702,14 +702,16 @@ def p_np_solve_plus_minus_operator(p):
     '''
     np_solve_plus_minus_operator : empty
     '''
-    quadrupleList.checkOperatorPlusMinus()
+    temporalType = quadrupleList.checkOperatorPlusMinus()
+    registerTempVariable(temporalType)
 
 def p_np_solve_times_divide_operator(p):
     '''
     np_solve_times_divide_operator : empty
     '''
 
-    quadrupleList.checkOperatorTimesDivide()
+    temporalType = quadrupleList.checkOperatorTimesDivide()
+    registerTempVariable(temporalType)
 
 def p_np_push_assignation_operator(p):
     '''
@@ -725,7 +727,8 @@ def p_np_result_assignation(p):
     np_result_assignation : empty
     '''
 
-    quadrupleList.makeAssignationResult()
+    temporalType = quadrupleList.makeAssignationResult()
+    registerTempVariable(temporalType)
 
 def p_np_create_fake_void(p):
     '''
@@ -769,7 +772,8 @@ def p_np_define_ROperand_sexp(p):
     '''
     np_define_ROperand_sexp : empty
     '''
-    quadrupleList.generate_sExp_quad(LOperandSexp)
+    temporalType = quadrupleList.generate_sExp_quad(LOperandSexp)
+    registerTempVariable(temporalType)
 
 def p_np_define_LOperand_hexp(p):
     '''
@@ -781,7 +785,8 @@ def p_np_define_ROperand_hexp(p):
     '''
     np_define_ROperand_hexp : empty
     '''
-    quadrupleList.generate_hExp_quad(LOperandHexp)
+    temporalType = quadrupleList.generate_hExp_quad(LOperandHexp)
+    registerTempVariable(temporalType)
 
 def p_np_generate_gotoF_condition(p):
     '''
@@ -937,8 +942,25 @@ def p_np_check_class_exists(p):
         exit()
 
 
+def p_np_init_func_tempTable(p):
+    '''
+    np_init_func_tempTable : empty
+    '''
+    global current_funcTempTable
+    current_funcTempTable = [0,0,0,0]
 
+############ Helper Functions ############
 
+def registerTempVariable(tempType):
+    print("------->", tempType )
+    if tempType == "int":
+        current_funcTempTable[0]+=1
+    elif tempType == "float":
+        current_funcTempTable[1]+=1
+    elif tempType == "char":
+        current_funcTempTable[2]+=1
+    elif tempType == "bool":
+        current_funcTempTable[3]+=1
 
 
 
@@ -950,7 +972,7 @@ case_correct_01 = parser.parse(content)
 
 
 
-#program.toString()
+program.toString()
 
 print("###############QuadrupleTests###############")
 #quadrupleList.operatorsStackToString()

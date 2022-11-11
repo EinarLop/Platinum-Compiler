@@ -6,9 +6,9 @@ class FunctionsTable:
     def __init__(self):
         self.table = {}
 
-    def add(self,name,type,parameters,varsTable):
-        
-        variablesCount = [0,0,0,0,0,0,0,0]
+    def add(self,name,type,parameters,varsTable, tempTable=[]):
+                        # I,F,C,B
+        variablesCount = [0,0,0,0]
         for var in varsTable.table:
             if varsTable.table[var].type == "int":
                 variablesCount[0]+=1
@@ -30,7 +30,7 @@ class FunctionsTable:
                 variablesCount[3]+=1
 
                 
-       
+        variablesCount =  variablesCount + tempTable
 
         currentFunction = Function(type,parameters,varsTable, variablesCount)
 

@@ -29,6 +29,8 @@ class QuadruplesList:
             print(f"temporal {self.temporals-1} with type {typeTemp}")
 
         self.cont +=1
+        if current_quadruple.operator != "=" :
+            return typeTemp
 
     #if else
     def addQuadrupleCondition(self,operator,leftOperand,rightOperand,temporal):
@@ -61,7 +63,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
-                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
+                return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
                 
                 
 
@@ -80,7 +82,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
-                self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
+                return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
         if len(self.operatorsStack) != 0:
@@ -95,7 +97,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
-                self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
+                return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
                 
 
@@ -117,7 +119,7 @@ class QuadruplesList:
                     print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType})")
                     exit()
 
-                self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
+                return self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
 
     def generate_hExp_quad(self,leftOperator):
         listOperandsHexp = ["&&","||"]
@@ -135,7 +137,7 @@ class QuadruplesList:
                     print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType})")
                     exit()
 
-                self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
+                return self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
 
 
     #######################fondo falso#######################

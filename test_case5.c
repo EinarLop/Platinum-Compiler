@@ -8,13 +8,14 @@ class main {
             functions{
                 func int test1(char notUsed, int notUsed2, int notUsed3){
                     vars{
-                        var int cc;
+                        var char cc;
                         var int aa;
                         var int abc;
                         var int abss;
                         var int bb;
                         var int notUsed;
-                        var int popo;
+                        var char popo;
+
                     }
                     {
                     cc = cc + popo
@@ -31,6 +32,7 @@ class main {
                     }
                     {
                         test1(rr,eins, zwei)
+                        uu = qq + uu
                      
                     }
                     return 1

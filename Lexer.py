@@ -21,7 +21,8 @@ reserved_words = {
     'cl':'CL',
     'new':'NEW',
     'do' : 'DO',
-    'to' : 'TO'
+    'to' : 'TO',
+    'global': 'GLOBAL'
 }
 
 tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
@@ -35,7 +36,7 @@ tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
 t_ignore = ' \t'
 # ID'S MUST BE AT LEAST TWO CHARACTERS
 t_CTEF = r'[+-]?([0-9]*[.])?[0-9]+'
-t_SIGNBOARD = r'["][a-zA-Z_][a-zA-Z0-9_]*["]'
+t_SIGNBOARD = r'["][a-zA-Z_ ][a-zA-Z0-9_ ]*["]'
 t_COLON = r'\:'
 t_PERIOD = r'\.'
 t_COMMA = r'\,'
@@ -173,6 +174,12 @@ def t_DO(t):
 def t_TO(t):
     r'to'
     t.type = reserved_words.get(t.value,'to')
+    return t
+
+
+def t_GLOBAL(t):
+    r'global'
+    t.type = reserved_words.get(t.value,'global')
     return t
 
 def t_CTEI(t):

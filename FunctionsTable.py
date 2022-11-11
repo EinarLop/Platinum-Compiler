@@ -6,8 +6,8 @@ class FunctionsTable:
     def __init__(self):
         self.table = {}
 
-    def add(self,name,type,parameters,varsTable):
-        currentFunction = Function(type,parameters,varsTable)
+    def add(self,name,type,parameters,varsTable,quadrupleStart):
+        currentFunction = Function(type,parameters,varsTable,quadrupleStart)
 
         if name in self.table:
             return Error("Function already declared")
@@ -30,3 +30,5 @@ class FunctionsTable:
                 print(f"{parameter.id}:  {parameter.type}")
             print("### Vars Table ###")
             self.table[key].varsTable.toString()
+            print("### Quadruple of start ###")
+            print(self.table[key].quadrupleStart)

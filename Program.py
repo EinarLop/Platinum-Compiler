@@ -7,10 +7,7 @@ class Program:
     def toString(self):
         print("---------- Program ----------")
         self.classesTable.toString()
-        print("----- Program VarsTable -----")
+        print("----- Program Global VarsTable -----")
         self.varsTable.toString()
         print("----- Program FunctionsTable -----")
         self.functionsTable.toString()
-
-
-        

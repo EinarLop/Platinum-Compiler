@@ -9,7 +9,7 @@ class main {
                 var float bb;
             }
             functions{
-                func int test1(int notUsed, float ccc){
+                func int test1(int notUsed,float ccc){
                     vars{
                         var float cc;
                         var float aa;
@@ -18,7 +18,7 @@ class main {
                     {
                           read(cc)
                           write("hola mundo")
-                          aa= cc + abc*(cc-bb)
+                          aa= 99.11 + abc*(cc-bb)
                     }
                     return 1
                 }
@@ -30,7 +30,7 @@ class main {
                     }
                     {
 
-                          aa= test1()
+                          aa= test1(cc)
 
                     }
                     return 1

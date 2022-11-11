@@ -52,7 +52,7 @@ def p_param(p):
 
 def p_param2(p):
     '''
-    param2 : COMMA np_add_parameter_to_list param
+    param2 : COMMA param
            | empty
     '''
     if (len(p) == 3):
@@ -62,7 +62,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable  block RETURN h_exp RIGHTCURLYBRACE  np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS np_create_param_list param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable  block RETURN h_exp RIGHTCURLYBRACE  np_save_function np_generate_endfunc_quad func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -310,7 +310,7 @@ def p_call(p):
 ###deberiamos cambiar h_exp a exp?
 def p_call2(p):
     '''
-    call2 : exp call3
+    call2 : exp np_append_param_function_call_parameters  call3
           | empty
     '''
     if (len(p) == 3):
@@ -320,7 +320,7 @@ def p_call2(p):
 
 def p_call3(p):
     '''
-    call3 : COMMA exp call3
+    call3 : COMMA exp np_append_param_function_call_parameters call3
           | empty
     '''
     if (len(p) == 4):
@@ -595,6 +595,14 @@ def p_np_get_func_type(p):
     global current_func_type
     current_func_type = str(p[-1][1])
 
+def p_np_create_param_list(p):
+    '''
+    np_create_param_list : empty
+    '''
+    global current_parameters_list
+    current_parameters_list = []
+
+
 def p_np_get_func_parameter(p):
     '''
     np_get_func_parameter : empty
@@ -608,8 +616,6 @@ def p_np_add_parameter_to_list(p):
     np_add_parameter_to_list : empty
     '''
 
-    global current_parameters_list
-    current_parameters_list = []
     current_parameters_list.append(current_parameter)
 
 def p_np_save_function(p):
@@ -894,21 +900,37 @@ def p_np_generate_ERA_quad_func_call(p):
     #se necesitan contar los tipos locales: int float y char y temporales: int float y char para despues usar el era bien en la maquina virtual
     #genero quad ERA pero aun no hacemos nada exactamente con el creo que eso ya viene en la maquina virtual no?
     global paramCounter
-    paramCounter=1
+    paramCounter = 0
 
-    #duda
+    '''
+    for param in current_functionsTable.table[idVerify].parameters:
+        print("param:",param.id)
+    '''
+    #duda ##arreglado
     #hay algo mal con los parametros, solo se puede poner uno o solo aparece uno
 
 
     #checar tipos de parametros y si coincide el numero de parametros hacer el gosub
     quadrupleList.generateERAFuncCall(idVerify)
 
+def p_np_append_param_function_call_parameters(p):
+    '''
+    np_append_param_function_call_parameters : empty
+    '''
+
+    #param= quadrupleList.operandsStack.pop()
+    #anotaciones
+    #faltaria hacer pop en pila de tipos para comparar
+
+    #paramCounter +=1
+    #if pop de pila de tipos == en current_functionsTable.table[idVerify].parameters[paramCounter-1]
+
 def p_np_generate_goSub_function_call(p):
     '''
     np_generate_goSub_function_call : empty
     '''
+    #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
-
 ###########################################################################################
 parser = yacc()
 f = open('test_case7.c', 'r')

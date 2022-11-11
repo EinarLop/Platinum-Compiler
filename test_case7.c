@@ -18,7 +18,7 @@ class main {
                     {
                           read(cc)
                           write("hola mundo")
-                          aa= 99.11 + abc*(cc-bb)
+                          aa= 99 + abc*(cc-bb)
                     }
                     return 1
                 }

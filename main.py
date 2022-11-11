@@ -25,8 +25,9 @@ quadrupleList = QuadruplesList()
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main :  CLASS MAIN LEFTCURLYBRACE GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN LEFTCURLYBRACE GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
     '''
+
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
 def p_class_dec(p):
@@ -302,7 +303,7 @@ def p_call_obj4(p):
 
 def p_call(p):
     '''
-    call : ID np_check_func_exists np_verify_ID_call_module LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_check_func_params np_generate_goSub_function_call
+    call : ID np_check_func_exists LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_check_func_params np_generate_goSub_function_call
     '''
     p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
 
@@ -600,13 +601,6 @@ def p_np_get_func_type(p):
 
     global current_func_type
     current_func_type = str(p[-1][1])
-
-def p_np_create_param_list(p):
-    '''
-    np_create_param_list : empty
-    '''
-    global current_parameters_list
-    current_parameters_list = []
 
 
 def p_np_get_func_parameter(p):
@@ -932,7 +926,7 @@ def p_np_check_func_params(p):
     '''
     np_check_func_params : empty
     '''
-    functionId = p[-5]
+    functionId = p[-6]
     paramsInDirectory = [param.type for param in current_functionsTable.table[functionId].parameters]
     currentCallParams = [quadrupleList.typesStack.pop(-1) for x in range(parameter_counter)]
     currentCallParams = currentCallParams[::-1]

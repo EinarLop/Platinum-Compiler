@@ -1,4 +1,7 @@
 class main {
+  global vars{
+      var int dddd;
+  }
     classes {
         class cars{
             vars {
@@ -32,16 +35,13 @@ class main {
                     }
                     {
                         test1(rr,eins, zwei)
-                        uu = qq + 10 + 111 
-                     
+                        uu = qq + 10 + 111
+
                     }
                     return 1
                 }
             }
         }
-    }
-    vars{
-        var int dddd;
     }
     functions{
         func int test66(int ee){

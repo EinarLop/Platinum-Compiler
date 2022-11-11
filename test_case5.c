@@ -32,7 +32,7 @@ class main {
                     }
                     {
                         test1(rr,eins, zwei)
-                        uu = qq + uu
+                        uu = qq + 10 + 111 
                      
                     }
                     return 1

@@ -670,6 +670,7 @@ def p_np_push_ctei(p):
     global cteiPush
     cteiPush = p[-1]
     quadrupleList.operandsStack.append(cteiPush)
+    quadrupleList.typesStack.append("int")
 
 def p_np_push_ctef(p):
     '''
@@ -679,6 +680,7 @@ def p_np_push_ctef(p):
     global ctefPush
     ctefPush = p[-1]
     quadrupleList.operandsStack.append(ctefPush)
+    quadrupleList.typesStack.append("float")
 
 def p_np_push_operator_times_divide(p):
     '''

@@ -25,6 +25,7 @@ class QuadruplesList:
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
 
             self.typesStack.append(typeTemp)
+        
             print(f"temporal {self.temporals-1} with type {typeTemp}")
 
         self.cont +=1

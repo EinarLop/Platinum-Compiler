@@ -17,7 +17,7 @@ class main {
                         var int popo;
                     }
                     {
-                       bb = bb
+                    cc = cc + popo
                     }
                     return 1
                 }

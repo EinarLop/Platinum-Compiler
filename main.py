@@ -24,7 +24,7 @@ def p_main(p):
 
 def p_class_dec(p):
     '''
-    class_dec : CLASS ID np_get_class_name LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
+    class_dec : CLASS ID np_get_class_name np_check_class_exists LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
     '''
     p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
@@ -623,6 +623,15 @@ def p_np_get_func_params(p):
     np_get_func_params : empty
     '''
 
+# def p_np_init_func_var_count(p):
+#     '''
+#     np_init_func_var_count : empty
+#     '''
+#     global current_variablesCount 
+#     current_variablesCount = [0,0,0,0,0,0,0,0]
+
+
+
 ##########Quadruples##########
 
 #first rules from fact,term,exp
@@ -638,14 +647,14 @@ def p_np_push_id_type(p):
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
-            print(idPush, vt.table[idPush].type)
+            # print(idPush, vt.table[idPush].type)
             quadrupleList.typesStack.append(vt.table[idPush].type)
             return
  
     ## Intercambiar si se quiere cambiar la regla
     for parameter in current_parameters_list:
         if idPush == parameter.id:
-            print(idPush, parameter.type)
+            # print(idPush, parameter.type)
             quadrupleList.typesStack.append(parameter.type)
             return
 
@@ -901,14 +910,11 @@ def p_np_check_func_params(p):
     if not len(paramsInDirectory)==len(currentCallParams):
         print(f"Wrong number of arguments in {functionId} expected {len(paramsInDirectory)}, given {len(currentCallParams)}")
         exit()
-    else:
-        print("CLEAR # Args")
+
 
     if not paramsInDirectory == currentCallParams:
        print(f"At least one type mismatch in parameters in {functionId} call")
        exit() 
-    else:
-        print("CLEAR Types Args")
 
     del globals()["parameter_counter"]
 
@@ -920,7 +926,18 @@ def p_np_check_func_params_counter(p):
     global parameter_counter
     parameter_counter +=1
 
-    
+
+def p_np_check_class_exists(p):
+    '''
+    np_check_class_exists : empty
+    '''
+    className = p[-2]
+    if className in classesTable.table:
+        print(f"Class {className} already exists") 
+        exit()
+
+
+
 
 
 
@@ -954,6 +971,5 @@ quadrupleList.quadrupleListToString()
 # classTable = ClassesTable()
 # classTable.add("ClassTest", functionsTable, varsTable2)
 
-#classesTable.toString()
+# program.toString()
 
-print("aaa", classesTable.table["cars"].functionsTable.table["test1"].varsTable.table)

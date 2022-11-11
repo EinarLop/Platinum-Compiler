@@ -7,7 +7,32 @@ class FunctionsTable:
         self.table = {}
 
     def add(self,name,type,parameters,varsTable):
-        currentFunction = Function(type,parameters,varsTable)
+        
+        variablesCount = [0,0,0,0,0,0,0,0]
+        for var in varsTable.table:
+            if varsTable.table[var].type == "int":
+                variablesCount[0]+=1
+            elif varsTable.table[var].type == "float":
+                variablesCount[1]+=1
+            elif varsTable.table[var].type == "char":
+                variablesCount[2]+=1
+            elif varsTable.table[var].type == "bool":
+                variablesCount[3]+=1
+        
+        for param in parameters:
+            if param.type  == "int":
+                variablesCount[0]+=1
+            elif param.type  == "float":
+                variablesCount[1]+=1
+            elif param.type  == "char":
+                variablesCount[2]+=1
+            elif param.type  == "bool":
+                variablesCount[3]+=1
+
+                
+       
+
+        currentFunction = Function(type,parameters,varsTable, variablesCount)
 
         if name in self.table:
             return Error("Function already declared")
@@ -25,8 +50,12 @@ class FunctionsTable:
         for key in self.table:
             print("###### Function ######")
             print(f"{key}: {self.table[key].type}")
+          
             print("### Parameters ###")
             for parameter in self.table[key].parameters:
                 print(f"{parameter.id}:  {parameter.type}")
             print("### Vars Table ###")
             self.table[key].varsTable.toString()
+            print("### Variable Count ###")
+            print(self.table[key].variablesCount)
+

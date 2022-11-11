@@ -3,3 +3,5 @@ class Class:
         self.functionsTable = functionsTable
         self.varsTable = varsTable
 
+    
+

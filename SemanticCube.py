@@ -10,24 +10,26 @@ class SemanticCube:
                     '-': 'int',
                     '/': 'float',
                     '*': 'int',
-                    '&&': 'boolean',
-                    '||': 'boolean',
-                    '<': 'boolean',
-                    '>': 'boolean',
-                    '<=': 'boolean',
-                    '>=': 'boolean'
+                    '&&': 'bool',
+                    '||': 'bool',
+                    '<': 'bool',
+                    '>': 'bool',
+                    '<=': 'bool',
+                    '>=': 'bool',
+                    '=' : 'int'
                 },
                 'float': {
                     '+':'float',
                     '-':'float',
                     '/':'float',
                     '*':'float',
-                    '&&': 'boolean',
-                    '||': 'boolean',
-                    '<': 'boolean',
-                    '>': 'boolean',
-                    '<=': 'boolean',
-                    '>=': 'boolean'
+                    '&&': 'bool',
+                    '||': 'bool',
+                    '<': 'bool',
+                    '>': 'bool',
+                    '<=': 'bool',
+                    '>=': 'bool',
+                    '=' : 'float'
                 }
             },
             'float': {
@@ -36,29 +38,34 @@ class SemanticCube:
                     '-':'float',
                     '/':'float',
                     '*':'float',
-                    '&&': 'boolean',
-                    '||': 'boolean',
-                    '<': 'boolean',
-                    '>': 'boolean',
-                    '<=': 'boolean',
-                    '>=': 'boolean'
+                    '&&': 'bool',
+                    '||': 'bool',
+                    '<': 'bool',
+                    '>': 'bool',
+                    '<=': 'bool',
+                    '>=': 'bool',
+                    '=' : 'float'
                   },
                   'int': {
                     '+':'float',
                     '-':'float',
                     '/':'float',
                     '*':'float',
-                    '&&': 'boolean',
-                    '||': 'boolean',
-                    '<': 'boolean',
-                    '>': 'boolean',
-                    '<=': 'boolean',
-                    '>=': 'boolean'
+                    '&&': 'bool',
+                    '||': 'bool',
+                    '<': 'bool',
+                    '>': 'bool',
+                    '<=': 'bool',
+                    '>=': 'bool',
+                    '=' : 'float'
                   }
                   
             },
             'char':{
-                'char':'char'
+                'char': {
+                    '=' :  'char', 
+                    '+' : 'char'
+                }
             }
             
         }

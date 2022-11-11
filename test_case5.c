@@ -1,61 +1,61 @@
 class main {
+  global vars{
+      var int dddd;
+  }
     classes {
         class cars{
             vars {
                 var int cc;
-                var float bb;
-                var int aa;
+                var int bb;
             }
             functions{
-                func int test1(int notUsed){
+                func int test1(char notUsed, int notUsed2, int notUsed3){
                     vars{
-                        var int cc;
+                        var char cc;
                         var int aa;
                         var int abc;
+                        var int abss;
+                        var int bb;
+                        var int notUsed;
+                        var char popo;
+
                     }
                     {
-                        abc = cc + aa
+                    cc = cc + popo
                     }
-                    return test()
+                    return 1
                 }
-                 func float test2(int rr){
+                 func float test2(int rr, int jeje){
                     vars{
                         var float uu,qq;
-                        var char cc;
-                        var int rr,jj,xx,zz,ww;
+                        var  float cc;
+                        var char rr,jj,xx,zz,ww;
+                        var bool popo;
+                        var int eins, zwei;
                     }
                     {
-                        if(cc + bb < rr * cc)
-                        {
-                          jj=bb+rr
-                        }
-                        else
-                        {
-                          xx=zz-cc
-                        };
+                        test1(rr,eins, zwei)
+                        uu = qq + 10 + 111
 
-                        ww=aa*xx+qq
                     }
                     return 1
                 }
             }
         }
     }
-    vars{
-        var float dddd;
-    }
     functions{
         func int test66(int ee){
             vars{
-                var int ff;
+                var char ff;
             }
             {
-                test()
+                ff = ff
             }
             return 1
         }
     }
+
     {
-        test()
+           test66(dddd)
     }
 }

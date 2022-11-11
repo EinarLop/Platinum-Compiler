@@ -25,13 +25,14 @@ quadrupleList = QuadruplesList()
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main :  CLASS MAIN LEFTCURLYBRACE GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN LEFTCURLYBRACE GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
     '''
+
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
 
 def p_class_dec(p):
     '''
-    class_dec : CLASS ID np_get_class_name LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
+    class_dec : CLASS ID np_get_class_name np_check_class_exists LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
     '''
     p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
@@ -62,7 +63,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS np_create_param_list param RIGHTPARENTHESIS LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable  block RETURN h_exp RIGHTCURLYBRACE  np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -302,15 +303,16 @@ def p_call_obj4(p):
 
 def p_call(p):
     '''
-    call : ID np_verify_ID_call_module LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_generate_goSub_function_call
+    call : ID np_check_func_exists LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_check_func_params np_generate_goSub_function_call
     '''
     p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
+
 
 ####duda
 ###deberiamos cambiar h_exp a exp?
 def p_call2(p):
     '''
-    call2 : exp np_append_param_function_call_parameters  call3
+    call2 : h_exp np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 3):
@@ -320,7 +322,7 @@ def p_call2(p):
 
 def p_call3(p):
     '''
-    call3 : COMMA exp np_append_param_function_call_parameters call3
+    call3 : COMMA h_exp np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 4):
@@ -338,7 +340,8 @@ def p_s_type(p):
     '''
     s_type : INT np_get_var_type
 	       | FLOAT np_get_var_type
-	       | CHAR  np_get_var_type
+	       | CHAR np_get_var_type
+           | BOOL np_get_var_type
     '''
     p[0] = ('rule s_type: ', p[1])
 
@@ -466,6 +469,7 @@ def p_empty(p):
 
 def p_error(p):
     print(f'Syntax error at {p.value!r} on line {p.lineno} of type {p}')
+    exit()
 
 
 ##### NEURALGIC POINTS ######
@@ -502,7 +506,9 @@ def p_np_destroy_functionsTable(p):
     '''
     np_destroy_functionsTable : empty
     '''
+
     functionsTablesPile.append(current_functionsTable)
+
     # del globals()['current_functionsTable']
 
 def p_np_create_varsTable(p):
@@ -575,7 +581,8 @@ def p_np_save_var(p):
     '''
     global current_var_type
     current_varsTable.add(current_var_name, current_var_type, current_var_scope)
-    #current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
+    current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
+
 
 def p_np_get_func_name(p):
     '''
@@ -595,13 +602,6 @@ def p_np_get_func_type(p):
     global current_func_type
     current_func_type = str(p[-1][1])
 
-def p_np_create_param_list(p):
-    '''
-    np_create_param_list : empty
-    '''
-    global current_parameters_list
-    current_parameters_list = []
-
 
 def p_np_get_func_parameter(p):
     '''
@@ -616,14 +616,34 @@ def p_np_add_parameter_to_list(p):
     np_add_parameter_to_list : empty
     '''
 
-    current_parameters_list.append(current_parameter)
+    global current_parameters_list
+
+    temp = "current_parameters_list" in globals()
+    if (temp):
+        current_parameters_list.append(current_parameter)
+    else:
+        current_parameters_list = []
+        current_parameters_list.append(current_parameter)
 
 def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
-    global current_functionsTable
-    current_functionsTable.add(current_func_name,current_func_type,current_parameters_list,varsTablesPile.pop(-1),initialQuadruple)
+    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1),initialQuadruple, current_funcTempTable)
+    del globals()["current_parameters_list"]
+
+def p_np_get_func_params(p):
+    '''
+    np_get_func_params : empty
+    '''
+
+# def p_np_init_func_var_count(p):
+#     '''
+#     np_init_func_var_count : empty
+#     '''
+#     global current_variablesCount
+#     current_variablesCount = [0,0,0,0,0,0,0,0]
+
 
 
 ##########Quadruples##########
@@ -638,19 +658,24 @@ def p_np_push_id_type(p):
     idPush = p[-1][1]
     quadrupleList.operandsStack.append(idPush)
 
-    '''
+
+    ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
-            test= True
-            break
+            # print(idPush, vt.table[idPush].type)
+            quadrupleList.typesStack.append(vt.table[idPush].type)
+            return
 
-    if test:
-        #print(idPush, vt.table[idPush].type)
-        quadrupleList.operandsStack.append(idPush)
-        quadrupleList.typesStack.append(vt.table[idPush].type)
-    else:
-        error= Error.notDeclaredError(idPush)
-    '''
+    ## Intercambiar si se quiere cambiar la regla
+    for parameter in current_parameters_list:
+        if idPush == parameter.id:
+            # print(idPush, parameter.type)
+            quadrupleList.typesStack.append(parameter.type)
+            return
+
+    print(f"Variable {idPush} not declared")
+    exit()
+
 
 def p_np_push_ctei(p):
     '''
@@ -660,6 +685,7 @@ def p_np_push_ctei(p):
     global cteiPush
     cteiPush = p[-1]
     quadrupleList.operandsStack.append(cteiPush)
+    quadrupleList.typesStack.append("int")
 
 def p_np_push_ctef(p):
     '''
@@ -669,6 +695,7 @@ def p_np_push_ctef(p):
     global ctefPush
     ctefPush = p[-1]
     quadrupleList.operandsStack.append(ctefPush)
+    quadrupleList.typesStack.append("float")
 
 def p_np_push_operator_times_divide(p):
     '''
@@ -692,14 +719,16 @@ def p_np_solve_plus_minus_operator(p):
     '''
     np_solve_plus_minus_operator : empty
     '''
-    quadrupleList.checkOperatorPlusMinus()
+    temporalType = quadrupleList.checkOperatorPlusMinus()
+    registerTempVariable(temporalType)
 
 def p_np_solve_times_divide_operator(p):
     '''
     np_solve_times_divide_operator : empty
     '''
 
-    quadrupleList.checkOperatorTimesDivide()
+    temporalType = quadrupleList.checkOperatorTimesDivide()
+    registerTempVariable(temporalType)
 
 def p_np_push_assignation_operator(p):
     '''
@@ -715,7 +744,8 @@ def p_np_result_assignation(p):
     np_result_assignation : empty
     '''
 
-    quadrupleList.makeAssignationResult()
+    temporalType = quadrupleList.makeAssignationResult()
+    registerTempVariable(temporalType)
 
 def p_np_create_fake_void(p):
     '''
@@ -759,7 +789,8 @@ def p_np_define_ROperand_sexp(p):
     '''
     np_define_ROperand_sexp : empty
     '''
-    quadrupleList.generate_sExp_quad(LOperandSexp)
+    temporalType = quadrupleList.generate_sExp_quad(LOperandSexp)
+    registerTempVariable(temporalType)
 
 def p_np_define_LOperand_hexp(p):
     '''
@@ -771,7 +802,8 @@ def p_np_define_ROperand_hexp(p):
     '''
     np_define_ROperand_hexp : empty
     '''
-    quadrupleList.generate_hExp_quad(LOperandHexp)
+    temporalType = quadrupleList.generate_hExp_quad(LOperandHexp)
+    registerTempVariable(temporalType)
 
 def p_np_generate_gotoF_condition(p):
     '''
@@ -796,7 +828,6 @@ def p_np_generate_goto_condition(p):
     quadrupleList.generateGoToCondition()
 
 ######nuevos####
-
 
 def p_np_push_signboard(p):
     '''
@@ -875,55 +906,93 @@ def p_np_for_changesVC(p):
 
     quadrupleList.forChangeVC()
 
+
+def p_np_check_func_exists(p):
+    '''
+    np_check_func_exists : empty
+    '''
+    global idVerify
+    idVerify =p[-1]
+
+    functionId = p[-1]
+    if not functionId in current_functionsTable.table:
+          print(f"Function {functionId} not declared")
+          exit()
+
+    global parameter_counter
+    parameter_counter = 0
+
+def p_np_check_func_params(p):
+    '''
+    np_check_func_params : empty
+    '''
+    functionId = p[-6]
+    paramsInDirectory = [param.type for param in current_functionsTable.table[functionId].parameters]
+    currentCallParams = [quadrupleList.typesStack.pop(-1) for x in range(parameter_counter)]
+    currentCallParams = currentCallParams[::-1]
+
+    if not len(paramsInDirectory)==len(currentCallParams):
+        print(f"Wrong number of arguments in {functionId} expected {len(paramsInDirectory)}, given {len(currentCallParams)}")
+        exit()
+
+
+    if not paramsInDirectory == currentCallParams:
+       print(f"At least one type mismatch in parameters in {functionId} call")
+       exit()
+
+    del globals()["parameter_counter"]
+
+
+def p_np_check_func_params_counter(p):
+    '''
+    np_check_func_params_counter : empty
+    '''
+    global parameter_counter
+    parameter_counter +=1
+
+
+def p_np_check_class_exists(p):
+    '''
+    np_check_class_exists : empty
+    '''
+    className = p[-2]
+    if className in classesTable.table:
+        print(f"Class {className} already exists")
+        exit()
+
+
+def p_np_init_func_tempTable(p):
+    '''
+    np_init_func_tempTable : empty
+    '''
+    global current_funcTempTable
+    current_funcTempTable = [0,0,0,0]
+
+############ Helper Functions ############
+
+def registerTempVariable(tempType):
+    print("------->", tempType )
+    if tempType == "int":
+        current_funcTempTable[0]+=1
+    elif tempType == "float":
+        current_funcTempTable[1]+=1
+    elif tempType == "char":
+        current_funcTempTable[2]+=1
+    elif tempType == "bool":
+        current_funcTempTable[3]+=1
+
+######################Quadruples function call Amauri################
 def p_np_generate_endfunc_quad(p):
     '''
     np_generate_endfunc_quad : empty
     '''
     quadrupleList.generateEndFuncModule()
 
-#######functions#######
-def p_np_verify_ID_call_module(p):
-    '''
-    np_verify_ID_call_module : empty
-    '''
-    global idVerify
-    idVerify =p[-1]
-    #anotaciones
-    #significa que el id si existe en la tabla de funciones actual paso 1 check
-    current_functionsTable.search(idVerify)
-
 def p_np_generate_ERA_quad_func_call(p):
     '''
     np_generate_ERA_quad_func_call : empty
     '''
-    #anotaciones
-    #se necesitan contar los tipos locales: int float y char y temporales: int float y char para despues usar el era bien en la maquina virtual
-    #genero quad ERA pero aun no hacemos nada exactamente con el creo que eso ya viene en la maquina virtual no?
-    global paramCounter
-    paramCounter = 0
-
-    '''
-    for param in current_functionsTable.table[idVerify].parameters:
-        print("param:",param.id)
-    '''
-    #duda ##arreglado
-    #hay algo mal con los parametros, solo se puede poner uno o solo aparece uno
-
-
-    #checar tipos de parametros y si coincide el numero de parametros hacer el gosub
     quadrupleList.generateERAFuncCall(idVerify)
-
-def p_np_append_param_function_call_parameters(p):
-    '''
-    np_append_param_function_call_parameters : empty
-    '''
-
-    #param= quadrupleList.operandsStack.pop()
-    #anotaciones
-    #faltaria hacer pop en pila de tipos para comparar
-
-    #paramCounter +=1
-    #if pop de pila de tipos == en current_functionsTable.table[idVerify].parameters[paramCounter-1]
 
 def p_np_generate_goSub_function_call(p):
     '''
@@ -931,15 +1000,15 @@ def p_np_generate_goSub_function_call(p):
     '''
     #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
-###########################################################################################
+###########################################################################################3
 parser = yacc()
-f = open('test_case7.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
 
 
-#program.toString()
+program.toString()
 
 #print("###############QuadrupleTests###############")
 #quadrupleList.operatorsStackToString()
@@ -951,4 +1020,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-#classesTable.toString()
+# program.toString()

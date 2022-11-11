@@ -10,7 +10,7 @@ class main {
                 func int test1(int notUsed){
                     vars{
                         var int cc;
-                        var int aa;
+                        var int aaa;
                         var int abc;
                     }
                     {

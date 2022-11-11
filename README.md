@@ -126,3 +126,8 @@ int:shoes
 ### Avance 3:
 El avance tres no se ha completado el avance de esta semana respecto a los cuádruplos, se realizó una refactorización además de que se creó la clase 'class' donde se almacenan las funciones consecuentemente con sus propias tablas de variables, el avance de cuádruplos se tiene creadas las clases de Quadruple y QuadrupleList además de los primeros pasos de puntos neurálgicos vistos en clase para almacenar en stack de lista de operadores y operandos. El avance se prevé que se termine en los próximos días a partir del día actual 17/10/2022. Relacionado a el avance 2 el directorio de variables, funciones y clases ha sido completado y probado.
 
+
+### Avance 4:
+El avance tres ha sido completado, en gran parte se ha completado igualmente el avance 4, siguen faltando detalles respecto al chequeo de tipos y un detalle de temporales en la variable de control del ciclo for, pero fuera de eso se han completado toda la generación de cuadruplos sin incluir llamadas a funciones y llamada a atributos de objetos. Se adjunta ejemplo de como se verian los cuadruplos generados.
+![image](https://user-images.githubusercontent.com/52212675/200008137-4852d4c7-97be-4b22-99c8-ade79b49b035.png)
+

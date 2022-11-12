@@ -140,5 +140,5 @@ El avance tres ha sido completado, en gran parte se ha completado igualmente el 
 ![image](https://user-images.githubusercontent.com/52212675/200008137-4852d4c7-97be-4b22-99c8-ade79b49b035.png)
 
 #### Avance 5:
-Generación de los cuadruplos de función (Sin ERA), validación de número y tipo de parametros en llamadas de función, número de variables (IFCH, TITFTCTH) por función y por clase.
+Generación de los cuadruplos de función (Sin ERA),y sin los cuadruplos de parametros validación de número y tipo de parametros en llamadas de función, número de variables (IFCH, TITFTCTH) por función y por clase.
 

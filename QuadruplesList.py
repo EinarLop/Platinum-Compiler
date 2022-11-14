@@ -28,7 +28,7 @@ class QuadruplesList:
 
             self.typesStack.append(typeTemp)
         
-            print(f"temporal {self.temporals-1} with type {typeTemp}")
+            # print(f"temporal {self.temporals-1} with type {typeTemp}")
 
         self.cont +=1
         if current_quadruple.operator != "=" :

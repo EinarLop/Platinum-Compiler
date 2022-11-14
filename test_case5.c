@@ -13,5 +13,6 @@ class main {
   }
   {
     dddd = 1
+    aaa = 1*2*2+1
   }
 }

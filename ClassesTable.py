@@ -7,7 +7,11 @@ class ClassesTable:
         self.tempGlobalVars = None
 
     def add(self,name,functionsTable,varsTable):
-        currentClass = Class(functionsTable,varsTable)
+        variablesCount = [0,0,0,0,0,0,0,0]
+        for func in functionsTable.table:
+            variablesCount = [sum(x) for x in zip(variablesCount, functionsTable.table[func].variablesCount)]
+        
+        currentClass = Class(functionsTable,varsTable,variablesCount)
         if name in self.table:
             return Error("Class already declared")
         else:
@@ -29,3 +33,5 @@ class ClassesTable:
             self.table[key].varsTable.toString()
             print("### Functions Table ###")
             self.table[key].functionsTable.toString()
+            print("### Class Variable Count ###")
+            print(self.table[key].variablesCount)

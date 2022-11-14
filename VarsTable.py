@@ -2,12 +2,18 @@ from Var import Var
 from Error import Error
 from Var import Var
 
+
+
 class VarsTable:
     def __init__(self):
         self.table = {}
+        self.iCounter = 0
+        self.fCounter = 0
+        self.cCounter = 0
+        self.bCounter = 0
 
-    def add(self, name, type, scope):
-        currentVar = Var(type, scope)
+    def add(self, name, type, scope, address):
+        currentVar = Var(type, scope, address)
         if name in self.table:
             return Error("Variable already declared")
         else:
@@ -21,4 +27,4 @@ class VarsTable:
 
     def toString(self):
         for key in self.table:
-            print(f"{key}: {self.table[key].type}, {self.table[key].scope} ") 
+            print(f"{key}: {self.table[key].type}, {self.table[key].address} ") 

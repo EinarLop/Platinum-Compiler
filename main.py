@@ -10,11 +10,18 @@ from QuadruplesList import QuadruplesList
 from Parameter import Parameter
 from Lexer import *
 from Error import Error
+from VirtualMemory import VirtualMemory
+
 semanticCube = SemanticCube()
 classesTable = ClassesTable()
 varsTablesPile = []
 functionsTablesPile = []
 quadrupleList = QuadruplesList()
+
+GI = [1000, 1999]
+GF = [2000, 2999]
+GC = [3000, 3999]
+GB = [4000, 4999]
 
 #duda con memoria
 #la memoria con las direcciones virtuales entonces tendriamos que restarle el numero base por asi decirlo cuando queramos accedar a ella?
@@ -25,7 +32,7 @@ quadrupleList = QuadruplesList()
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main : CLASS MAIN LEFTCURLYBRACE GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
     '''
 
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
@@ -33,8 +40,9 @@ def p_main(p):
 def p_class_dec(p):
     '''
     class_dec : CLASS ID np_get_class_name np_check_class_exists LEFTCURLYBRACE VARS np_create_varsTable np_set_var_scope_class  LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable RIGHTCURLYBRACE np_save_class class_dec2
+              | empty
     '''
-    p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
+    # p[0] = ('rule class_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
 def p_class_dec2(p):
     '''
@@ -63,9 +71,10 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp np_popPrueba RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+             | empty
     '''
-    p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
+    # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
 def p_func_dec2(p):
     '''
@@ -579,8 +588,32 @@ def p_np_save_var(p):
     '''
     np_save_var : empty
     '''
-    global current_var_type
-    current_varsTable.add(current_var_name, current_var_type, current_var_scope)
+
+    if global_memory_counter_flag:
+
+
+        global current_var_type
+        global global_memory_counter_int
+        global global_memory_counter_float
+        global global_memory_counter_char
+        global global_memory_counter_bool
+
+        if current_var_type  == "int":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GI[0] + global_memory_counter_int)
+            global_memory_counter_int += 1
+        elif current_var_type  == "float":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GF[0] + global_memory_counter_float)
+            global_memory_counter_float += 1
+        elif current_var_type  == "char":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GC[0] + global_memory_counter_char)
+            global_memory_counter_char += 1
+        elif current_var_type  == "bool":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GB[0] + global_memory_counter_bool)
+            global_memory_counter_bool += 1
+
+    else:
+        current_varsTable.add(current_var_name, current_var_type, current_var_scope, 999999999)
+
     current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
 
 
@@ -657,6 +690,7 @@ def p_np_push_id_type(p):
     test = False
     idPush = p[-1][1]
     quadrupleList.operandsStack.append(idPush)
+    print(varsTablesPile[0].table.keys())
 
 
     ## Si este esta antes de siguiente da prioridad a variables
@@ -664,14 +698,16 @@ def p_np_push_id_type(p):
         if idPush in vt.table:
             # print(idPush, vt.table[idPush].type)
             quadrupleList.typesStack.append(vt.table[idPush].type)
+            print(f"{vt.table[idPush].address} ---> {vt.table[idPush].type}")
             return
 
-    ## Intercambiar si se quiere cambiar la regla
-    for parameter in current_parameters_list:
-        if idPush == parameter.id:
-            # print(idPush, parameter.type)
-            quadrupleList.typesStack.append(parameter.type)
-            return
+    temp = "current_parameters_list" in globals()
+    if temp:
+        for parameter in current_parameters_list:
+            if idPush == parameter.id:
+                # print(idPush, parameter.type)
+                quadrupleList.typesStack.append(parameter.type)
+                return
 
     print(f"Variable {idPush} not declared")
     exit()
@@ -887,6 +923,7 @@ def p_np_for_push_id(p):
     #else
     quadrupleList.operandsStack.append(pushID)
 
+
 def p_np_for_FIRSTexp(p):
     '''
     np_for_FIRSTexp : empty
@@ -971,7 +1008,7 @@ def p_np_init_func_tempTable(p):
 ############ Helper Functions ############
 
 def registerTempVariable(tempType):
-    #print("------->", tempType )
+    # print("------->", tempType )
     if tempType == "int":
         current_funcTempTable[0]+=1
     elif tempType == "float":
@@ -1000,6 +1037,36 @@ def p_np_generate_goSub_function_call(p):
     '''
     #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
+#########################################Memory##################################################
+
+def p_np_start_global_memory_counter(p):
+    '''
+    np_start_global_memory_counter : empty
+    '''
+    global global_memory_counter_int
+    global_memory_counter_int = 0
+
+    global global_memory_counter_float
+    global_memory_counter_float = 0
+
+    global global_memory_counter_char
+    global_memory_counter_char = 0
+
+    global global_memory_counter_bool
+    global_memory_counter_bool = 0
+
+    global global_memory_counter_flag
+    global_memory_counter_flag = True
+
+
+
+
+def p_np_stop_global_memory_counter(p):
+    '''
+    np_stop_global_memory_counter : empty
+    '''
+    global global_memory_counter_flag
+    global_memory_counter_flag = False
 
 def p_np_generate_quad_parameter(p):
     '''
@@ -1017,22 +1084,31 @@ def p_np_popPrueba(p):
 
 
 
+##############
+
 parser = yacc()
 f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
 
+vm = VirtualMemory([1,1,1,1,1,1,1,1])
+# vm.add(1000, 1)
+# vm.add(3000, 'c')
+# print(vm.get(1000))
+# print(vm.get(3000))
+# print(vm.m_char)
 
-#program.toString()
+
+
+# program.toString()
 
 #print("###############QuadrupleTests###############")
-#quadrupleList.operatorsStackToString()
-#quadrupleList.operandsStackToString()
+# quadrupleList.operatorsStackToString()
+# quadrupleList.operandsStackToString()
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
-
 
 
 

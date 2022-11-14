@@ -27,8 +27,8 @@ class QuadruplesList:
             self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
 
             self.typesStack.append(typeTemp)
-        
-            print(f"temporal {self.temporals-1} with type {typeTemp}")
+
+            #print(f"temporal {self.temporals-1} with type {typeTemp}")
 
         self.cont +=1
         if current_quadruple.operator != "=" :
@@ -66,6 +66,11 @@ class QuadruplesList:
         current_quadruple= Quadruple('goSub',funcName,'',initialQuad)
         self.quadruples.append(current_quadruple)
         self.cont +=1
+    def addQuadrupleParamFuncCall(self,paramName,paramNumber):
+        current_quadruple= Quadruple('param',paramName,'',paramNumber)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+
 
     def checkOperatorPlusMinus(self):
         if len(self.operatorsStack) != 0:
@@ -82,8 +87,8 @@ class QuadruplesList:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
-                
-                
+
+
 
 
     def checkOperatorTimesDivide(self):
@@ -93,7 +98,7 @@ class QuadruplesList:
                 LOperand = self.operandsStack.pop()
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                
+
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
@@ -117,7 +122,7 @@ class QuadruplesList:
                     exit()
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
-                
+
 
 
     def generate_sExp_quad(self,leftOperator):
@@ -128,7 +133,7 @@ class QuadruplesList:
                 LOperand = leftOperator
                 operator = self.operatorsStack.pop()
                 temporal = self.temporals
-                
+
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
 
@@ -255,7 +260,9 @@ class QuadruplesList:
 
 
     def operandsStackToString(self):
+        cont = 0
         for operand in self.operandsStack:
+            cont+=1
             print(f"{operand}")
 
     def jumpsStackToString(self):

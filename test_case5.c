@@ -23,7 +23,7 @@ class main {
                     {
                     cc = cc + popo
                     }
-                    return 1
+                    return -111
                 }
                  func float test2(int rr, int jeje){
                     vars{
@@ -34,11 +34,11 @@ class main {
                         var int eins, zwei;
                     }
                     {
-                        test1(rr,eins, zwei)
+                        qq= 11*11
                         uu = qq + 10 + 111
 
                     }
-                    return 1
+                    return -111
                 }
             }
         }
@@ -51,11 +51,11 @@ class main {
             {
                 ff = ff
             }
-            return 1
+            return -111
         }
     }
 
     {
-           test66(dddd)
+           eeee = 11*4
     }
 }

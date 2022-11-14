@@ -63,7 +63,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp np_popPrueba RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
     '''
     p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
 
@@ -76,7 +76,7 @@ def p_func_dec2(p):
 
 def p_func_dec3(p):
     '''
-    func_dec3 : func_dec
+    func_dec3 : func_dec np_popPrueba
               | empty
     '''
     p[0] = ('rule func_dec3: ', p[1])
@@ -312,7 +312,7 @@ def p_call(p):
 ###deberiamos cambiar h_exp a exp?
 def p_call2(p):
     '''
-    call2 : h_exp np_check_func_params_counter call3
+    call2 : exp np_generate_quad_parameter   np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 3):
@@ -322,7 +322,7 @@ def p_call2(p):
 
 def p_call3(p):
     '''
-    call3 : COMMA h_exp np_check_func_params_counter call3
+    call3 : COMMA exp np_generate_quad_parameter np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 4):
@@ -971,7 +971,7 @@ def p_np_init_func_tempTable(p):
 ############ Helper Functions ############
 
 def registerTempVariable(tempType):
-    print("------->", tempType )
+    #print("------->", tempType )
     if tempType == "int":
         current_funcTempTable[0]+=1
     elif tempType == "float":
@@ -1000,7 +1000,23 @@ def p_np_generate_goSub_function_call(p):
     '''
     #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
+
+def p_np_generate_quad_parameter(p):
+    '''
+    np_generate_quad_parameter : empty
+    '''
+    global paramPop
+    paramPop = quadrupleList.operandsStack.pop()
+    quadrupleList.addQuadrupleParamFuncCall(paramPop,parameter_counter)
 ###########################################################################################3
+def p_np_popPrueba(p):
+    '''
+    np_popPrueba : empty
+    '''
+
+
+
+
 parser = yacc()
 f = open('test_case5.c', 'r')
 content = f.read()
@@ -1008,7 +1024,7 @@ case_correct_01 = parser.parse(content)
 
 
 
-program.toString()
+#program.toString()
 
 #print("###############QuadrupleTests###############")
 #quadrupleList.operatorsStackToString()

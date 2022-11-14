@@ -12,13 +12,13 @@ class main {
                 func int test1(int notUsed,float ccc){
                     vars{
                         var float cc;
-                        var float aa;
-                        var int abc;
+                        var float zz;
+                        var int ii;
                     }
                     {
                           read(cc)
                           write("hola mundo")
-                          aa= 99 + abc*(cc-bb)
+                          ii= 99 + cc*(cc-bb)
                     }
                     return 1
                 }
@@ -30,7 +30,7 @@ class main {
                     }
                     {
 
-                          aa= test1(cc)
+                          aa = aa
 
                     }
                     return 1

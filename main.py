@@ -168,7 +168,7 @@ def p_var_dec9(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
-           | CTEI np_push_ctei
+           | CTEI np_push_ctei np_saveConstant
            | CTEF np_push_ctef
            | variable np_push_id_type
            | call
@@ -698,7 +698,7 @@ def p_np_push_id_type(p):
             # print(idPush, vt.table[idPush].type)
             quadrupleList.operandsStack.append(vt.table[idPush].address)
             quadrupleList.typesStack.append(vt.table[idPush].type)
-            print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
+            #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
 
             return
 
@@ -1111,6 +1111,13 @@ def p_np_popPrueba(p):
     '''
     np_popPrueba : empty
     '''
+############Constants############
+def p_np_saveConstant(p):
+    '''
+    np_printConstant : empty
+    '''
+    print("-----const--->" , p[-2])
+
 
 
 
@@ -1123,7 +1130,7 @@ content = f.read()
 case_correct_01 = parser.parse(content)
 
 
-vm = VirtualMemory([1,1,1,1,1,1,1,1])
+
 # vm.add(1000, 1)
 # vm.add(3000, 'c')
 # print(vm.get(1000))

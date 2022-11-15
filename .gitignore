@@ -48,3 +48,6 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+ply/__pycache__/yacc.cpython-39.pyc
+ply/__pycache__/lex.cpython-39.pyc
+ply/__pycache__/__init__.cpython-39.pyc

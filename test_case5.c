@@ -1,18 +1,23 @@
 class main {
   global vars{
-      var int dddd;
-      var float popp,aaa,aaaaa,aaaaaa,aaaaaaaa;
+      var int prueba,prueba2;
+      var float popp;
       var char jej;
       var bool jkjkjkjk;
-      var int aamdsksmk;
-      var bool jkjkjssssskjk;
   }
   classes {
   }
   functions{
   }
   {
-    dddd = 9999999
-    write(dddd)
+    for(dddd = 2 to 4 ) do
+    {
+      popp = popp*2
+      prueba= popp*33
+    };
+
+    prueba2=popp*11
+
+
   }
 }

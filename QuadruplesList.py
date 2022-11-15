@@ -18,7 +18,7 @@ class QuadruplesList:
         self.endFuncQuads = []
         self.cont = 1 #siempre al cuadruplo siguiente
         self.temporals = 1 #t1--tn
-        
+
         self.counter_tInt = 0
         self.counter_tFloat = 0
         self.counter_tChar = 0
@@ -32,19 +32,19 @@ class QuadruplesList:
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
         current_temp_memory_address = 0
         if typeTemp  == "int":
-            current_temp_memory_address =  TI[0] + self.counter_tInt 
-            self.counter_tInt+=1 
+            current_temp_memory_address =  TI[0] + self.counter_tInt
+            self.counter_tInt+=1
         elif typeTemp  == "float":
-            current_temp_memory_address =  TF[0] + self.counter_tFloat 
-            self.counter_tFloat+=1 
+            current_temp_memory_address =  TF[0] + self.counter_tFloat
+            self.counter_tFloat+=1
         elif typeTemp  == "char":
-            current_temp_memory_address =  TC[0] + self.counter_tChar 
-            self.counter_tChar+=1  
+            current_temp_memory_address =  TC[0] + self.counter_tChar
+            self.counter_tChar+=1
         elif typeTemp  == "bool":
-            current_temp_memory_address =  TB[0] + self.counter_tBool 
-            self.counter_tBool+=1  
+            current_temp_memory_address =  TB[0] + self.counter_tBool
+            self.counter_tBool+=1
 
-
+            #duda
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
@@ -57,7 +57,7 @@ class QuadruplesList:
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
             self.operandsStack.append(current_temp_memory_address) #mete el ultimo temporal
-            
+
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")

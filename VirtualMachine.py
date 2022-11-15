@@ -8,7 +8,7 @@ i = 1
 while True:
 
     txt_current_quad = linecache.getline(os.getcwd() + "/ovejota.txt", i )
-    
+
     if txt_current_quad == "":
         exit()
 
@@ -16,7 +16,7 @@ while True:
     current_quad[3] = current_quad[3][:-1]
 
     # print(current_quad)
-    
+
     match current_quad[0]:
         case "WRITE":
             print(global_memory.get(current_quad[1]))
@@ -24,6 +24,5 @@ while True:
             global_memory.add(current_quad[3], current_quad[1])
 
     # print(global_memory.m_int)
-    
+
     i+=1
-   

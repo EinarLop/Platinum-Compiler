@@ -1,8 +1,12 @@
 import linecache
 import os
 from VirtualMemory import VirtualMemory
+from MemoryManager import MemoryManager
 
-global_memory = VirtualMemory([10,10,10,10,10,10,10,10])
+memoryManager = MemoryManager()
+memoryManager.initGlobalMemory([10,10,10,10,10,10,10,10], "GLOBAL")
+memoryManager.initConstantsMemory([10,10,10,10], "CONSTANTS")
+
 
 i = 1
 while True:
@@ -19,9 +23,10 @@ while True:
     
     match current_quad[0]:
         case "WRITE":
-            print(global_memory.get(current_quad[1]))
+            print(memoryManager.get(current_quad[1]))
         case "=":
-            global_memory.add(current_quad[3], current_quad[1])
+            memoryManager.add(current_quad[3], current_quad[1])
+            
 
     # print(global_memory.m_int)
     

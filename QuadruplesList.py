@@ -9,7 +9,10 @@ class QuadruplesList:
         self.operandsStack = []
         self.jumpsStack = []
         self.quadruples = []
-        self.controlledTemporals = []
+
+        self.controlledVar=[]
+        self.finalVars=[]
+
         self.endFuncQuads = []
         self.cont = 1 #siempre al cuadruplo siguiente
         self.temporals = 1 #t1--tn
@@ -169,18 +172,19 @@ class QuadruplesList:
         self.quadruples[false-1].temporal=self.cont
 
     ######################FOR##########################
-    def generateVControlQuadruple(self):
+    def generateVControlQuadruple(self,idPush): #tambien va id type
 
-        #primeramente se hace pop de tipos , si no es numero type-typemismatch
-        #paso 1: expType=quadrupleList.typesStack.pop()
-        # si no es numero typemismatch
+
 
         #else ----esto ya son los siguientes pasos
         exp = self.operandsStack.pop()
         Vcontrol = self.operandsStack[-1]
         #tipos con semantica
         self.addQuadrupleCycles("=",exp,'',Vcontrol)
-        self.addQuadrupleCycles("=",Vcontrol,'',"VControl")
+        self.addQuadrupleCycles("=",Vcontrol,'',self.temporals)
+        self.controlledVar.append(self.temporals)
+        self.temporals+=1
+
 
     def generateVFinalQuadruple(self):
 
@@ -190,9 +194,12 @@ class QuadruplesList:
 
         #else ----esto ya son los siguientes pasos
         exp = self.operandsStack.pop()
-        self.addQuadrupleCycles("=",exp,'',"VFinal")
+        self.addQuadrupleCycles("=",exp,'',self.temporals)
+        self.finalVars.append(self.temporals)
+        self.temporals+=1
 
-        self.addQuadrupleCycles("<","VControl","VFinal",self.temporals)
+
+        self.addQuadrupleCycles("<",self.controlledVar[-1],self.finalVars[-1],self.temporals)
         self.jumpsStack.append(self.cont-1)
         self.addQuadrupleCycles("GotoF",self.temporals,'',None)
         self.jumpsStack.append(self.cont-1)
@@ -200,15 +207,17 @@ class QuadruplesList:
 
 
     def forChangeVC(self):
-        self.addQuadrupleCycles("+","VControl",1,self.temporals)
-        self.addQuadrupleCycles("=",self.temporals,'',"VControl")
+        self.addQuadrupleCycles("+",self.controlledVar[-1],1,self.temporals)
+        self.addQuadrupleCycles("=",self.temporals,'',self.controlledVar[-1])
         self.addQuadrupleCycles("=",self.temporals,'',self.operandsStack[-1])
         self.temporals+=1
         FIN = self.jumpsStack.pop()
         Retorno = self.jumpsStack.pop()
         self.addQuadrupleCycles("Goto",'','',Retorno)
-        self.quadruples[FIN-1].temporal=Retorno
+        self.quadruples[FIN-1].temporal=self.cont
         self.operandsStack.pop()
+        self.controlledVar.pop()
+        self.finalVars.pop()
         #popear el tipo tambien
 
     #######################funciones#######################

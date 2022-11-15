@@ -420,7 +420,7 @@ def p_loop_w(p):
 #cambios de momento
 def p_loop_f(p):
     '''
-    loop_f : FOR LEFTPARENTHESIS variable np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
+    loop_f : FOR LEFTPARENTHESIS ID np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
 
     '''
 
@@ -843,24 +843,24 @@ def p_np_while_generate_goto(p):
     '''
     quadrupleList.generateGoToWhile()
 
-#for
+################################for################################
 def p_np_for_push_id(p):
     '''
     np_for_push_id : empty
     '''
     #pushear id y tipo pero aun no tiene tipos
-    global pushID
-    pushID= p[-1][1]
+    global pushIDFor
+    pushIDFor= p[-1]
     #si el tipo del id no es un numero entonces typemismatch
     #if
     #else
-    quadrupleList.operandsStack.append(pushID)
+    quadrupleList.operandsStack.append(pushIDFor)
 
 def p_np_for_FIRSTexp(p):
     '''
     np_for_FIRSTexp : empty
     '''
-    quadrupleList.generateVControlQuadruple()
+    quadrupleList.generateVControlQuadruple(pushIDFor)
 
 def p_np_for_SECONDexp(p):
     '''
@@ -875,11 +875,15 @@ def p_np_for_changesVC(p):
 
     quadrupleList.forChangeVC()
 
+################################for################################
+
 def p_np_generate_endfunc_quad(p):
     '''
     np_generate_endfunc_quad : empty
     '''
     quadrupleList.generateEndFuncModule()
+
+
 
 #######functions#######
 def p_np_verify_ID_call_module(p):

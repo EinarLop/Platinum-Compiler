@@ -16,9 +16,16 @@ class main {
                         var int abc;
                     }
                     {
-                          read(cc)
-                          write("hola mundo")
-                          aa= 99.11 + abc*(cc-bb)
+
+                      aa=cc*1
+                      for(mierda = 2*1/44 to 4000 ) do
+                      {
+                        for(mierda2 = 60 to 9000 ) do
+                        {
+                          popp = popp*2
+                          
+                        };
+                      };
                     }
                     return 1
                 }
@@ -30,7 +37,7 @@ class main {
                     }
                     {
 
-                          aa= test1(cc)
+                          aa= 1
 
                     }
                     return 1

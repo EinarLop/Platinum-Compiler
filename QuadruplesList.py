@@ -2,6 +2,11 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
+TI = [9000, 9999]
+TF = [10000, 10999]
+TC = [11000, 11999]
+TB = [12000, 12999]
+
 class QuadruplesList:
     def __init__(self):
         self.operatorsStack = []
@@ -13,6 +18,11 @@ class QuadruplesList:
         self.endFuncQuads = []
         self.cont = 1 #siempre al cuadruplo siguiente
         self.temporals = 1 #t1--tn
+        
+        self.counter_tInt = 0
+        self.counter_tFloat = 0
+        self.counter_tChar = 0
+        self.counter_tBool = 0
 
     #pop de cada pila
     #push de cada uno
@@ -20,12 +30,34 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
-        current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
+        current_temp_memory_address = 0
+        if typeTemp  == "int":
+            current_temp_memory_address =  TI[0] + self.counter_tInt 
+            self.counter_tInt+=1 
+        elif typeTemp  == "float":
+            current_temp_memory_address =  TF[0] + self.counter_tFloat 
+            self.counter_tFloat+=1 
+        elif typeTemp  == "char":
+            current_temp_memory_address =  TC[0] + self.counter_tChar 
+            self.counter_tChar+=1  
+        elif typeTemp  == "bool":
+            current_temp_memory_address =  TB[0] + self.counter_tBool 
+            self.counter_tBool+=1  
+
+
+        if temporal < 1000:
+                #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
+                current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
+        else:
+            current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
+            #current_quadruple= Quadruple(operator,leftOperand,rightOperand,current_temp_memory_address)
+
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
             self.temporals +=1
-            self.operandsStack.append(self.temporals-1) #mete el ultimo temporal
-
+            #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
+            self.operandsStack.append(current_temp_memory_address) #mete el ultimo temporal
+            
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -251,10 +283,10 @@ class QuadruplesList:
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
     #######################toString#######################
     def quadrupleListToString(self):
+        f = open("ovejota.txt","w+")
         for quad in self.quadruples:
-            if quad.toString() != None:
-                print(f"{quad.toString()}")
-
+            f.write(f"{quad.toString()}\n")
+        f.close()
     def operatorsStackToString(self):
         for operator in self.operatorsStack:
             print(f"{operator}")
@@ -273,3 +305,9 @@ class QuadruplesList:
     def typeStackToString(self):
         for type in self.typesStack:
             print(f"{type}")
+###################### Temporals management ######################
+    def resetTemporalsCounter(self):
+            self.counter_tInt = 0
+            self.counter_tFloat = 0
+            self.counter_tChar = 0
+            self.counter_tBool = 0

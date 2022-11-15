@@ -168,7 +168,7 @@ def p_var_dec9(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
-           | CTEI np_push_ctei
+           | CTEI np_push_ctei np_saveConstant
            | CTEF np_push_ctef
            | variable np_push_id_type
            | call
@@ -353,7 +353,7 @@ def p_s_type(p):
            | BOOL np_get_var_type
     '''
     p[0] = ('rule s_type: ', p[1])
-
+#duda
 def p_assignment(p):
     '''
     assignment : variable np_push_id_type  EQUAL np_push_assignation_operator assignment2
@@ -681,7 +681,8 @@ def p_np_get_func_params(p):
 
 ##########Quadruples##########
 
-#first rules from fact,term,exp
+
+#############################aritmetic_exp#############################
 def p_np_push_id_type(p):
     '''
     np_push_id_type : empty
@@ -697,8 +698,8 @@ def p_np_push_id_type(p):
             # print(idPush, vt.table[idPush].type)
             quadrupleList.operandsStack.append(vt.table[idPush].address)
             quadrupleList.typesStack.append(vt.table[idPush].type)
-            print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
-            
+            #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
+
             return
 
     temp = "current_parameters_list" in globals()
@@ -766,6 +767,10 @@ def p_np_solve_times_divide_operator(p):
 
     temporalType = quadrupleList.checkOperatorTimesDivide()
     registerTempVariable(temporalType)
+#############################aritmetic_exp#############################
+
+
+#############################assignation fakevoid bool_operators#############################
 
 def p_np_push_assignation_operator(p):
     '''
@@ -841,7 +846,10 @@ def p_np_define_ROperand_hexp(p):
     '''
     temporalType = quadrupleList.generate_hExp_quad(LOperandHexp)
     registerTempVariable(temporalType)
+#############################assignation# #fakevoid# #bool_operators#############################
 
+
+#############################if#############################
 def p_np_generate_gotoF_condition(p):
     '''
     np_generate_gotoF_condition : empty
@@ -863,8 +871,10 @@ def p_np_generate_goto_condition(p):
     '''
 
     quadrupleList.generateGoToCondition()
+#############################if#############################
 
-######nuevos####
+
+#############################write#############################
 
 def p_np_push_signboard(p):
     '''
@@ -882,6 +892,9 @@ def p_np_generate_write_quadruple(p):
 
     quadrupleList.addQuadrupleReadWrite("WRITE",quadrupleList.operandsStack.pop(),'','')
 
+#############################write#############################
+
+#############################read#############################
 def p_np_generate_read_quadruple(p):
     '''
     np_generate_read_quadruple : empty
@@ -891,6 +904,9 @@ def p_np_generate_read_quadruple(p):
     operand=p[-1][1]
     quadrupleList.addQuadrupleReadWrite("READ",operand,'','')
 
+#############################read#############################
+
+#############################while#############################
 def p_np_while_push_jumpStack(p):
     '''
     np_while_push_jumpStack : empty
@@ -910,12 +926,16 @@ def p_np_while_generate_goto(p):
     np_while_generate_goto : empty
     '''
     quadrupleList.generateGoToWhile()
+#############################while#############################
 
-#for
+
+
+#############################for#############################
 def p_np_for_push_id(p):
     '''
     np_for_push_id : empty
     '''
+
     #pushear id y tipo pero aun no tiene tipos
     global pushID
     pushID= p[-1][1]
@@ -943,8 +963,9 @@ def p_np_for_changesVC(p):
     '''
 
     quadrupleList.forChangeVC()
+#############################for#############################
 
-
+#############################functions call#############################
 def p_np_check_func_exists(p):
     '''
     np_check_func_exists : empty
@@ -1043,6 +1064,10 @@ def p_np_generate_goSub_function_call(p):
     '''
     #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
+
+######################Quadruples function call Amauri################
+
+
 #########################################Memory##################################################
 
 def p_np_start_global_memory_counter(p):
@@ -1086,6 +1111,13 @@ def p_np_popPrueba(p):
     '''
     np_popPrueba : empty
     '''
+############Constants############
+def p_np_saveConstant(p):
+    '''
+    np_printConstant : empty
+    '''
+    print("-----const--->" , p[-2])
+
 
 
 
@@ -1098,7 +1130,7 @@ content = f.read()
 case_correct_01 = parser.parse(content)
 
 
-vm = VirtualMemory([1,1,1,1,1,1,1,1])
+
 # vm.add(1000, 1)
 # vm.add(3000, 'c')
 # print(vm.get(1000))
@@ -1118,4 +1150,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-# program.toString()
+program.toString()

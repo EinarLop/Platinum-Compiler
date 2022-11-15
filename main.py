@@ -689,16 +689,16 @@ def p_np_push_id_type(p):
     global idPush
     test = False
     idPush = p[-1][1]
-    quadrupleList.operandsStack.append(idPush)
-    print(varsTablesPile[0].table.keys())
 
 
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
             # print(idPush, vt.table[idPush].type)
+            quadrupleList.operandsStack.append(vt.table[idPush].address)
             quadrupleList.typesStack.append(vt.table[idPush].type)
-            print(f"{vt.table[idPush].address} ---> {vt.table[idPush].type}")
+            print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
+            
             return
 
     temp = "current_parameters_list" in globals()
@@ -706,6 +706,7 @@ def p_np_push_id_type(p):
         for parameter in current_parameters_list:
             if idPush == parameter.id:
                 # print(idPush, parameter.type)
+                quadrupleList.operandsStack.append(idPush)
                 quadrupleList.typesStack.append(parameter.type)
                 return
 
@@ -1009,6 +1010,11 @@ def p_np_init_func_tempTable(p):
 
 def registerTempVariable(tempType):
     # print("------->", tempType )
+
+    temp = "current_funcTempTable" in globals()
+    if not temp:
+        return
+
     if tempType == "int":
         current_funcTempTable[0]+=1
     elif tempType == "float":

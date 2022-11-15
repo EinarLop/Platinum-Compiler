@@ -13,6 +13,12 @@ class main {
   }
   {
     dddd = 1
-    aaa = 1*2*2+1
+    aaa = 10+20+30+40
+      while(dddd < dddd*9) do
+        {
+            write("hola",dddd*dddd)
+            read(dddd)
+            dddd= 928 * dddd
+        };
   }
 }

@@ -36,7 +36,7 @@ tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
 
 t_ignore = ' \t'
 # ID'S MUST BE AT LEAST TWO CHARACTERS
-t_CTEF = r'[+-]?([0-9]*[.])?[0-9]+'
+t_CTEF = r'([0-9]*[.])?[0-9]+'
 t_SIGNBOARD = r'["][a-zA-Z_ ][a-zA-Z0-9_ ]*["]'
 t_COLON = r'\:'
 t_PERIOD = r'\.'

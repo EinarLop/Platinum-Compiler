@@ -7,3 +7,4 @@ class Quadruple:
 
   def toString(self):
       print( f"{self.operator},{self.leftOperand},{self.rightOperand},{self.temporal} ")
+      return f"{self.operator},{self.leftOperand},{self.rightOperand},{self.temporal}"

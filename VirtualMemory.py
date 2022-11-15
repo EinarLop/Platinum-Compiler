@@ -17,8 +17,11 @@ class VirtualMemory():
         
 
     def add(self, address, value):
+        # print(address)
+
+        address = int(address)
         if address>= self.GI[0] and address <= self.GI[1]:
-            print("I")
+            # print("I")
             self.m_int[address - self.GI[0]] = value
 
         elif address>= self.GF[0] and address <= self.GF[1]:
@@ -34,6 +37,8 @@ class VirtualMemory():
             self.m_bool[address - self.GB[0]] = value
 
     def get(self, address):
+        address = int(address)
+
         if address>= self.GI[0] and address <= self.GI[1]:
             return self.m_int[address - self.GI[0]]
 

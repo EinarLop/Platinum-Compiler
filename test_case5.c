@@ -8,6 +8,17 @@ class main {
   classes {
   }
   functions{
+    func int test1(int param1){
+        vars{
+            var float cc;
+            var float zz;
+            var int ii;
+        }
+        {
+              read(cc)
+        }
+        return 1
+    }
   }
   {
     for(dddd = 2 to 4 ) do
@@ -16,7 +27,9 @@ class main {
       prueba= popp*33
     };
 
-    prueba2=popp*11
+
+    test1(prueba)
+
 
 
   }

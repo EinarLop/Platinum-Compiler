@@ -432,7 +432,7 @@ def p_loop_w(p):
 #cambios de momento
 def p_loop_f(p):
     '''
-    loop_f : FOR LEFTPARENTHESIS variable np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
+    loop_f : FOR LEFTPARENTHESIS ID np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
 
     '''
 
@@ -938,7 +938,7 @@ def p_np_for_push_id(p):
 
     #pushear id y tipo pero aun no tiene tipos
     global pushID
-    pushID= p[-1][1]
+    pushID= p[-1]
     #si el tipo del id no es un numero entonces typemismatch
     #if
     #else
@@ -1114,9 +1114,9 @@ def p_np_popPrueba(p):
 ############Constants############
 def p_np_saveConstant(p):
     '''
-    np_printConstant : empty
+    np_saveConstant : empty
     '''
-    print("-----const--->" , p[-2])
+    #print("-----const--->" , p[-2])
 
 
 

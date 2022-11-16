@@ -142,3 +142,6 @@ El avance tres ha sido completado, en gran parte se ha completado igualmente el 
 #### Avance 5:
 Generación de los cuadruplos de función (Sin ERA),y sin los cuadruplos de parametros validación de número y tipo de parametros en llamadas de función, número de variables (IFCH, TITFTCTH) por función y por clase.
 
+#### Avance 6:
+Creación de la estructura de la memoria virtual, creación de máquina virtual con acción write() y primeros avances de cuadruplos de arreglos
+

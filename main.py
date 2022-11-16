@@ -23,6 +23,10 @@ GF = [2000, 2999]
 GC = [3000, 3999]
 GB = [4000, 4999]
 
+LI = [10000, 10999]
+LF = [11000, 11999]
+LC = [12000, 12999]
+LB = [13000, 13999]
 #duda con memoria
 #la memoria con las direcciones virtuales entonces tendriamos que restarle el numero base por asi decirlo cuando queramos accedar a ella?
 #cuando hacemos como el push o append de cada cosa en las "direcciones virtuales" o en los arreglos o como esta eso?
@@ -32,7 +36,7 @@ GB = [4000, 4999]
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main : CLASS MAIN LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad block RIGHTCURLYBRACE np_create_program
     '''
 
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
@@ -71,7 +75,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -483,6 +487,13 @@ def p_error(p):
 
 ##### NEURALGIC POINTS ######
 
+def p_np_generate_goto_main(p):
+    '''
+    np_generate_goto_main : empty
+    '''
+    quadrupleList.generateGoToMainQuad()
+
+
 def p_np_create_program(p):
     '''
     np_create_program : empty
@@ -503,6 +514,8 @@ def p_np_save_class(p):
     np_save_class : empty
     '''
     classesTable.add(current_class_name, functionsTablesPile.pop(-1), varsTablesPile.pop(-1))
+
+
 
 def p_np_create_functionsTable(p):
     '''
@@ -525,6 +538,7 @@ def p_np_create_varsTable(p):
     np_create_varsTable : empty
     '''
     global current_varsTable
+
     current_varsTable = VarsTable()
 #duda
 #esto como tal no se destruye o si? o como funciona esta parte
@@ -546,20 +560,28 @@ def p_np_set_var_type_arr(p):
     '''
     np_set_var_type_arr : empty
     '''
-    global current_var_type
-    current_var_type += '['+ str(p[-2])+']'
+
+
+    isArray = True
+    global current_dimension_size
+    current_dimension_size = p[-2]
 
 def p_np_set_var_type_matrix(p):
     '''
     np_set_var_type_matrix : empty
     '''
-    global current_var_type
-    current_var_type += '['+ str(p[-5])+']'+'['+ str(p[-2])+']'
+    global isMatrix
+    isMatrix = True
+    global current_dimension_size
+    current_dimension_size = 955 #p[-5] p[-2])+']'
 
 def p_np_get_var_name(p):
     '''
     np_get_var_name : empty
     '''
+    global isArray
+    isArray = False
+
     global current_var_name
     current_var_name = p[-1]
 
@@ -588,6 +610,16 @@ def p_np_save_var(p):
     '''
     np_save_var : empty
     '''
+    global DIM
+    global varAddDimensionalArray
+    if not isArray:
+        DIM = None
+        varAddDimensional=0
+    else:
+        DIM = [current_dimension_size]
+        varAddDimensionalArray= current_dimension_size
+        print("array verdadero int")
+
 
     if global_memory_counter_flag:
 
@@ -597,22 +629,41 @@ def p_np_save_var(p):
         global global_memory_counter_float
         global global_memory_counter_char
         global global_memory_counter_bool
+        global global_memory_counter_array
+        global global_memory_counter_matrix
 
         if current_var_type  == "int":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GI[0] + global_memory_counter_int)
-            global_memory_counter_int += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GI[0] + global_memory_counter_int,DIM)
+            global_memory_counter_int += 1 + varAddDimensional
         elif current_var_type  == "float":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GF[0] + global_memory_counter_float)
-            global_memory_counter_float += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GF[0] + global_memory_counter_float,DIM)
+            global_memory_counter_float += 1 + varAddDimensional
         elif current_var_type  == "char":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GC[0] + global_memory_counter_char)
-            global_memory_counter_char += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GC[0] + global_memory_counter_char,DIM)
+            global_memory_counter_char += 1 + varAddDimensional
         elif current_var_type  == "bool":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GB[0] + global_memory_counter_bool)
-            global_memory_counter_bool += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GB[0] + global_memory_counter_bool,DIM)
+            global_memory_counter_bool += 1 + varAddDimensional
 
     else:
-        current_varsTable.add(current_var_name, current_var_type, current_var_scope, 999999999)
+        global local_memory_counter_int
+        global local_memory_counter_float
+        global local_memory_counter_char
+        global local_memory_counter_bool
+
+
+        if current_var_type  == "int":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LI[0] + local_memory_counter_int,DIM)
+            local_memory_counter_int += 1
+        elif current_var_type  == "float":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LF[0] + local_memory_counter_float,DIM)
+            local_memory_counter_float += 1
+        elif current_var_type  == "char":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LC[0] + local_memory_counter_char,DIM)
+            local_memory_counter_char += 1
+        elif current_var_type  == "bool":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LB[0] + local_memory_counter_bool,DIM)
+            local_memory_counter_bool += 1
 
     current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
 
@@ -1086,10 +1137,30 @@ def p_np_start_global_memory_counter(p):
     global global_memory_counter_bool
     global_memory_counter_bool = 0
 
+    global global_memory_counter_array
+    global_memory_counter_array = 0
+
+    global global_memory_counter_matrix
+    global_memory_counter_matrix = 0
+
     global global_memory_counter_flag
     global_memory_counter_flag = True
 
+def p_np_start_local_memory_counter(p):
+    '''
+    np_start_local_memory_counter : empty
+    '''
+    global local_memory_counter_int
+    local_memory_counter_int = 0
 
+    global local_memory_counter_float
+    local_memory_counter_float = 0
+
+    global local_memory_counter_char
+    local_memory_counter_char = 0
+
+    global local_memory_counter_bool
+    local_memory_counter_bool = 0
 
 
 def p_np_stop_global_memory_counter(p):
@@ -1106,7 +1177,14 @@ def p_np_generate_quad_parameter(p):
     global paramPop
     paramPop = quadrupleList.operandsStack.pop()
     quadrupleList.addQuadrupleParamFuncCall(paramPop,parameter_counter)
-###########################################################################################3
+###########################################################################################
+
+def p_np_fill_goto_main_quad(p):
+    '''
+    np_fill_goto_main_quad : empty
+    '''
+    quadrupleList.fillGoToMainQuad()
+
 def p_np_popPrueba(p):
     '''
     np_popPrueba : empty

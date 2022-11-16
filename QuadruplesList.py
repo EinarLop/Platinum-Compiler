@@ -31,6 +31,16 @@ class QuadruplesList:
     #push de cada uno
     #checar tipos
 
+
+    def generateGoToMainQuad(self):
+        current_quadruple= Quadruple('goto','','',None)
+        self.quadruples.append(current_quadruple)
+        self.jumpsStack.append(self.cont)
+        self.cont +=1
+
+    def fillGoToMainQuad(self):
+        self.quadruples[self.jumpsStack.pop()-1].temporal=self.cont
+
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
         current_temp_memory_address = 0

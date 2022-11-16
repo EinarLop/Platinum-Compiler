@@ -4,6 +4,8 @@ class main {
       var float popp;
       var char jej;
       var bool jkjkjkjk;
+      var int array[10];
+      var int kk;
   }
   classes {
   }
@@ -16,6 +18,18 @@ class main {
         }
         {
               read(cc)
+        }
+        return 1
+    }
+
+    func int test2(float param2){
+        vars{
+            var float cc2;
+            var float zz2;
+            var int ii2;
+        }
+        {
+              read(cc2)
         }
         return 1
     }

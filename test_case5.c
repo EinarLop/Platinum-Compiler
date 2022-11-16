@@ -1,6 +1,6 @@
 class main {
   global vars{
-      var int prueba,prueba2;
+      var int prueba,prueba2,prueba3, prueba4;
       var float popp;
       var char jej;
       var bool jkjkjkjk;
@@ -10,13 +10,13 @@ class main {
   functions{
   }
   {
-    for(dddd = 2 to 4 ) do
-    {
-      popp = popp*2
-      prueba= popp*33
-    };
 
-    prueba2=popp*11
+    prueba = 10 + 10
+    prueba2 = prueba + prueba + 10
+    
+    write(prueba)
+    write(prueba2)
+    write(18000)
 
 
   }

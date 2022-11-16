@@ -2,10 +2,10 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
-TI = [9000, 9999]
-TF = [10000, 10999]
-TC = [11000, 11999]
-TB = [12000, 12999]
+TI = [5000,5999]
+TF = [6000,6999]
+TC = [7000,7999]
+TB = [8000,8999]
 
 class QuadruplesList:
     def __init__(self):
@@ -283,7 +283,7 @@ class QuadruplesList:
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
     #######################toString#######################
     def quadrupleListToString(self):
-        f = open("ovejota.txt","w+")
+        f = open("ovejota.txt","a+")
         for quad in self.quadruples:
             f.write(f"{quad.toString()}\n")
         f.close()

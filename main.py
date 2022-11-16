@@ -23,6 +23,21 @@ GF = [2000, 2999]
 GC = [3000, 3999]
 GB = [4000, 4999]
 
+CI = [18000, 18999]
+CF = [19000, 19999]
+CC = [20000, 20999]
+CB = [21000, 21999]
+
+
+global ci_counter 
+ci_counter = 0
+
+cf_counter = 0
+cc_counter = 0
+cb_counter = 0
+
+constantsTable = {}
+
 #duda con memoria
 #la memoria con las direcciones virtuales entonces tendriamos que restarle el numero base por asi decirlo cuando queramos accedar a ella?
 #cuando hacemos como el push o append de cada cosa en las "direcciones virtuales" o en los arreglos o como esta eso?
@@ -168,7 +183,7 @@ def p_var_dec9(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
-           | CTEI np_push_ctei np_saveConstant
+           | CTEI np_saveConstantI np_push_ctei 
            | CTEF np_push_ctef
            | variable np_push_id_type
            | call
@@ -690,7 +705,7 @@ def p_np_push_id_type(p):
     global idPush
     test = False
     idPush = p[-1][1]
-
+    print("---niiii----", idPush)
 
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
@@ -699,7 +714,7 @@ def p_np_push_id_type(p):
             quadrupleList.operandsStack.append(vt.table[idPush].address)
             quadrupleList.typesStack.append(vt.table[idPush].type)
             #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
-
+            
             return
 
     temp = "current_parameters_list" in globals()
@@ -721,8 +736,10 @@ def p_np_push_ctei(p):
     '''
 
     global cteiPush
-    cteiPush = p[-1]
-    quadrupleList.operandsStack.append(cteiPush)
+    cteiPush = p[-2]
+    print("i addrress", constantsTable[cteiPush])
+    if cteiPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[cteiPush])
     quadrupleList.typesStack.append("int")
 
 def p_np_push_ctef(p):
@@ -1112,11 +1129,20 @@ def p_np_popPrueba(p):
     np_popPrueba : empty
     '''
 ############Constants############
-def p_np_saveConstant(p):
+def p_np_saveConstantI(p):
     '''
-    np_printConstant : empty
+    np_saveConstantI : empty
     '''
-    print("-----const--->" , p[-2])
+    global ci_counter
+    
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CI[0] + ci_counter
+        ci_counter += 1
+        
+
+
+    # print("-----const--->" , p[-2])
 
 
 
@@ -1144,10 +1170,24 @@ case_correct_01 = parser.parse(content)
 #print("###############QuadrupleTests###############")
 # quadrupleList.operatorsStackToString()
 # quadrupleList.operandsStackToString()
+
+f = open("ovejota.txt","w+")
+for key in constantsTable:
+    f.write(f"{key}|{constantsTable[key]},")
+f.write("\n")
+f.close()
+
+
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
 
 
 
-program.toString()
+# program.toString()
+
+
+
+
+
+

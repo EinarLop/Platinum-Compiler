@@ -261,7 +261,7 @@ def p_variable(p):
 
 def p_variable2(p):
     '''
-    variable2 : LEFTBRACKET CTEI RIGHTBRACKET variable3
+    variable2 : LEFTBRACKET exp RIGHTBRACKET variable3
               | empty
     '''
     if (len(p) == 5):
@@ -271,7 +271,7 @@ def p_variable2(p):
 
 def p_variable3(p):
     '''
-    variable3 : LEFTBRACKET CTEI RIGHTBRACKET
+    variable3 : LEFTBRACKET exp RIGHTBRACKET
               | empty
     '''
     if (len(p) == 4):
@@ -538,8 +538,8 @@ def p_np_create_varsTable(p):
     np_create_varsTable : empty
     '''
     global current_varsTable
-
     current_varsTable = VarsTable()
+
 #duda
 #esto como tal no se destruye o si? o como funciona esta parte
 def p_np_destroy_varsTable(p):
@@ -560,20 +560,24 @@ def p_np_set_var_type_arr(p):
     '''
     np_set_var_type_arr : empty
     '''
+    global isArray
+    isArray=True
 
-
-    isArray = True
     global current_dimension_size
     current_dimension_size = p[-2]
+
 
 def p_np_set_var_type_matrix(p):
     '''
     np_set_var_type_matrix : empty
     '''
     global isMatrix
+    global d2
     isMatrix = True
+
     global current_dimension_size
-    current_dimension_size = 955 #p[-5] p[-2])+']'
+    current_dimension_size = p[-5] * p[-2]
+    d2= p[-2] + 1
 
 def p_np_get_var_name(p):
     '''
@@ -581,6 +585,10 @@ def p_np_get_var_name(p):
     '''
     global isArray
     isArray = False
+
+    global isMatrix
+    isMatrix = False
+
 
     global current_var_name
     current_var_name = p[-1]
@@ -612,14 +620,23 @@ def p_np_save_var(p):
     '''
     global DIM
     global varAddDimensionalArray
-    if not isArray:
+
+    DIM=[]
+
+    #checar si es un arreglo o una matriz para darle valores a DIM para la tabla de variables
+    if not isArray and not isMatrix:
         DIM = None
         varAddDimensional=0
     else:
-        DIM = [current_dimension_size]
-        varAddDimensionalArray= current_dimension_size
-        print("array verdadero int")
-
+        if isArray:
+            print("hay array")
+            DIM.append(current_dimension_size)
+            varAddDimensional= current_dimension_size-1
+        if isMatrix:
+            print("hay matriz")
+            DIM.append(current_dimension_size)
+            DIM.append(d2)
+            varAddDimensional= current_dimension_size-1
 
     if global_memory_counter_flag:
 
@@ -693,6 +710,8 @@ def p_np_get_func_parameter(p):
     '''
 
     global current_parameter
+    print("cagagho 1",p[-2][1])
+    print("cagagho 2",p[-1])
     current_parameter=Parameter(str(p[-2][1]),str(p[-1]))
 
 def p_np_add_parameter_to_list(p):
@@ -1203,7 +1222,7 @@ def p_np_saveConstant(p):
 ##############
 
 parser = yacc()
-f = open('test_case5.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

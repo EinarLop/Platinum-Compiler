@@ -16,6 +16,7 @@ GotoF,3,,19
 =,6,,1
 =,6,,dddd
 Goto,,,9
+=,1,,1000
 ERA,test1,,
 param,1000,,0
 goSub,test1,,2

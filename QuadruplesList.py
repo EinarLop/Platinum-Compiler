@@ -49,7 +49,6 @@ class QuadruplesList:
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
-                print("-----<",current_temp_memory_address )
         else:
             current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
             #current_quadruple= Quadruple(operator,leftOperand,rightOperand,current_temp_memory_address)

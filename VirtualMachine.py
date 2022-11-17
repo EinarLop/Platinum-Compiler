@@ -90,6 +90,20 @@ while True:
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne / operandTwo)
 
+        case "<":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne < operandTwo)
+        case "goto":
+                jumpToLine = int(current_quad[3])
+                i = offset + jumpToLine - 1
+        case "gotoF":
+            if not memoryManager.get(current_quad[1]):
+                jumpToLine = int(current_quad[3])
+                i = offset + jumpToLine - 1
+
 
             # # Not constant and constant
             # if int(current_quad[1])<18000 and int(current_quad[2])>=18000:

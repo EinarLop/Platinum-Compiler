@@ -705,7 +705,6 @@ def p_np_push_id_type(p):
     global idPush
     test = False
     idPush = p[-1][1]
-    print("---niiii----", idPush)
 
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):

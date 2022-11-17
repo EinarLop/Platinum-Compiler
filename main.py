@@ -23,6 +23,25 @@ GF = [2000, 2999]
 GC = [3000, 3999]
 GB = [4000, 4999]
 
+CI = [18000, 18999]
+CF = [19000, 19999]
+CC = [20000, 20999]
+CB = [21000, 21999]
+
+
+global ci_counter
+ci_counter = 0
+
+cf_counter = 0
+cc_counter = 0
+cb_counter = 0
+
+constantsTable = {}
+
+LI = [10000, 10999]
+LF = [11000, 11999]
+LC = [12000, 12999]
+LB = [13000, 13999]
 #duda con memoria
 #la memoria con las direcciones virtuales entonces tendriamos que restarle el numero base por asi decirlo cuando queramos accedar a ella?
 #cuando hacemos como el push o append de cada cosa en las "direcciones virtuales" o en los arreglos o como esta eso?
@@ -32,7 +51,7 @@ GB = [4000, 4999]
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main : CLASS MAIN LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad block RIGHTCURLYBRACE np_create_program
     '''
 
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
@@ -71,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC func_dec2  ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -168,8 +187,8 @@ def p_var_dec9(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
-           | CTEI np_push_ctei np_saveConstant
-           | CTEF np_push_ctef
+           | CTEI np_saveConstantI np_push_ctei
+           | CTEF np_saveConstantF np_push_ctef
            | variable np_push_id_type
            | call
     '''
@@ -257,7 +276,7 @@ def p_variable(p):
 
 def p_variable2(p):
     '''
-    variable2 : LEFTBRACKET CTEI RIGHTBRACKET variable3
+    variable2 : LEFTBRACKET exp RIGHTBRACKET variable3
               | empty
     '''
     if (len(p) == 5):
@@ -267,7 +286,7 @@ def p_variable2(p):
 
 def p_variable3(p):
     '''
-    variable3 : LEFTBRACKET CTEI RIGHTBRACKET
+    variable3 : LEFTBRACKET exp RIGHTBRACKET
               | empty
     '''
     if (len(p) == 4):
@@ -432,7 +451,7 @@ def p_loop_w(p):
 #cambios de momento
 def p_loop_f(p):
     '''
-    loop_f : FOR LEFTPARENTHESIS variable np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
+    loop_f : FOR LEFTPARENTHESIS ID np_for_push_id EQUAL exp np_for_FIRSTexp TO exp np_for_SECONDexp  RIGHTPARENTHESIS DO block SEMICOLON np_for_changesVC
 
     '''
 
@@ -483,6 +502,13 @@ def p_error(p):
 
 ##### NEURALGIC POINTS ######
 
+def p_np_generate_goto_main(p):
+    '''
+    np_generate_goto_main : empty
+    '''
+    quadrupleList.generateGoToMainQuad()
+
+
 def p_np_create_program(p):
     '''
     np_create_program : empty
@@ -503,6 +529,8 @@ def p_np_save_class(p):
     np_save_class : empty
     '''
     classesTable.add(current_class_name, functionsTablesPile.pop(-1), varsTablesPile.pop(-1))
+
+
 
 def p_np_create_functionsTable(p):
     '''
@@ -526,6 +554,7 @@ def p_np_create_varsTable(p):
     '''
     global current_varsTable
     current_varsTable = VarsTable()
+
 #duda
 #esto como tal no se destruye o si? o como funciona esta parte
 def p_np_destroy_varsTable(p):
@@ -546,20 +575,36 @@ def p_np_set_var_type_arr(p):
     '''
     np_set_var_type_arr : empty
     '''
-    global current_var_type
-    current_var_type += '['+ str(p[-2])+']'
+    global isArray
+    isArray=True
+
+    global current_dimension_size
+    current_dimension_size = p[-2]
+
 
 def p_np_set_var_type_matrix(p):
     '''
     np_set_var_type_matrix : empty
     '''
-    global current_var_type
-    current_var_type += '['+ str(p[-5])+']'+'['+ str(p[-2])+']'
+    global isMatrix
+    global d2
+    isMatrix = True
+
+    global current_dimension_size
+    current_dimension_size = p[-5] * p[-2]
+    d2= p[-2] + 1
 
 def p_np_get_var_name(p):
     '''
     np_get_var_name : empty
     '''
+    global isArray
+    isArray = False
+
+    global isMatrix
+    isMatrix = False
+
+
     global current_var_name
     current_var_name = p[-1]
 
@@ -588,6 +633,25 @@ def p_np_save_var(p):
     '''
     np_save_var : empty
     '''
+    global DIM
+    global varAddDimensionalArray
+
+    DIM=[]
+
+    #checar si es un arreglo o una matriz para darle valores a DIM para la tabla de variables
+    if not isArray and not isMatrix:
+        DIM = None
+        varAddDimensional=0
+    else:
+        if isArray:
+
+            DIM.append(current_dimension_size)
+            varAddDimensional= current_dimension_size-1
+        if isMatrix:
+
+            DIM.append(current_dimension_size)
+            DIM.append(d2)
+            varAddDimensional= current_dimension_size-1
 
     if global_memory_counter_flag:
 
@@ -597,22 +661,41 @@ def p_np_save_var(p):
         global global_memory_counter_float
         global global_memory_counter_char
         global global_memory_counter_bool
+        global global_memory_counter_array
+        global global_memory_counter_matrix
 
         if current_var_type  == "int":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GI[0] + global_memory_counter_int)
-            global_memory_counter_int += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GI[0] + global_memory_counter_int,DIM)
+            global_memory_counter_int += 1 + varAddDimensional
         elif current_var_type  == "float":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GF[0] + global_memory_counter_float)
-            global_memory_counter_float += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GF[0] + global_memory_counter_float,DIM)
+            global_memory_counter_float += 1 + varAddDimensional
         elif current_var_type  == "char":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GC[0] + global_memory_counter_char)
-            global_memory_counter_char += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GC[0] + global_memory_counter_char,DIM)
+            global_memory_counter_char += 1 + varAddDimensional
         elif current_var_type  == "bool":
-            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GB[0] + global_memory_counter_bool)
-            global_memory_counter_bool += 1
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, GB[0] + global_memory_counter_bool,DIM)
+            global_memory_counter_bool += 1 + varAddDimensional
 
     else:
-        current_varsTable.add(current_var_name, current_var_type, current_var_scope, 999999999)
+        global local_memory_counter_int
+        global local_memory_counter_float
+        global local_memory_counter_char
+        global local_memory_counter_bool
+
+
+        if current_var_type  == "int":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LI[0] + local_memory_counter_int,DIM)
+            local_memory_counter_int += 1
+        elif current_var_type  == "float":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LF[0] + local_memory_counter_float,DIM)
+            local_memory_counter_float += 1
+        elif current_var_type  == "char":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LC[0] + local_memory_counter_char,DIM)
+            local_memory_counter_char += 1
+        elif current_var_type  == "bool":
+            current_varsTable.add(current_var_name, current_var_type, current_var_scope, LB[0] + local_memory_counter_bool,DIM)
+            local_memory_counter_bool += 1
 
     current_var_type = current_var_type.translate(str.maketrans('','',' 1234567890[]'))
 
@@ -642,6 +725,7 @@ def p_np_get_func_parameter(p):
     '''
 
     global current_parameter
+
     current_parameter=Parameter(str(p[-2][1]),str(p[-1]))
 
 def p_np_add_parameter_to_list(p):
@@ -691,7 +775,6 @@ def p_np_push_id_type(p):
     test = False
     idPush = p[-1][1]
 
-
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
@@ -721,18 +804,21 @@ def p_np_push_ctei(p):
     '''
 
     global cteiPush
-    cteiPush = p[-1]
-    quadrupleList.operandsStack.append(cteiPush)
+    cteiPush = p[-2]
+    print("i addrress", constantsTable[cteiPush])
+    if cteiPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[cteiPush])
     quadrupleList.typesStack.append("int")
 
 def p_np_push_ctef(p):
     '''
     np_push_ctef : empty
     '''
-
+    print("insedeeee ctef")
     global ctefPush
-    ctefPush = p[-1]
-    quadrupleList.operandsStack.append(ctefPush)
+    ctefPush = p[-2]
+    if ctefPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[ctefPush])
     quadrupleList.typesStack.append("float")
 
 def p_np_push_operator_times_divide(p):
@@ -938,7 +1024,7 @@ def p_np_for_push_id(p):
 
     #pushear id y tipo pero aun no tiene tipos
     global pushID
-    pushID= p[-1][1]
+    pushID= p[-1]
     #si el tipo del id no es un numero entonces typemismatch
     #if
     #else
@@ -1086,10 +1172,30 @@ def p_np_start_global_memory_counter(p):
     global global_memory_counter_bool
     global_memory_counter_bool = 0
 
+    global global_memory_counter_array
+    global_memory_counter_array = 0
+
+    global global_memory_counter_matrix
+    global_memory_counter_matrix = 0
+
     global global_memory_counter_flag
     global_memory_counter_flag = True
 
+def p_np_start_local_memory_counter(p):
+    '''
+    np_start_local_memory_counter : empty
+    '''
+    global local_memory_counter_int
+    local_memory_counter_int = 0
 
+    global local_memory_counter_float
+    local_memory_counter_float = 0
+
+    global local_memory_counter_char
+    local_memory_counter_char = 0
+
+    global local_memory_counter_bool
+    local_memory_counter_bool = 0
 
 
 def p_np_stop_global_memory_counter(p):
@@ -1106,17 +1212,43 @@ def p_np_generate_quad_parameter(p):
     global paramPop
     paramPop = quadrupleList.operandsStack.pop()
     quadrupleList.addQuadrupleParamFuncCall(paramPop,parameter_counter)
-###########################################################################################3
+###########################################################################################
+
+def p_np_fill_goto_main_quad(p):
+    '''
+    np_fill_goto_main_quad : empty
+    '''
+    quadrupleList.fillGoToMainQuad()
+
 def p_np_popPrueba(p):
     '''
     np_popPrueba : empty
     '''
 ############Constants############
-def p_np_saveConstant(p):
+def p_np_saveConstantI(p):
     '''
-    np_printConstant : empty
+    np_saveConstantI : empty
     '''
-    print("-----const--->" , p[-2])
+    global ci_counter
+
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CI[0] + ci_counter
+        ci_counter += 1
+
+def p_np_saveConstantF(p):
+    '''
+    np_saveConstantF : empty
+    '''
+    global cf_counter
+
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CF[0] + cf_counter
+        cf_counter += 1
+
+
+    # print("-----const--->" , p[-2])
 
 
 
@@ -1125,7 +1257,7 @@ def p_np_saveConstant(p):
 ##############
 
 parser = yacc()
-f = open('test_case5.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1144,10 +1276,18 @@ case_correct_01 = parser.parse(content)
 #print("###############QuadrupleTests###############")
 # quadrupleList.operatorsStackToString()
 # quadrupleList.operandsStackToString()
+
+f = open("ovejota.txt","w+")
+for key in constantsTable:
+    f.write(f"{key}|{constantsTable[key]},")
+f.write("\n")
+f.close()
+
+
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
 
 
 
-program.toString()
+# program.toString()

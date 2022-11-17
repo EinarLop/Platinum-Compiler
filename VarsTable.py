@@ -12,9 +12,11 @@ class VarsTable:
         self.cCounter = 0
         self.bCounter = 0
 
-    def add(self, name, type, scope, address):
-        currentVar = Var(type, scope, address)
+    def add(self, name, type, scope, address,dim):
+        currentVar = Var(type, scope, address,dim)
         if name in self.table:
+            print(f"Variable  {name} already declared")
+            exit()
             return Error("Variable already declared")
         else:
             self.table[name] = currentVar
@@ -27,4 +29,4 @@ class VarsTable:
 
     def toString(self):
         for key in self.table:
-            print(f"{key}: {self.table[key].type}, {self.table[key].address} ") 
+            print(f"{key}: {self.table[key].type}, {self.table[key].address}, {self.table[key].dim} ")

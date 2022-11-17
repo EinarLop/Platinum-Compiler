@@ -26,6 +26,7 @@ class MemoryManager():
     
     def get(self, address):
         address = int(address)
+
         if address>= self.global_range[0] and  address <= self.global_range[1]:
             return self.global_memory.get(address)
 

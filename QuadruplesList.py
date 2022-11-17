@@ -2,10 +2,10 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
-TI = [9000, 9999]
-TF = [10000, 10999]
-TC = [11000, 11999]
-TB = [12000, 12999]
+TI = [5000,5999]
+TF = [6000,6999]
+TC = [7000,7999]
+TB = [8000,8999]
 
 class QuadruplesList:
     def __init__(self):
@@ -43,6 +43,7 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
+        print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             if operator != "=" :
@@ -73,8 +74,7 @@ class QuadruplesList:
         if current_quadruple.operator != "=" :
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
-            self.operandsStack.append(current_temp_memory_address) #mete el ultimo temporal
-
+            self.operandsStack.append(current_temp_memory_address) 
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -155,6 +155,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
+                print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
@@ -170,6 +171,8 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
+                print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
+                
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
 
@@ -307,7 +310,7 @@ class QuadruplesList:
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
     #######################toString#######################
     def quadrupleListToString(self):
-        f = open("ovejota.txt","w+")
+        f = open("ovejota.txt","a+")
         for quad in self.quadruples:
             f.write(f"{quad.toString()}\n")
         f.close()

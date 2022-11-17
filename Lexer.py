@@ -26,7 +26,7 @@ reserved_words = {
     'global': 'GLOBAL'
 }
 
-tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
+tokens =  ['ID', 'CTEF','CTEI', 'SIGNBOARD', 'COLON',
            'PERIOD', 'COMMA', 'SEMICOLON', 'LEFTCURLYBRACE',
            'RIGHTCURLYBRACE', 'LEFTPARENTHESIS', 'RIGHTPARENTHESIS', 'LEFTBRACKET', 'RIGHTBRACKET',
            'GT', 'LT', 'GTOE', 'LTOE','NE', 'EQUALITY','EQUAL', 'PLUS' , 'MINUS',
@@ -36,7 +36,7 @@ tokens =  ['ID', 'CTEI', 'CTEF', 'SIGNBOARD', 'COLON',
 
 t_ignore = ' \t'
 # ID'S MUST BE AT LEAST TWO CHARACTERS
-t_CTEF = r'([0-9]*[.])?[0-9]+'
+
 t_SIGNBOARD = r'["][a-zA-Z_ ][a-zA-Z0-9_ ]*["]'
 t_COLON = r'\:'
 t_PERIOD = r'\.'
@@ -188,10 +188,17 @@ def t_GLOBAL(t):
     t.type = reserved_words.get(t.value,'global')
     return t
 
+def t_CTEF(t):
+	r'[-+]?[0-9]+\.[0-9]+(e[\-\+]?[0-9]+(\.[0-9]+)?)?'
+	t.value = float(t.value)
+	return t
+
 def t_CTEI(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
+	r'[-+]?[0-9]+'
+	t.value = int(t.value)
+	return t
+
+
 
 def t_EQUALITY(t):
     r'=='

@@ -47,6 +47,7 @@ class VirtualMemory():
 
     def add(self, address, value):
         address = int(address)
+        
         if address>= self.I[0] and address <= self.I[1]:
             self.m_int[address - self.I[0]] = value
 

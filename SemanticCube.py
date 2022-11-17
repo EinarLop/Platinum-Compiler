@@ -28,8 +28,7 @@ class SemanticCube:
                     '<': 'bool',
                     '>': 'bool',
                     '<=': 'bool',
-                    '>=': 'bool',
-                    '=' : 'float'
+                    '>=': 'bool'
                 }
             },
             'float': {
@@ -56,8 +55,7 @@ class SemanticCube:
                     '<': 'bool',
                     '>': 'bool',
                     '<=': 'bool',
-                    '>=': 'bool',
-                    '=' : 'float'
+                    '>=': 'bool'
                   }
                   
             },

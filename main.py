@@ -23,6 +23,21 @@ GF = [2000, 2999]
 GC = [3000, 3999]
 GB = [4000, 4999]
 
+CI = [18000, 18999]
+CF = [19000, 19999]
+CC = [20000, 20999]
+CB = [21000, 21999]
+
+
+global ci_counter
+ci_counter = 0
+
+cf_counter = 0
+cc_counter = 0
+cb_counter = 0
+
+constantsTable = {}
+
 LI = [10000, 10999]
 LF = [11000, 11999]
 LC = [12000, 12999]
@@ -172,8 +187,8 @@ def p_var_dec9(p):
 def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
-           | CTEI np_push_ctei np_saveConstant
-           | CTEF np_push_ctef
+           | CTEI np_saveConstantI np_push_ctei
+           | CTEF np_saveConstantF np_push_ctef
            | variable np_push_id_type
            | call
     '''
@@ -629,11 +644,11 @@ def p_np_save_var(p):
         varAddDimensional=0
     else:
         if isArray:
-            print("hay array")
+
             DIM.append(current_dimension_size)
             varAddDimensional= current_dimension_size-1
         if isMatrix:
-            print("hay matriz")
+
             DIM.append(current_dimension_size)
             DIM.append(d2)
             varAddDimensional= current_dimension_size-1
@@ -710,8 +725,7 @@ def p_np_get_func_parameter(p):
     '''
 
     global current_parameter
-    print("cagagho 1",p[-2][1])
-    print("cagagho 2",p[-1])
+
     current_parameter=Parameter(str(p[-2][1]),str(p[-1]))
 
 def p_np_add_parameter_to_list(p):
@@ -761,7 +775,6 @@ def p_np_push_id_type(p):
     test = False
     idPush = p[-1][1]
 
-
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
@@ -791,18 +804,21 @@ def p_np_push_ctei(p):
     '''
 
     global cteiPush
-    cteiPush = p[-1]
-    quadrupleList.operandsStack.append(cteiPush)
+    cteiPush = p[-2]
+    print("i addrress", constantsTable[cteiPush])
+    if cteiPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[cteiPush])
     quadrupleList.typesStack.append("int")
 
 def p_np_push_ctef(p):
     '''
     np_push_ctef : empty
     '''
-
+    print("insedeeee ctef")
     global ctefPush
-    ctefPush = p[-1]
-    quadrupleList.operandsStack.append(ctefPush)
+    ctefPush = p[-2]
+    if ctefPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[ctefPush])
     quadrupleList.typesStack.append("float")
 
 def p_np_push_operator_times_divide(p):
@@ -1209,11 +1225,30 @@ def p_np_popPrueba(p):
     np_popPrueba : empty
     '''
 ############Constants############
-def p_np_saveConstant(p):
+def p_np_saveConstantI(p):
     '''
-    np_saveConstant : empty
+    np_saveConstantI : empty
     '''
-    #print("-----const--->" , p[-2])
+    global ci_counter
+
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CI[0] + ci_counter
+        ci_counter += 1
+
+def p_np_saveConstantF(p):
+    '''
+    np_saveConstantF : empty
+    '''
+    global cf_counter
+
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CF[0] + cf_counter
+        cf_counter += 1
+
+
+    # print("-----const--->" , p[-2])
 
 
 
@@ -1241,10 +1276,18 @@ case_correct_01 = parser.parse(content)
 #print("###############QuadrupleTests###############")
 # quadrupleList.operatorsStackToString()
 # quadrupleList.operandsStackToString()
+
+f = open("ovejota.txt","w+")
+for key in constantsTable:
+    f.write(f"{key}|{constantsTable[key]},")
+f.write("\n")
+f.close()
+
+
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
 
 
 
-program.toString()
+# program.toString()

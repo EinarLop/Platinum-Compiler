@@ -39,10 +39,11 @@ class main {
     }
   }
   {
+    popp=2.1
     for(dddd = 2 to 4 ) do
     {
       popp = popp*2
-      prueba= popp*33
+      
     };
     prueba= 1
 

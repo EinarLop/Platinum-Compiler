@@ -15,8 +15,24 @@ for value in constants_table:
     memoryManager.add(current_value[1], current_value[0])
 
 
+def castType(operand):
+    if str(operand).find(".") == -1:
+        return int(operand)
+    else:
+        return float(operand)
 
 
+
+# def jumpsOnMemory(address):
+#     # print("jumps", address)
+#     address = int(address)
+#     operand = memoryManager.get(memoryManager.get(address))
+#     if operand == None:
+#         operand = memoryManager.get(address)
+#     if (address >=1000 and address <=1999) or (address >=5000 and address <=5999) or (address >=18000 and address <=18999) :
+#         print(address, operand)
+#         return int(operand)
+#     return float(operand)
 
 
 offset = 1
@@ -39,48 +55,83 @@ while True:
             if current_quad[1][0] == '"' and current_quad[1][-1] == '"':
                 print(current_quad[1])
             # Not a constant
-            elif  int(current_quad[1])<18000:
-                print(current_quad, memoryManager.get(memoryManager.get(current_quad[1])))
-            # Constant
-            elif int(current_quad[1])>=18000:
-                print(current_quad, memoryManager.get(current_quad[1]))   
+            # elif  int(current_quad[1])<18000:
+            #     print(current_quad, memoryManager.get(memoryManager.get(current_quad[1])))
+            # # Constant
+            # elif int(current_quad[1])>=18000:
+            #     print(current_quad, memoryManager.get(current_quad[1]))   
+            else:
+                print(memoryManager.get(current_quad[1]))
         case "=":
-            memoryManager.add(current_quad[3], current_quad[1])
+                memoryManager.add(current_quad[3], memoryManager.get(current_quad[1]))
         case "+":
-            # Not constant and constant
-            if int(current_quad[1])<18000 and int(current_quad[2])>=18000:
-                print("if 1", memoryManager.get(current_quad[1]))
-            
-                operandOne= memoryManager.get(memoryManager.get(current_quad[1]))
-                operandTwo= memoryManager.get(current_quad[2])
-                memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
-
-            # Constant and not constant
-            elif int(current_quad[1])>=18000 and int(current_quad[2])<18000:
-                print("if 2")
-
-                operandOne= memoryManager.get(current_quad[1])
-                operandTwo= memoryManager.get(memoryManager.get(current_quad[2]))
-                memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
-
-            # Not a constant and Not a constant
-            elif int(current_quad[1])<18000 and int(current_quad[2])<18000 :
-                print("if 3")
-
-                operandOne = memoryManager.get(memoryManager.get(current_quad[1]))
-                operandTwo = memoryManager.get(memoryManager.get(current_quad[2]))
-                memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
-
-                 
-            # Constant and constant
-            elif int(current_quad[1])>=18000 and int(current_quad[2])>=18000:
-                print("if 4")
-
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
-                print(current_quad[1], current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne + operandTwo)
+        case "-":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne - operandTwo)
+        case "*":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne * operandTwo)
+
+        case "/":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne / operandTwo)
+
+
+            # # Not constant and constant
+            # if int(current_quad[1])<18000 and int(current_quad[2])>=18000:
+            #     print("if 1", memoryManager.get(current_quad[2]))
+            
+            #     operandOne= memoryManager.get(memoryManager.get(current_quad[1]))
+            #     print(memoryManager.get(current_quad[1]))
+            #     operandTwo= memoryManager.get(current_quad[2])
+            #     memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
+
+            # # Constant and not constant
+            # elif int(current_quad[1])>=18000 and int(current_quad[2])<18000:
+            #     print("if 2")
+
+            #     operandOne= memoryManager.get(current_quad[1])
+            #     operandTwo= memoryManager.get(memoryManager.get(current_quad[2]))
+            #     memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
+
+            # # Not a constant and Not a constant
+            # elif int(current_quad[1])<18000 and int(current_quad[2])<18000 :
+            #     print("if 3")
+
+            #     operandOne = memoryManager.get(memoryManager.get(current_quad[1]))
+            #     operandTwo = memoryManager.get(memoryManager.get(current_quad[2]))
+            #     memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
+
+
+                             
+            # Constant and constant
+            # elif int(current_quad[1])>=18000 and int(current_quad[2])>=18000:
+            #     print("if 4")
+
+            #     operandOne = memoryManager.get(current_quad[1])
+            #     operandTwo = memoryManager.get(current_quad[2])
+            #     print(current_quad[1], current_quad[2])
                
-                memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
+            #     memoryManager.add(current_quad[3], int(operandOne)+ int(operandTwo))
+
+
+
+                
+
                 
 
 

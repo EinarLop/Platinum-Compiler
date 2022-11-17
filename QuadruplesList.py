@@ -30,6 +30,7 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp = "char"):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
+        print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             current_temp_memory_address =  TI[0] + self.counter_tInt
@@ -48,6 +49,7 @@ class QuadruplesList:
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
+                print("-----<",current_temp_memory_address )
         else:
             current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
             #current_quadruple= Quadruple(operator,leftOperand,rightOperand,current_temp_memory_address)
@@ -56,8 +58,7 @@ class QuadruplesList:
         if current_quadruple.operator != "=" :
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
-            self.operandsStack.append(current_temp_memory_address) #mete el ultimo temporal
-
+            self.operandsStack.append(current_temp_memory_address) 
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -138,6 +139,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
+                print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
@@ -153,6 +155,8 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
+                print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
+                
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
 

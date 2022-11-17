@@ -184,7 +184,7 @@ def p_factor(p):
     '''
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
            | CTEI np_saveConstantI np_push_ctei 
-           | CTEF np_push_ctef
+           | CTEF np_saveConstantF np_push_ctef
            | variable np_push_id_type
            | call
     '''
@@ -746,10 +746,11 @@ def p_np_push_ctef(p):
     '''
     np_push_ctef : empty
     '''
-
+    print("insedeeee ctef")
     global ctefPush
-    ctefPush = p[-1]
-    quadrupleList.operandsStack.append(ctefPush)
+    ctefPush = p[-2]
+    if ctefPush in constantsTable:
+        quadrupleList.operandsStack.append(constantsTable[ctefPush])
     quadrupleList.typesStack.append("float")
 
 def p_np_push_operator_times_divide(p):
@@ -1139,7 +1140,17 @@ def p_np_saveConstantI(p):
     if constant not in constantsTable:
         constantsTable[constant] = CI[0] + ci_counter
         ci_counter += 1
-        
+
+def p_np_saveConstantF(p):
+    '''
+    np_saveConstantF : empty
+    '''
+    global cf_counter
+    
+    constant = p[-1]
+    if constant not in constantsTable:
+        constantsTable[constant] = CF[0] + cf_counter
+        cf_counter += 1
 
 
     # print("-----const--->" , p[-2])

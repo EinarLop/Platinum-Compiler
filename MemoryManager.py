@@ -3,7 +3,7 @@ from VirtualMemory import VirtualMemory
 class MemoryManager():
     def __init__(self):
         self.global_memory = None
-        self.temp_memories = [1,2]
+        self.local_memories = []
         self.constants_memory = None
         self.global_range = [1000, 8999]
         self.local_range = [10000, 17999]
@@ -15,6 +15,13 @@ class MemoryManager():
     
     def initConstantsMemory(self, size, scope):
         self.constants_memory = VirtualMemory(size, scope)
+
+    def initLocalMemory(self, size, scope):
+        self.local_memories.append(VirtualMemory(size, scope))
+      
+    
+    def destroyLocalMemory(self):
+        self.local_memories.pop()
     
     def add(self, address, value):
         address = int(address)
@@ -23,7 +30,10 @@ class MemoryManager():
 
         elif address>= self.constant_range[0] and  address <= self.constant_range[1]:
             self.constants_memory.add(address, value)
-    
+        
+        elif address>= self.local_range[0] and  address <= self.local_range[1]:
+            self.local_memories[-1].add(address, value)
+
     def get(self, address):
         address = int(address)
 
@@ -33,5 +43,6 @@ class MemoryManager():
         elif address>= self.constant_range[0] and  address <= self.constant_range[1]:
            return self.constants_memory.get(address)
     
-    
+        elif address>= self.local_range[0] and  address <= self.local_range[1]:
+            return self.local_memories[-1].get(address)
 

@@ -51,7 +51,7 @@ LB = [13000, 13999]
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad np_reset_temp_counter np_set_temp_global_flag block RIGHTCURLYBRACE np_create_program
     '''
 
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -824,6 +824,7 @@ def p_np_push_id_type(p):
         for parameter in current_parameters_list:
             if idPush == parameter.id:
                 # print(idPush, parameter.type)
+                print("idPush", idPush)
                 quadrupleList.operandsStack.append(idPush)
                 quadrupleList.typesStack.append(parameter.type)
                 return
@@ -1215,6 +1216,9 @@ def p_np_start_global_memory_counter(p):
     global global_memory_counter_flag
     global_memory_counter_flag = True
 
+    quadrupleList.resetTemporalsCounter()
+
+
 def p_np_start_local_memory_counter(p):
     '''
     np_start_local_memory_counter : empty
@@ -1340,8 +1344,24 @@ def p_np_sum_baseA_array(p):
     quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"int")
     quadrupleList.operatorsStack.pop()
 ###########################arrays###########################
+
+##############################
+
+def p_np_reset_temp_counter(p):
+    '''
+    np_reset_temp_counter : empty
+    '''
+    quadrupleList.resetTemporalsCounter()
+
+
+def p_np_set_temp_global_flag(p):
+    '''
+    np_set_temp_global_flag : empty
+    '''
+    print("popppppppppp")
+    quadrupleList.changeScope()
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1365,12 +1385,25 @@ f = open("ovejota.txt","w+")
 for key in constantsTable:
     f.write(f"{key}|{constantsTable[key]},")
 f.write("\n")
+
+
+for func in program.functionsTable.table:
+    varCount = program.functionsTable.table[func].variablesCount
+    varCount = '%'.join(str(v) for v in varCount)
+
+    params = ""
+    for param in program.functionsTable.table[func].parameters:
+        params += str(param.id) + "/" + str(param.type) + ";"
+
+    f.write(f"{func}|{program.functionsTable.table[func].quadrupleStart}|{varCount}|{params},")
+f.write("\n")
 f.close()
 
 print(constantsTable)
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
+
 
 
 

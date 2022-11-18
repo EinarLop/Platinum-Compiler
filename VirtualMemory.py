@@ -49,7 +49,9 @@ class VirtualMemory():
     def add(self, address, value):
         address = int(address)
 
+
         if address>= self.I[0] and address <= self.I[1]:
+
             self.m_int[address - self.I[0]] = value
 
         elif address>= self.F[0] and address <= self.F[1]:
@@ -62,16 +64,17 @@ class VirtualMemory():
             self.m_bool[address - self.B[0]] = value
 
         elif address>= self.IT[0] and address <= self.IT[1] and self.scope != "CONSTANTS":
+
             self.m_tInt[address - self.IT[0]] = value
 
         elif address>= self.FT[0] and address <= self.FT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.FT[0]] = value
+            self.m_tFloat[address - self.FT[0]] = value
 
         elif address>= self.CT[0] and address <= self.CT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.CT[0]] = value
+            self.m_tChar[address - self.CT[0]] = value
 
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.BT[0]] = value
+            self.m_tBool[address - self.BT[0]] = value
 
 
     def get(self, address):
@@ -92,13 +95,14 @@ class VirtualMemory():
             return self.m_tInt[address - self.IT[0]]
 
         elif address>= self.FT[0] and address <= self.FT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.FT[0]]
+            return self.m_tFloat[address - self.FT[0]]
 
         elif address>= self.CT[0] and address <= self.CT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.CT[0]]
+            return self.m_tChar[address - self.CT[0]]
 
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.BT[0]]
+            return self.m_tBool[address - self.BT[0]]
+
 
 
 

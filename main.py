@@ -51,7 +51,7 @@ LB = [13000, 13999]
 #tenemos entonces 2 tablas de funciones? una como de globales y una que se va creando en cada clase con sus respectivas funciones?
 def p_main(p):
     '''
-    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad block RIGHTCURLYBRACE np_create_program
+    main : CLASS MAIN np_generate_goto_main LEFTCURLYBRACE np_start_global_memory_counter GLOBAL VARS np_create_varsTable np_set_var_scope_global LEFTCURLYBRACE  var_dec  RIGHTCURLYBRACE np_destroy_varsTable np_stop_global_memory_counter  CLASSES LEFTCURLYBRACE class_dec RIGHTCURLYBRACE FUNCTIONS np_create_functionsTable  LEFTCURLYBRACE func_dec RIGHTCURLYBRACE np_destroy_functionsTable np_fill_goto_main_quad np_reset_temp_counter np_set_temp_global_flag block RIGHTCURLYBRACE np_create_program
     '''
 
     p[0] = ('rule main: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17])
@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC func_dec2  ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS np_create_varsTable np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -189,7 +189,7 @@ def p_factor(p):
     factor : LEFTPARENTHESIS np_create_fake_void h_exp RIGHTPARENTHESIS np_eliminate_fake_void
            | CTEI np_saveConstantI np_push_ctei
            | CTEF np_saveConstantF np_push_ctef
-           | variable np_push_id_type
+           | variable
            | call
     '''
     if (len(p) == 4):
@@ -270,13 +270,13 @@ def p_h_exp2(p):
         p[0] = ('rule h_exp2: ', p[1])
 def p_variable(p):
     '''
-    variable : ID variable2
+    variable : ID np_push_id_type variable2
     '''
     p[0] = ('rule variable: ', p[1], p[2])
 
 def p_variable2(p):
     '''
-    variable2 : LEFTBRACKET exp RIGHTBRACKET variable3
+    variable2 : LEFTBRACKET exp np_verify_array_exp RIGHTBRACKET np_sum_baseA_array variable3
               | empty
     '''
     if (len(p) == 5):
@@ -375,7 +375,7 @@ def p_s_type(p):
 #duda
 def p_assignment(p):
     '''
-    assignment : variable np_push_id_type  EQUAL np_push_assignation_operator assignment2
+    assignment : variable EQUAL np_push_assignation_operator assignment2
     '''
     p[0] = ('rule assignment: ', p[1],p[2])
 #cambio de gramatica p_assignment2
@@ -734,13 +734,42 @@ def p_np_add_parameter_to_list(p):
     '''
 
     global current_parameters_list
+    global local_memory_counter_int
+    global local_memory_counter_float
+    global local_memory_counter_char
+    global local_memory_counter_bool
+
 
     temp = "current_parameters_list" in globals()
     if (temp):
         current_parameters_list.append(current_parameter)
+        if current_parameter.type  == "int":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LI[0] + local_memory_counter_int,None)
+            local_memory_counter_int += 1
+        elif current_parameter.type  == "float":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LF[0] + local_memory_counter_float,None)
+            local_memory_counter_float += 1
+        elif current_parameter.type  == "char":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LC[0] + local_memory_counter_char,None)
+            local_memory_counter_char += 1
+        elif current_parameter.type  == "bool":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LB[0] + local_memory_counter_bool,None)
+            local_memory_counter_bool += 1
     else:
         current_parameters_list = []
         current_parameters_list.append(current_parameter)
+        if current_parameter.type  == "int":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LI[0] + local_memory_counter_int,None)
+            local_memory_counter_int += 1
+        elif current_parameter.type  == "float":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LF[0] + local_memory_counter_float,None)
+            local_memory_counter_float += 1
+        elif current_parameter.type  == "char":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LC[0] + local_memory_counter_char,None)
+            local_memory_counter_char += 1
+        elif current_parameter.type  == "bool":
+            current_varsTable.add(current_parameter.id,current_parameter.type, current_var_scope, LB[0] + local_memory_counter_bool,None)
+            local_memory_counter_bool += 1
 
 def p_np_save_function(p):
     '''
@@ -773,14 +802,19 @@ def p_np_push_id_type(p):
     '''
     global idPush
     test = False
-    idPush = p[-1][1]
+    idPush = p[-1]
 
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
             # print(idPush, vt.table[idPush].type)
-            quadrupleList.operandsStack.append(vt.table[idPush].address)
-            quadrupleList.typesStack.append(vt.table[idPush].type)
+            if vt.table[idPush].dim != None:
+                quadrupleList.dimensionalOperandsStack.append(idPush)
+                quadrupleList.typesStack.append(vt.table[idPush].type)
+                quadrupleList.operatorsStack.append('(')
+            elif vt.table[idPush].dim == None:
+                quadrupleList.operandsStack.append(vt.table[idPush].address)
+                quadrupleList.typesStack.append(vt.table[idPush].type)
             #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
 
             return
@@ -790,6 +824,7 @@ def p_np_push_id_type(p):
         for parameter in current_parameters_list:
             if idPush == parameter.id:
                 # print(idPush, parameter.type)
+                print("idPush", idPush)
                 quadrupleList.operandsStack.append(idPush)
                 quadrupleList.typesStack.append(parameter.type)
                 return
@@ -805,7 +840,7 @@ def p_np_push_ctei(p):
 
     global cteiPush
     cteiPush = p[-2]
-    print("i addrress", constantsTable[cteiPush])
+    #print("i addrress", constantsTable[cteiPush])
     if cteiPush in constantsTable:
         quadrupleList.operandsStack.append(constantsTable[cteiPush])
     quadrupleList.typesStack.append("int")
@@ -814,7 +849,7 @@ def p_np_push_ctef(p):
     '''
     np_push_ctef : empty
     '''
-    print("insedeeee ctef")
+    #print("insedeeee ctef")
     global ctefPush
     ctefPush = p[-2]
     if ctefPush in constantsTable:
@@ -1181,6 +1216,9 @@ def p_np_start_global_memory_counter(p):
     global global_memory_counter_flag
     global_memory_counter_flag = True
 
+    quadrupleList.resetTemporalsCounter()
+
+
 def p_np_start_local_memory_counter(p):
     '''
     np_start_local_memory_counter : empty
@@ -1250,14 +1288,80 @@ def p_np_saveConstantF(p):
 
     # print("-----const--->" , p[-2])
 
-
-
-
-
 ##############
 
+###########################arrays###########################
+def p_np_verify_array_exp(p):
+    '''
+    np_verify_array_exp : empty
+    '''
+    global ci_counter
+
+    constant = 0
+    if constant not in constantsTable:
+        constantsTable[constant] = CI[0] + ci_counter
+        ci_counter += 1
+
+
+
+    print("cdsm")
+    global idArray
+    global countVarsPile
+    countVarsPile=len(varsTablesPile)-1
+    idArray = quadrupleList.dimensionalOperandsStack[-1]
+
+    #duda
+    ##buscar mucho en vt
+    for vt in reversed(varsTablesPile):
+        if  idArray in vt.table:
+            Lsuperior= vt.table[quadrupleList.dimensionalOperandsStack[-1]].dim[0]
+        else:
+            countVarsPile=countVarsPile
+
+
+    if Lsuperior not in constantsTable:
+        constantsTable[Lsuperior] = CI[0] + ci_counter
+        ci_counter += 1
+
+    quadrupleList.addQuadrupleVerifyArray(quadrupleList.operandsStack[-1],constantsTable[0],constantsTable[Lsuperior])
+
+def p_np_sum_baseA_array(p):
+    '''
+    np_sum_baseA_array : empty
+    '''
+    global idArray
+    global countVarsPile
+    global ci_counter
+    #duda
+    ##buscar mucho en vt
+
+    baseAdd =varsTablesPile[countVarsPile].table[idArray].address
+
+    if baseAdd not in constantsTable:
+        constantsTable[baseAdd] = CI[0] + ci_counter
+        ci_counter += 1
+
+    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"int")
+    quadrupleList.operatorsStack.pop()
+###########################arrays###########################
+
+##############################
+
+def p_np_reset_temp_counter(p):
+    '''
+    np_reset_temp_counter : empty
+    '''
+    quadrupleList.resetTemporalsCounter()
+
+
+def p_np_set_temp_global_flag(p):
+    '''
+    np_set_temp_global_flag : empty
+    '''
+    print("popppppppppp")
+    quadrupleList.changeScope()
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1281,13 +1385,26 @@ f = open("ovejota.txt","w+")
 for key in constantsTable:
     f.write(f"{key}|{constantsTable[key]},")
 f.write("\n")
+
+
+for func in program.functionsTable.table:
+    varCount = program.functionsTable.table[func].variablesCount
+    varCount = '%'.join(str(v) for v in varCount)
+
+    params = ""
+    for param in program.functionsTable.table[func].parameters:
+        params += str(param.id) + "/" + str(param.type) + ";"
+
+    f.write(f"{func}|{program.functionsTable.table[func].quadrupleStart}|{varCount}|{params},")
+f.write("\n")
 f.close()
 
-
+print(constantsTable)
 quadrupleList.quadrupleListToString()
 # quadrupleList.typeStackToString()
 # quadrupleList.jumpsStackToString()
 
 
 
-# program.toString()
+
+program.toString()

@@ -1,6 +1,6 @@
 class VirtualMemory():
     def __init__(self, size, scope):
-        self.scope = scope    
+        self.scope = scope
 
         if scope == "GLOBAL" :
             self.I = [1000, 1999]
@@ -42,18 +42,21 @@ class VirtualMemory():
             self.m_int = [None] * size[0]
             self.m_float = [None] * size[1]
             self.m_char = [None] * size[2]
-            self.m_bool = [None] * size[3] 
-        
+            self.m_bool = [None] * size[3]
 
+        #meter fuera de los ifs los temporal pointers y colocar
+        #self.m_tp = none *size 
     def add(self, address, value):
         address = int(address)
-        
+
+
         if address>= self.I[0] and address <= self.I[1]:
+
             self.m_int[address - self.I[0]] = value
 
         elif address>= self.F[0] and address <= self.F[1]:
             self.m_float[address - self.F[0]] = value
-        
+
         elif address>= self.C[0] and address <= self.C[1]:
             self.m_char[address - self.C[0]] = value
 
@@ -61,16 +64,17 @@ class VirtualMemory():
             self.m_bool[address - self.B[0]] = value
 
         elif address>= self.IT[0] and address <= self.IT[1] and self.scope != "CONSTANTS":
+
             self.m_tInt[address - self.IT[0]] = value
 
         elif address>= self.FT[0] and address <= self.FT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.FT[0]] = value
+            self.m_tFloat[address - self.FT[0]] = value
 
         elif address>= self.CT[0] and address <= self.CT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.CT[0]] = value
-        
+            self.m_tChar[address - self.CT[0]] = value
+
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
-            self.m_tInt[address - self.BT[0]] = value
+            self.m_tBool[address - self.BT[0]] = value
 
 
     def get(self, address):
@@ -80,7 +84,7 @@ class VirtualMemory():
 
         elif address>= self.F[0] and address <= self.F[1]:
             return self.m_float[address - self.F[0]]
-        
+
         elif address>= self.C[0] and address <= self.C[1]:
            return self.m_char[address - self.C[0]]
 
@@ -91,19 +95,20 @@ class VirtualMemory():
             return self.m_tInt[address - self.IT[0]]
 
         elif address>= self.FT[0] and address <= self.FT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.FT[0]]
+            return self.m_tFloat[address - self.FT[0]]
 
         elif address>= self.CT[0] and address <= self.CT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.CT[0]]
-        
+            return self.m_tChar[address - self.CT[0]]
+
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
-            return self.m_tInt[address - self.BT[0]]
-    
+            return self.m_tBool[address - self.BT[0]]
 
-        
 
-        
-    
+
+
+
+
+
 
 
 
@@ -126,15 +131,11 @@ class VirtualMemory():
 
 
 
-#     memory   
+#     memory
 #         variables
-#         temp 
+#         temp
 
 # localMemoriesPile = []
 
 # global = memory()
 # loccal = memory()
-
-
-
-

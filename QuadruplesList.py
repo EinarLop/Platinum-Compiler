@@ -2,16 +2,18 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
-TI = [5000,5999]
-TF = [6000,6999]
-TC = [7000,7999]
-TB = [8000,8999]
+
+
+
+
+
 
 class QuadruplesList:
     def __init__(self):
         self.operatorsStack = []
         self.typesStack = []
         self.operandsStack = []
+        self.dimensionalOperandsStack = []
         self.jumpsStack = []
         self.quadruples = []
 
@@ -26,6 +28,20 @@ class QuadruplesList:
         self.counter_tFloat = 0
         self.counter_tChar = 0
         self.counter_tBool = 0
+
+        self.scope = "LOCAL"
+
+        if self.scope == "GLOBAL":
+            self.TI = [5000,5999]
+            self.TF = [6000,6999]
+            self.TC = [7000,7999]
+            self.TB = [8000,8999]
+
+        elif self.scope == "LOCAL":
+            self.TI = [14000, 14999]
+            self.TF = [15000, 15999]
+            self.TC = [16000, 16999]
+            self.TB = [17000, 17999]
 
     #pop de cada pila
     #push de cada uno
@@ -43,26 +59,25 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
-        print(typeTemp)
+        #print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             if operator != "=" :
-                current_temp_memory_address =  TI[0] + self.counter_tInt
+                current_temp_memory_address =  self.TI[0] + self.counter_tInt
                 self.counter_tInt+=1
         elif typeTemp  == "float":
             if operator != "=" :
-                current_temp_memory_address =  TF[0] + self.counter_tFloat
+                current_temp_memory_address =  self.TF[0] + self.counter_tFloat
                 self.counter_tFloat+=1
         elif typeTemp  == "char":
             if operator != "=" :
-                current_temp_memory_address =  TC[0] + self.counter_tChar
+                current_temp_memory_address =  self.TC[0] + self.counter_tChar
                 self.counter_tChar+=1
         elif typeTemp  == "bool":
             if operator != "=" :
-                current_temp_memory_address =  TB[0] + self.counter_tBool
+                current_temp_memory_address =  self.TB[0] + self.counter_tBool
                 self.counter_tBool+=1
 
-            #duda
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
@@ -72,9 +87,10 @@ class QuadruplesList:
 
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
+
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
-            self.operandsStack.append(current_temp_memory_address) 
+            self.operandsStack.append(current_temp_memory_address)
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -121,6 +137,12 @@ class QuadruplesList:
         self.quadruples.append(current_quadruple)
         self.cont +=1
 
+    def addQuadrupleVerifyArray(self,exp,LIdim,LSdim):
+        current_quadruple= Quadruple('verify',exp,LIdim,LSdim)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+
+
 
     def checkOperatorPlusMinus(self):
         if len(self.operatorsStack) != 0:
@@ -155,7 +177,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
-                print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
+                #print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
@@ -168,11 +190,12 @@ class QuadruplesList:
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
+
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
-                print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
-                
+                #print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
+
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
 
@@ -308,6 +331,9 @@ class QuadruplesList:
 
     def generateGoSubFuncCall(self,funcName,initialQuad):
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
+
+    #######################Arrays#######################
+
     #######################toString#######################
     def quadrupleListToString(self):
         f = open("ovejota.txt","a+")
@@ -338,3 +364,9 @@ class QuadruplesList:
             self.counter_tFloat = 0
             self.counter_tChar = 0
             self.counter_tBool = 0
+
+    def changeScope(self):
+            self.TI = [5000,5999]
+            self.TF = [6000,6999]
+            self.TC = [7000,7999]
+            self.TB = [8000,8999]

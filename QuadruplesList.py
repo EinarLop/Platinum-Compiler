@@ -76,16 +76,16 @@ class QuadruplesList:
                 current_temp_memory_address =  self.TB[0] + self.counter_tBool
                 self.counter_tBool+=1
 
-            #duda
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
         else:
             current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
             #current_quadruple= Quadruple(operator,leftOperand,rightOperand,current_temp_memory_address)
-
+        
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
+
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
             self.operandsStack.append(current_temp_memory_address) 

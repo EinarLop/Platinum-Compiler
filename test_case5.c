@@ -10,7 +10,7 @@ class main {
         var int aa;
       }
       {
-        aa = 1 + 1
+       aa = 2 + 1 * 10 - 10 * 90
         write(aa)
       }
       return aa

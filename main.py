@@ -790,6 +790,7 @@ def p_np_push_id_type(p):
         for parameter in current_parameters_list:
             if idPush == parameter.id:
                 # print(idPush, parameter.type)
+                print("idPush", idPush)
                 quadrupleList.operandsStack.append(idPush)
                 quadrupleList.typesStack.append(parameter.type)
                 return
@@ -1314,4 +1315,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-# program.toString()
+program.toString()

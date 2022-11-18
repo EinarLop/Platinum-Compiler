@@ -2,10 +2,11 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
-TI = [5000,5999]
-TF = [6000,6999]
-TC = [7000,7999]
-TB = [8000,8999]
+
+
+
+
+
 
 class QuadruplesList:
     def __init__(self):
@@ -27,6 +28,20 @@ class QuadruplesList:
         self.counter_tChar = 0
         self.counter_tBool = 0
 
+        self.scope = "LOCAL"
+
+        if self.scope == "GLOBAL":
+            self.TI = [5000,5999]
+            self.TF = [6000,6999]
+            self.TC = [7000,7999]
+            self.TB = [8000,8999]
+
+        elif self.scope == "LOCAL":
+            self.TI = [14000, 14999]
+            self.TF = [15000, 15999]
+            self.TC = [16000, 16999]
+            self.TB = [17000, 17999]
+
     #pop de cada pila
     #push de cada uno
     #checar tipos
@@ -43,23 +58,22 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
-        print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             if operator != "=" :
-                current_temp_memory_address =  TI[0] + self.counter_tInt
+                current_temp_memory_address =  self.TI[0] + self.counter_tInt
                 self.counter_tInt+=1
         elif typeTemp  == "float":
             if operator != "=" :
-                current_temp_memory_address =  TF[0] + self.counter_tFloat
+                current_temp_memory_address =  self.TF[0] + self.counter_tFloat
                 self.counter_tFloat+=1
         elif typeTemp  == "char":
             if operator != "=" :
-                current_temp_memory_address =  TC[0] + self.counter_tChar
+                current_temp_memory_address =  self.TC[0] + self.counter_tChar
                 self.counter_tChar+=1
         elif typeTemp  == "bool":
             if operator != "=" :
-                current_temp_memory_address =  TB[0] + self.counter_tBool
+                current_temp_memory_address =  self.TB[0] + self.counter_tBool
                 self.counter_tBool+=1
 
             #duda
@@ -171,7 +185,6 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
-                print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
                 
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
@@ -338,3 +351,9 @@ class QuadruplesList:
             self.counter_tFloat = 0
             self.counter_tChar = 0
             self.counter_tBool = 0
+
+    def changeScope(self):
+            self.TI = [5000,5999]
+            self.TF = [6000,6999]
+            self.TC = [7000,7999]
+            self.TB = [8000,8999]

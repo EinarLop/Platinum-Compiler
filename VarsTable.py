@@ -17,7 +17,6 @@ class VarsTable:
         if name in self.table:
             print(f"Variable  {name} already declared")
             exit()
-            return Error("Variable already declared")
         else:
             self.table[name] = currentVar
             return None

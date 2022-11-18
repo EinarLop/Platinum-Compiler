@@ -7,6 +7,10 @@ class FunctionsTable:
         self.table = {}
 
     def add(self,name,type,parameters,varsTable,quadrupleStart, tempTable=[]):
+        if name in self.table:
+            print(f"Function  {name} already declared")
+            exit()
+        
                         # I,F,C,B
         variablesCount = [0,0,0,0]
         for var in varsTable.table:

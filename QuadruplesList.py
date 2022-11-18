@@ -12,6 +12,7 @@ class QuadruplesList:
         self.operatorsStack = []
         self.typesStack = []
         self.operandsStack = []
+        self.dimensionalOperandsStack = []
         self.jumpsStack = []
         self.quadruples = []
 
@@ -43,7 +44,7 @@ class QuadruplesList:
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
     # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
-        print(typeTemp)
+        #print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             if operator != "=" :
@@ -74,7 +75,7 @@ class QuadruplesList:
         if current_quadruple.operator != "=" :
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
-            self.operandsStack.append(current_temp_memory_address) 
+            self.operandsStack.append(current_temp_memory_address)
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -121,6 +122,12 @@ class QuadruplesList:
         self.quadruples.append(current_quadruple)
         self.cont +=1
 
+    def addQuadrupleVerifyArray(self,exp,LIdim,LSdim):
+        current_quadruple= Quadruple('verify',exp,LIdim,LSdim)
+        self.quadruples.append(current_quadruple)
+        self.cont +=1
+
+
 
     def checkOperatorPlusMinus(self):
         if len(self.operatorsStack) != 0:
@@ -155,7 +162,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
-                print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
+                #print(f"{LOperand} ({LType}) and {Roperand} ({RType})")
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 
     def makeAssignationResult(self):
@@ -168,11 +175,12 @@ class QuadruplesList:
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
+
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
-                print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
-                
+                #print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
+
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
 
@@ -308,6 +316,9 @@ class QuadruplesList:
 
     def generateGoSubFuncCall(self,funcName,initialQuad):
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
+
+    #######################Arrays#######################
+
     #######################toString#######################
     def quadrupleListToString(self):
         f = open("ovejota.txt","a+")

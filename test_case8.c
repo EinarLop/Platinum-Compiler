@@ -1,14 +1,12 @@
 class main {
   global vars{
-      var int prueba,prueba2;
+      var int prueba;
       var float popp;
       var char jej;
       var bool jkjkjkjk;
       var int array[2];
       var int matrix[2][2];
-      var int kk;
-      var int array2[6];
-      var int ll;
+
   }
   classes {
   }
@@ -26,7 +24,7 @@ class main {
         return 1
     }
 
-    func int test2(float param2){
+    func int test2(float param2, int param3){
         vars{
             var float cc2;
             var float zz2;
@@ -40,14 +38,8 @@ class main {
   }
   {
     popp=2.1
-    for(dddd = 2 to 4 ) do
-    {
-      popp = popp*2
-      
-    };
-    prueba= 1
-
-    test1(prueba)
+    prueba= array[1]
+    write("hola mundo")
 
 
 

@@ -329,15 +329,14 @@ def p_call_obj4(p):
         p[0] = ('rule call_obj4: ', p[1])
 
 
-def p_call(p):
+def p_call(p): #asignar la variable a un temporal despues del go sub
     '''
-    call : ID np_check_func_exists LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_check_func_params np_generate_goSub_function_call
+    call : ID np_check_func_exists LEFTPARENTHESIS np_generate_ERA_quad_func_call call2 RIGHTPARENTHESIS np_check_func_params np_generate_goSub_function_call np_assign_global_to_temporal_func_call
     '''
     p[0] = ('rule call: ', p[1], p[2], p[3],p[4])
 
 
-####duda
-###deberiamos cambiar h_exp a exp?
+
 def p_call2(p):
     '''
     call2 : exp np_generate_quad_parameter   np_check_func_params_counter call3
@@ -1217,8 +1216,16 @@ def p_np_generate_return_func(p):
     '''
     np_generate_return_func : empty
     '''
-    quadrupleList.generateFuncReturnQuad()
 
+    quadrupleList.generateFuncReturnQuad(current_func_name)
+
+def p_np_assign_global_to_temporal_func_call(p):
+    '''
+    np_assign_global_to_temporal_func_call : empty
+    '''
+    type= varsTablesPile[0].table[idVerify].type
+
+    quadrupleList.assignGlobalFuncCall(varsTablesPile[0].table[idVerify].address,type)
 ######################Quadruples function call Amauri################
 
 
@@ -1326,6 +1333,7 @@ def p_np_verify_array_exp(p):
     '''
     global ci_counter
 
+    #checar si el cero esta en la tabla de constantes
     constant = 0
     if constant not in constantsTable:
         constantsTable[constant] = CI[0] + ci_counter
@@ -1333,7 +1341,7 @@ def p_np_verify_array_exp(p):
 
 
 
-    print("cdsm")
+    ##cosas para sacar el limite superior
     global idArray
     global countVarsPile
     countVarsPile=len(varsTablesPile)-1
@@ -1347,11 +1355,12 @@ def p_np_verify_array_exp(p):
         else:
             countVarsPile=countVarsPile-1
 
-
+    #si el limite superior no esta en la tabla de constantes se mete
     if Lsuperior not in constantsTable:
         constantsTable[Lsuperior] = CI[0] + ci_counter
         ci_counter += 1
 
+    #cuadruplo verify
     quadrupleList.addQuadrupleVerifyArray(quadrupleList.operandsStack[-1],constantsTable[0],constantsTable[Lsuperior])
 
 def p_np_sum_baseA_array(p):
@@ -1388,11 +1397,11 @@ def p_np_set_temp_global_flag(p):
     '''
     np_set_temp_global_flag : empty
     '''
-    print("popppppppppp")
+    #print("popppppppppp")
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case7.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

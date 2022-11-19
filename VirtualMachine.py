@@ -4,7 +4,7 @@ from VirtualMemory import VirtualMemory
 from MemoryManager import MemoryManager
 
 memoryManager = MemoryManager()
-memoryManager.initGlobalMemory([10,10,10,10,10,10,10,10], "GLOBAL")
+memoryManager.initGlobalMemory([20,20,20,20,20,20,20,20], "GLOBAL")
 memoryManager.initConstantsMemory([10,10,10,10], "CONSTANTS")
 
 constants_table = linecache.getline(os.getcwd() + "/ovejota.txt", 1 )
@@ -72,12 +72,15 @@ while True:
             else:
                 print(memoryManager.get(current_quad[1]))
         case "=":
-                memoryManager.add(current_quad[3], memoryManager.get(current_quad[1]))
+                # Added str() to fix arrays
+                memoryManager.add(current_quad[3], str(memoryManager.get(current_quad[1])))
         case "+":
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
+                #print("inside", [operandOne,operandTwo,current_quad[3] ])
+                
                 memoryManager.add(current_quad[3], operandOne + operandTwo)
         case "-":
                 operandOne = memoryManager.get(current_quad[1])
@@ -134,6 +137,12 @@ while True:
                 else:
                         memoryManager.add(11000+paramFloatCounter, getParamValue)
                         paramFloatCounter += 1
-
-
+        case "verify":
+                
+                value = int(memoryManager.get(int(current_quad[1])))
+                lowerLimit = int(memoryManager.get(int(current_quad[2])))
+                upperLimit =  int(memoryManager.get(int(current_quad[3])))
+                if value < lowerLimit or value> upperLimit-1:
+                        print(f"Index out of bounds, lower limit: {lowerLimit}, upper limit: {upperLimit-1}, index: {value}")
+                        exit()
     i+=1

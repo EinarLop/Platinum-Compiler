@@ -1,13 +1,14 @@
-1|18000,0|18001,2|18002,2001|18003,1.1|19000,
-test1|2|4%2%0%0%0%0%0%0|param1/int;,test2|5|3%4%0%0%0%0%0%0|param2/float;param3/int;,
-goto,,,8
-WRITE,"test",,
-Ret,,,18000
+1|18000,100|18001,200|18002,300|18003,
+sum|2|5%0%0%0%1%0%0%0|elementOne/int;elementTwo/int;,
+goto,,,5
++,10000,10001,14000
+WRITE,14000,,
 ENDFUNC,,,
-WRITE,"hola test2",,
-Ret,,,18000
-ENDFUNC,,,
-verify,18000,18001,18002
-+,18000,18003,0
-=,19000,,2000
-WRITE,"hola mundo",,
+ERA,sum,,
+param,18000,,0
+param,18001,,1
+goSub,sum,,2
+ERA,sum,,
+param,18002,,0
+param,18003,,1
+goSub,sum,,2

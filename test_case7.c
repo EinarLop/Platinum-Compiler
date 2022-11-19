@@ -11,8 +11,6 @@ class main {
   {
     aa = 0
     
-
-
     while(aa < 9) do
     {
         array[aa] = 8 - aa
@@ -25,10 +23,6 @@ class main {
         aa = aa + 1
     };
     
-
-
-
-
   }
 }
  

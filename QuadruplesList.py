@@ -332,13 +332,34 @@ class QuadruplesList:
 
     def generateGoSubFuncCall(self,funcName,initialQuad):
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
-    def generateFuncReturnQuad(self):
+    def generateFuncReturnQuad(self,funcName):
         operator="Ret"
         exp=self.operandsStack.pop()
         type=self.typesStack.pop()
         #print(exp,"con tipo",type)
-        self.addQuadruple(operator,'','',exp, type)
+        self.addQuadruple(operator,funcName,'',exp, type)
 
+    def assignGlobalFuncCall(self,varGlobal,typeVar):
+        current_temp_address = 0
+        if typeVar  == "int":
+                current_temp_memory_address =  self.TI[0] + self.counter_tInt
+                self.counter_tInt+=1
+        elif typeVar  == "float":
+                current_temp_memory_address =  self.TF[0] + self.counter_tFloat
+                self.counter_tFloat+=1
+        elif typeVar  == "char":
+                current_temp_memory_address =  self.TC[0] + self.counter_tChar
+                self.counter_tChar+=1
+        elif typeVar  == "bool":
+                current_temp_memory_address =  self.TB[0] + self.counter_tBool
+                self.counter_tBool+=1
+        elif typeVar == "pointer":
+                current_temp_memory_address =  self.TP[0] + self.counter_tPointer
+                self.counter_tPointer+=1
+        quad=Quadruple("=",varGlobal,'',current_temp_memory_address)
+        self.quadruples.append(quad)
+
+        self.operandsStack.append(self.quadruples[-1].temporal)
     #######################Arrays#######################
 
     #######################toString#######################

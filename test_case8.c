@@ -33,14 +33,12 @@ class main {
         {
               write("hola test2")
         }
-        return 1
+        return 900
     }
   }
   {
-    prueba= array[array[0]]
-    popp=1.1
 
-    write("hola mundo")
+    array[0]=1
 
 
 

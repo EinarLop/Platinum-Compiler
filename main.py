@@ -1392,7 +1392,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case7.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

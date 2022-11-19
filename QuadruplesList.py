@@ -41,6 +41,7 @@ class QuadruplesList:
             self.TC = [16000, 16999]
             self.TB = [17000, 17999]
             self.TP = [31000,31999]
+
     #pop de cada pila
     #push de cada uno
     #checar tipos
@@ -377,3 +378,6 @@ class QuadruplesList:
             self.TF = [6000,6999]
             self.TC = [7000,7999]
             self.TB = [8000,8999]
+            self.TP = [30000,30999]
+
+

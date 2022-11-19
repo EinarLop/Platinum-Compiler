@@ -5,24 +5,21 @@ class main {
   classes {
   }
   functions{
-    func int sum(int bb, int cc){
+    func int sum(int elementOne, int elementTwo){
       vars{
         var int aa;
       }
       {
-       aa = 2 + 1 * 10 - 10 * 90
-        write(aa)
+        write(elementOne + elementTwo)
       }
       return aa
     }
   }
 
   {
-    prueba = 1 + 1
-    write("Hello World")
-    sum(1,2)
-    sum(1,3)
-    write("Hello World After Functions")
+    
+    sum(1,100)
+    sum(200, 300)
 
   }
 }

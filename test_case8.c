@@ -4,7 +4,7 @@ class main {
       var float popp;
       var char jej;
       var bool jkjkjkjk;
-      var int array[2];
+      var float array[2];
       var int matrix[2][2];
 
   }
@@ -19,7 +19,7 @@ class main {
             var int array2[6];
         }
         {
-              read(cc)
+              write("test")
         }
         return 1
     }
@@ -31,14 +31,15 @@ class main {
             var int ii2;
         }
         {
-              read(cc2)
+              write("hola test2")
         }
         return 1
     }
   }
   {
-    popp=2.1
     prueba= array[1]
+    popp=1.1
+
     write("hola mundo")
 
 

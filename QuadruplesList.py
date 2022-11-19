@@ -2,12 +2,6 @@ from SemanticCube import SemanticCube
 from Quadruple import Quadruple
 semanticCube = SemanticCube()
 
-
-
-
-
-
-
 class QuadruplesList:
     def __init__(self):
         self.operatorsStack = []
@@ -28,6 +22,7 @@ class QuadruplesList:
         self.counter_tFloat = 0
         self.counter_tChar = 0
         self.counter_tBool = 0
+        self.counter_tPointer = 0
 
         self.scope = "LOCAL"
 
@@ -36,13 +31,16 @@ class QuadruplesList:
             self.TF = [6000,6999]
             self.TC = [7000,7999]
             self.TB = [8000,8999]
+            self.PT = [30000,30999]
+
+
 
         elif self.scope == "LOCAL":
             self.TI = [14000, 14999]
             self.TF = [15000, 15999]
             self.TC = [16000, 16999]
             self.TB = [17000, 17999]
-
+            self.PT = [31000,31999]
     #pop de cada pila
     #push de cada uno
     #checar tipos
@@ -77,7 +75,10 @@ class QuadruplesList:
             if operator != "=" :
                 current_temp_memory_address =  self.TB[0] + self.counter_tBool
                 self.counter_tBool+=1
-
+        elif typeTemp == "pointer":
+            if operator != "=" :
+                current_temp_memory_address =  self.TP[0] + self.counter_tPointer
+                self.counter_tPointer+=1
         if temporal < 1000:
                 #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
@@ -331,6 +332,12 @@ class QuadruplesList:
 
     def generateGoSubFuncCall(self,funcName,initialQuad):
         self.addQuadrupleGoSubFuncCall(funcName,initialQuad)
+    def generateFuncReturnQuad(self):
+        operator="Ret"
+        exp=self.operandsStack.pop()
+        type=self.typesStack.pop()
+        #print(exp,"con tipo",type)
+        self.addQuadruple(operator,'','',exp, type)
 
     #######################Arrays#######################
 

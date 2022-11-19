@@ -1,22 +1,13 @@
-2|18000,1|18001,10|18002,90|18003,3|18004,
-sum|2|5%0%0%0%4%0%0%0|bb/int;cc/int;,
-goto,,,9
-*,18001,18002,14000
-+,18000,14000,14001
-*,18002,18003,14002
--,14001,14002,14003
-=,14003,,10002
-WRITE,10002,,
+1|18000,0|18001,2|18002,2001|18003,1.1|19000,
+test1|2|4%2%0%0%0%0%0%0|param1/int;,test2|5|3%4%0%0%0%0%0%0|param2/float;param3/int;,
+goto,,,8
+WRITE,"test",,
+Ret,,,18000
 ENDFUNC,,,
-+,18001,18001,5000
-=,5000,,1000
-WRITE,"Hello World",,
-ERA,sum,,
-param,18001,,0
-param,18000,,1
-goSub,sum,,2
-ERA,sum,,
-param,18001,,0
-param,18004,,1
-goSub,sum,,2
-WRITE,"Hello World After Functions",,
+WRITE,"hola test2",,
+Ret,,,18000
+ENDFUNC,,,
+verify,18000,18001,18002
++,18000,18003,0
+=,19000,,2000
+WRITE,"hola mundo",,

@@ -47,15 +47,15 @@ class VirtualMemory():
             self.m_char = [None] * size[2]
             self.m_bool = [None] * size[3]
 
-        self.m_PT = [None] * 1000
+        self.m_PT = [None] * 10
         #meter fuera de los ifs los temporal pointers y colocar
         #self.m_tp = none *size
     def add(self, address, value):
+        #print("----->", address)
         address = int(address)
 
 
         if address>= self.I[0] and address <= self.I[1]:
-
             self.m_int[address - self.I[0]] = value
 
         elif address>= self.F[0] and address <= self.F[1]:
@@ -80,9 +80,21 @@ class VirtualMemory():
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
             self.m_tBool[address - self.BT[0]] = value
 
+        elif address>= self.PT[0] and address <= self.PT[1] and self.scope != "CONSTANTS":
+           # print("bbbbbb", [value, type(value), address])
+            if  type(value) == str:
+                jump = self.m_PT[address - self.PT[0]]
+                self.add(jump, value)
+                #print("add11", self.m_int)
+            else:
+                self.m_PT[address - self.PT[0]] = value
+               # print("add12", [address, value, self.m_PT])
+
+
 
     def get(self, address):
         address = int(address)
+
         if address>= self.I[0] and address <= self.I[1]:
             return self.m_int[address - self.I[0]]
 
@@ -107,8 +119,12 @@ class VirtualMemory():
         elif address>= self.BT[0] and address <= self.BT[1] and self.scope != "CONSTANTS":
             return self.m_tBool[address - self.BT[0]]
 
+        elif address>= self.PT[0] and address <= self.PT[1] and self.scope != "CONSTANTS":
+           # print("gettttt1", [address, self.get(self.m_PT[address - self.PT[0]])])
+            #print("gettttt2", self.get(self.m_PT[address - self.PT[0]])
 
-
+            
+            return self.get(self.m_PT[address - self.PT[0]])
 
 
 

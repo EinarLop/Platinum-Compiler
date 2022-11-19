@@ -8,6 +8,10 @@ class MemoryManager():
         self.global_range = [1000, 8999]
         self.local_range = [10000, 17999]
         self.constant_range = [18000, 21999]
+        self.pointers_global_range = [30000, 30999]
+        self.pointers_local_range = [31000, 31999]
+
+
 
 
     def initGlobalMemory(self, size, scope):
@@ -34,6 +38,14 @@ class MemoryManager():
         elif address>= self.local_range[0] and  address <= self.local_range[1]:
             self.local_memories[-1].add(address, value)
 
+        elif address>= self.pointers_global_range[0] and  address <= self.pointers_global_range[1]:
+             self.global_memory.add(address, value)
+
+        elif address>= self.pointers_local_range[0] and  address <= self.pointers_local_range[1]:
+             self.local_memories[-1].add(address, value)
+
+        
+
     def get(self, address):
         address = int(address)
 
@@ -45,4 +57,10 @@ class MemoryManager():
     
         elif address>= self.local_range[0] and  address <= self.local_range[1]:
             return self.local_memories[-1].get(address)
+
+        elif address>= self.pointers_global_range[0] and  address <= self.pointers_global_range[1]:
+            return self.global_memory.get(address)
+
+        elif address>= self.pointers_local_range[0] and  address <= self.pointers_local_range[1]:
+             return self.local_memories[-1].get(address)
 

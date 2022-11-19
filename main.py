@@ -1370,7 +1370,8 @@ def p_np_sum_baseA_array(p):
         constantsTable[baseAdd] = CI[0] + ci_counter
         ci_counter += 1
 
-    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,quadrupleList.operatorsStack.pop())
+    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
+    quadrupleList.typesStack.pop()
     quadrupleList.eliminateFakeVoid()
 ###########################arrays###########################
 

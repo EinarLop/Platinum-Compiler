@@ -4,7 +4,7 @@ class main {
       var float popp;
       var char jej;
       var bool jkjkjkjk;
-      var float array[2];
+      var int array[2];
       var int matrix[2][2];
 
   }
@@ -37,7 +37,7 @@ class main {
     }
   }
   {
-    prueba= array[1]
+    prueba= array[array[0]]
     popp=1.1
 
     write("hola mundo")

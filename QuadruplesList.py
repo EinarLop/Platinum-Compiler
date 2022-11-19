@@ -31,7 +31,7 @@ class QuadruplesList:
             self.TF = [6000,6999]
             self.TC = [7000,7999]
             self.TB = [8000,8999]
-            self.PT = [30000,30999]
+            self.TP = [30000,30999]
 
 
 
@@ -40,7 +40,7 @@ class QuadruplesList:
             self.TF = [15000, 15999]
             self.TC = [16000, 16999]
             self.TB = [17000, 17999]
-            self.PT = [31000,31999]
+            self.TP = [31000,31999]
     #pop de cada pila
     #push de cada uno
     #checar tipos
@@ -157,7 +157,7 @@ class QuadruplesList:
                 LType = self.typesStack.pop()
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
                 if err != None:
-                    print(f"Type miss match between {LOperand} ({LType}) and {Roperand} ({RType})")
+                    print(f"Type miss match between in plus/minus {LOperand} ({LType}) and {Roperand} ({RType})")
                     exit()
                 return self.addQuadruple(operator,LOperand,Roperand,temporal, typeTemp)
 

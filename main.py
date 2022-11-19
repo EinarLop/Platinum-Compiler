@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp RIGHTCURLYBRACE np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_save_function np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -104,7 +104,7 @@ def p_func_dec2(p):
 
 def p_func_dec3(p):
     '''
-    func_dec3 : func_dec np_popPrueba
+    func_dec3 : func_dec
               | empty
     '''
     p[0] = ('rule func_dec3: ', p[1])
@@ -718,6 +718,33 @@ def p_np_get_func_type(p):
     global current_func_type
     current_func_type = str(p[-1][1])
 
+def p_np_push_func_id_globals(p):
+    '''
+    np_push_func_id_globals : empty
+    '''
+
+    global current_var_type
+    global global_memory_counter_int
+    global global_memory_counter_float
+    global global_memory_counter_char
+    global global_memory_counter_bool
+    global global_memory_counter_array
+    global global_memory_counter_matrix
+
+    if current_var_type  == "int":
+        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GI[0] + global_memory_counter_int,None)
+        global_memory_counter_int += 1
+    elif current_var_type  == "float":
+        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GF[0] + global_memory_counter_float,None)
+        global_memory_counter_float += 1
+    elif current_var_type  == "char":
+        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GC[0] + global_memory_counter_char,None)
+        global_memory_counter_char += 1
+    elif current_var_type  == "bool":
+        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GB[0] + global_memory_counter_bool,None)
+        global_memory_counter_bool += 1
+
+
 
 def p_np_get_func_parameter(p):
     '''
@@ -1186,6 +1213,12 @@ def p_np_generate_goSub_function_call(p):
     #print(paramCounter)
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
 
+def p_np_generate_return_func(p):
+    '''
+    np_generate_return_func : empty
+    '''
+    quadrupleList.generateFuncReturnQuad()
+
 ######################Quadruples function call Amauri################
 
 
@@ -1258,10 +1291,6 @@ def p_np_fill_goto_main_quad(p):
     '''
     quadrupleList.fillGoToMainQuad()
 
-def p_np_popPrueba(p):
-    '''
-    np_popPrueba : empty
-    '''
 ############Constants############
 def p_np_saveConstantI(p):
     '''
@@ -1316,7 +1345,7 @@ def p_np_verify_array_exp(p):
         if  idArray in vt.table:
             Lsuperior= vt.table[quadrupleList.dimensionalOperandsStack[-1]].dim[0]
         else:
-            countVarsPile=countVarsPile
+            countVarsPile=countVarsPile-1
 
 
     if Lsuperior not in constantsTable:
@@ -1341,8 +1370,9 @@ def p_np_sum_baseA_array(p):
         constantsTable[baseAdd] = CI[0] + ci_counter
         ci_counter += 1
 
-    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"int")
-    quadrupleList.operatorsStack.pop()
+    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
+    quadrupleList.typesStack.pop()
+    quadrupleList.eliminateFakeVoid()
 ###########################arrays###########################
 
 ##############################
@@ -1360,8 +1390,9 @@ def p_np_set_temp_global_flag(p):
     '''
     print("popppppppppp")
     quadrupleList.changeScope()
+
 parser = yacc()
-f = open('test_case5.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1378,8 +1409,7 @@ case_correct_01 = parser.parse(content)
 # program.toString()
 
 #print("###############QuadrupleTests###############")
-# quadrupleList.operatorsStackToString()
-# quadrupleList.operandsStackToString()
+
 
 f = open("ovejota.txt","w+")
 for key in constantsTable:
@@ -1401,8 +1431,14 @@ f.close()
 
 print(constantsTable)
 quadrupleList.quadrupleListToString()
-# quadrupleList.typeStackToString()
-# quadrupleList.jumpsStackToString()
+#print("operators")
+#quadrupleList.operatorsStackToString()
+#print("operands")
+#quadrupleList.operandsStackToString()
+#print("types")
+#quadrupleList.typeStackToString()
+#print("jumps")
+#quadrupleList.jumpsStackToString()
 
 
 

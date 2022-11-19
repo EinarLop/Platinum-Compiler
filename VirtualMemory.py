@@ -11,6 +11,8 @@ class VirtualMemory():
             self.FT = [6000,6999]
             self.CT = [7000,7999]
             self.BT = [8000,8999]
+            self.PT = [30000,30999]
+
 
         elif scope == "LOCAL":
             self.I = [10000, 10999]
@@ -21,6 +23,7 @@ class VirtualMemory():
             self.FT = [15000, 15999]
             self.CT = [16000, 16999]
             self.BT = [17000, 17999]
+            self.PT = [31000,31999]
 
         elif scope == "CONSTANTS":
             self.I = [18000, 18999]
@@ -44,8 +47,9 @@ class VirtualMemory():
             self.m_char = [None] * size[2]
             self.m_bool = [None] * size[3]
 
+        self.m_PT = [None] * 1000
         #meter fuera de los ifs los temporal pointers y colocar
-        #self.m_tp = none *size 
+        #self.m_tp = none *size
     def add(self, address, value):
         address = int(address)
 

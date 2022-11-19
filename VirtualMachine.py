@@ -49,6 +49,9 @@ def castType(operand):
 
 returnFromFunctionStack = []
 
+paramIntCounter = 0
+paramFloatCounter = 0
+
 offset = 2
 i = 1 + offset
 while True:
@@ -114,11 +117,23 @@ while True:
                 returnFromFunctionStack.append(i+1)
                 jumpToLine = int(current_quad[3])
                 i = offset + jumpToLine - 1
+                paramIntCounter = 0
+                paramFloatCounter = 0
         case "ENDFUNC":
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
         case "ERA":
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
+
+        case "param":
+                getParamValue = memoryManager.get(int(current_quad[1])) 
+
+                if str(getParamValue).find(".") == -1:
+                        memoryManager.add(10000+paramIntCounter, getParamValue)
+                        paramIntCounter += 1
+                else:
+                        memoryManager.add(11000+paramFloatCounter, getParamValue)
+                        paramFloatCounter += 1
 
 
     i+=1

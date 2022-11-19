@@ -19,7 +19,7 @@ class main {
             var int array2[6];
         }
         {
-              read(cc)
+              write("test")
         }
         return 1
     }
@@ -31,14 +31,15 @@ class main {
             var int ii2;
         }
         {
-              read(cc2)
+              write("hola test2")
         }
         return 1
     }
   }
   {
-    popp=2.1
-    prueba= array[1]
+    prueba= array[array[0]]
+    popp=1.1
+
     write("hola mundo")
 
 

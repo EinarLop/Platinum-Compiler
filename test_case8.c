@@ -39,6 +39,7 @@ class main {
   {
 
     array[0]=1
+    matrix[0][0]=999
 
 
 

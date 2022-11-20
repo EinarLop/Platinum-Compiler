@@ -586,12 +586,13 @@ def p_np_set_var_type_matrix(p):
     np_set_var_type_matrix : empty
     '''
     global isMatrix
-    global d2
+    global sizesMatrix
+    sizesMatrix=[]
     isMatrix = True
-
+    #size1 size2 sizetotal d2
     global current_dimension_size
     current_dimension_size = p[-5] * p[-2]
-    d2= p[-2] + 1
+    sizesMatrix=[p[-5],p[-2],current_dimension_size,p[-2] + 1,]
 
 def p_np_get_var_name(p):
     '''
@@ -634,7 +635,7 @@ def p_np_save_var(p):
     '''
     global DIM
     global varAddDimensionalArray
-
+    global sizesMatrix
     DIM=[]
 
     #checar si es un arreglo o una matriz para darle valores a DIM para la tabla de variables
@@ -643,14 +644,12 @@ def p_np_save_var(p):
         varAddDimensional=0
     else:
         if isArray:
-
             DIM.append(current_dimension_size)
             varAddDimensional= current_dimension_size-1
         if isMatrix:
-
-            DIM.append(current_dimension_size)
-            DIM.append(d2)
-            varAddDimensional= current_dimension_size-1
+            for i in sizesMatrix:
+                DIM.append(i)
+            varAddDimensional= -1
 
     if global_memory_counter_flag:
 
@@ -1344,6 +1343,8 @@ def p_np_verify_array_exp(p):
     ##cosas para sacar el limite superior
     global idArray
     global countVarsPile
+    global DIMid
+    DIMid=1
     countVarsPile=len(varsTablesPile)-1
     idArray = quadrupleList.dimensionalOperandsStack[-1]
 
@@ -1352,6 +1353,7 @@ def p_np_verify_array_exp(p):
     for vt in reversed(varsTablesPile):
         if  idArray in vt.table:
             Lsuperior= vt.table[quadrupleList.dimensionalOperandsStack[-1]].dim[0]
+            DIMid=vt.table[quadrupleList.dimensionalOperandsStack[-1]].dim[0]
         else:
             countVarsPile=countVarsPile-1
 
@@ -1379,9 +1381,13 @@ def p_np_sum_baseA_array(p):
         constantsTable[baseAdd] = CI[0] + ci_counter
         ci_counter += 1
 
-    quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
-    quadrupleList.typesStack.pop()
-    quadrupleList.eliminateFakeVoid()
+    if len(varsTablesPile[countVarsPile].table[idArray].dim) == 1:
+        print("solo 1 dimension")
+        quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
+        quadrupleList.typesStack.pop()
+        quadrupleList.eliminateFakeVoid()
+    elif len(varsTablesPile[countVarsPile].table[idArray].dim) == 2:
+        print("2 dimensiones")
 ###########################arrays###########################
 
 ##############################
@@ -1401,7 +1407,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case7.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

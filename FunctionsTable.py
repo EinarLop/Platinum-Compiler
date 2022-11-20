@@ -7,7 +7,7 @@ class FunctionsTable:
         self.table = {}
 
     def add(self,name,type,parameters,varsTable,quadrupleStart, tempTable=[]):
-        if name in self.table:
+        if name in self.table and False:
             print(f"Function  {name} already declared")
             exit()
         

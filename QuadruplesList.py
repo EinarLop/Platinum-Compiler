@@ -93,6 +93,7 @@ class QuadruplesList:
             self.temporals +=1
             #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
             self.operandsStack.append(current_temp_memory_address)
+            print(f"pusheando a types con {leftOperand} {rightOperand} {operator}", typeTemp)
             self.typesStack.append(typeTemp)
 
             # print(f"temporal {self.temporals-1} with type {typeTemp}")
@@ -185,16 +186,20 @@ class QuadruplesList:
     def makeAssignationResult(self):
         if len(self.operatorsStack) != 0:
             if self.operatorsStack[-1] == "=":
+                
                 result = self.operandsStack.pop()
                 ROperand = ''
                 operator = self.operatorsStack.pop()
                 temporal = self.operandsStack.pop()
+                
                 RType = self.typesStack.pop()
+                print("aaaaa",result,temporal,RType)
                 LType = self.typesStack.pop()
+                
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
 
                 if err != None:
-                    print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
+                    print(f" Type miss match between {temporal} ({LType}) and {result} ({RType}) with operator {operator}")
                     exit()
                 #print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
 
@@ -214,10 +219,10 @@ class QuadruplesList:
 
                 RType = self.typesStack.pop()
                 LType = self.typesStack.pop()
-
                 typeTemp, err = semanticCube.semantic(RType, LType, operator)
                 if err != None:
-                    print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType})")
+                    self.typeStackToString()
+                    print(f"Type miss match between {LOperand} ({LType}) and {ROperand} ({RType}) with operator {operator}")
                     exit()
 
                 return self.addQuadruple(operator,LOperand,ROperand,temporal, typeTemp)
@@ -247,6 +252,9 @@ class QuadruplesList:
 
     ######################condition##########################
     def generateGoToFCondition(self):
+        if self.typesStack.pop() != "bool":
+            print(f"Conditional not bool")
+            exit()
         condition = self.operandsStack.pop()
         self.addQuadrupleCondition("gotoF",condition,'',None)
         self.jumpsStack.append(self.cont-1)

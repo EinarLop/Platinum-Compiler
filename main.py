@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable np_save_function block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func  np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -731,16 +731,16 @@ def p_np_push_func_id_globals(p):
     global global_memory_counter_matrix
 
     if current_var_type  == "int":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GI[0] + global_memory_counter_int,None)
+        varsTablesPile[0].add(current_func_name, current_func_type, "globalFunction", GI[0] + global_memory_counter_int,None)
         global_memory_counter_int += 1
     elif current_var_type  == "float":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GF[0] + global_memory_counter_float,None)
+        varsTablesPile[0].add(current_func_name, current_func_type, "globalFunction", GF[0] + global_memory_counter_float,None)
         global_memory_counter_float += 1
     elif current_var_type  == "char":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GC[0] + global_memory_counter_char,None)
+        varsTablesPile[0].add(current_func_name, current_func_type, "globalFunction", GC[0] + global_memory_counter_char,None)
         global_memory_counter_char += 1
     elif current_var_type  == "bool":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GB[0] + global_memory_counter_bool,None)
+        varsTablesPile[0].add(current_func_name, current_func_type, "globalFunction", GB[0] + global_memory_counter_bool,None)
         global_memory_counter_bool += 1
 
 
@@ -801,7 +801,10 @@ def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
-    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1),initialQuadruple, current_funcTempTable)
+    print(current_varsTable.table)
+    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,current_varsTable,initialQuadruple, [0,0,0,0])
+    
+    #current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1),initialQuadruple, current_funcTempTable)
     del globals()["current_parameters_list"]
 
 def p_np_get_func_params(p):
@@ -830,9 +833,12 @@ def p_np_push_id_type(p):
     test = False
     idPush = p[-1]
 
+
     ## Si este esta antes de siguiente da prioridad a variables
     for vt in reversed(varsTablesPile):
         if idPush in vt.table:
+            print("insideeeeee np_push_id_type", idPush)
+
             # print(idPush, vt.table[idPush].type)
             if vt.table[idPush].dim != None:
                 quadrupleList.dimensionalOperandsStack.append(idPush)
@@ -845,15 +851,18 @@ def p_np_push_id_type(p):
 
             return
 
-    temp = "current_parameters_list" in globals()
-    if temp:
-        for parameter in current_parameters_list:
-            if idPush == parameter.id:
-                # print(idPush, parameter.type)
-                print("idPush", idPush)
-                quadrupleList.operandsStack.append(idPush)
-                quadrupleList.typesStack.append(parameter.type)
-                return
+    # temp = "current_parameters_list" in globals()
+    # if temp:
+    #     print("------->")
+    #     for parameter in current_parameters_list:
+    #         if idPush == parameter.id:
+    #             # print(idPush, parameter.type)
+    #             print("idPush", idPush)
+    #             # quadrupleList.operandsStack.append(idPush)
+    #             # quadrupleList.typesStack.append(parameter.type)
+    #             quadrupleList.operandsStack.pop()
+    #             quadrupleList.typesStack.pop()
+    #             return
 
     print(f"Variable {idPush} not declared")
     exit()
@@ -927,6 +936,7 @@ def p_np_push_assignation_operator(p):
     global operPush
     operPush = p[-1]
     quadrupleList.operatorsStack.append(operPush)
+    
 
 def p_np_result_assignation(p):
     '''
@@ -1121,10 +1131,20 @@ def p_np_check_func_exists(p):
     idVerify =p[-1]
 
     functionId = p[-1]
+  
+    #       #print(current_func_type)
+    #     #   quadrupleList.quadrupleListToString()
+    #       
     if not functionId in current_functionsTable.table:
-          print(f"Function {functionId} not declared")
-          exit()
 
+        # if functionId == current_func_name:
+        #     print("mss")
+        #     current_functionsTable.add(current_func_name, current_func_type, current_parameters_list ,current_varsTable, initialQuadruple, [])
+        #     #current_functionsTable.add(current_func_name, None, current_parameters_list ,None , None, [])
+
+        print(f"Function {functionId} not declared, {current_func_name}")
+        exit()
+          
     global parameter_counter
     parameter_counter = 0
 
@@ -1436,9 +1456,15 @@ for func in program.functionsTable.table:
 
     f.write(f"{func}|{program.functionsTable.table[func].quadrupleStart}|{varCount}|{params},")
 f.write("\n")
+
+for key in program.varsTable.table:
+    if program.varsTable.table[key].scope == "globalFunction":
+        f.write(f"{key}|{program.varsTable.table[key].address},")
+f.write("\n")
+
 f.close()
 
-print(constantsTable)
+print("program vars table", [program.varsTable.table[x].scope for x in program.varsTable.table])
 quadrupleList.quadrupleListToString()
 #print("operators")
 #quadrupleList.operatorsStackToString()

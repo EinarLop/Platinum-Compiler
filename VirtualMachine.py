@@ -39,7 +39,15 @@ for val in functions_table:
                 'paramTypes': paramTypes
         }
         
+global_functions =  linecache.getline(os.getcwd() + "/ovejota.txt", 3)
+global_functions  = global_functions.split(",")[:-1]
+global_functions_table = {}
 
+for value in global_functions:
+        current = value.split("|")
+        global_functions_table[current[0]] = int(current[1])
+
+#print(global_functions_table)
 
 def castType(operand):
     if str(operand).find(".") == -1:
@@ -52,7 +60,7 @@ returnFromFunctionStack = []
 paramIntCounter = 0
 paramFloatCounter = 0
 
-offset = 2
+offset = 3
 i = 1 + offset
 while True:
 
@@ -145,4 +153,8 @@ while True:
                 if value < lowerLimit or value> upperLimit-1:
                         print(f"Index out of bounds, lower limit: {lowerLimit}, upper limit: {upperLimit-1}, index: {value}")
                         exit()
+        case "Ret":
+                address = global_functions_table[current_quad[1]]
+                value = memoryManager.get(current_quad[3])
+                memoryManager.add(address, value)
     i+=1

@@ -5,7 +5,8 @@ class main {
       var char jej;
       var bool jkjkjkjk;
       var int array[2];
-      var int matrix[2][2];
+      var int matrix[2][5];
+      var int qqq;
 
   }
   classes {
@@ -19,7 +20,7 @@ class main {
             var int array2[6];
         }
         {
-              write("test")
+              test1(ii)
         }
         return 1
     }
@@ -38,8 +39,7 @@ class main {
   }
   {
 
-    array[0]=1
-    matrix[0][0]=999
+    matrix[0][0]=2
 
 
 

@@ -567,7 +567,10 @@ def p_np_destroy_varsTable(p):
     '''
     np_destroy_varsTable : empty
     '''
+    global current_varsTable
+
     varsTablesPile.append(current_varsTable)
+    current_varsTable=VarsTable()
     # del globals()['current_varsTable']
 
 def p_np_get_var_type(p):
@@ -1376,14 +1379,14 @@ def p_np_verify_array_exp(p):
 
     #if nextPointer(list) paso 3
     if DIMid == 1:
-        print("matrizazzzzzzzzzzzzzzzzzz")
+
         aux= quadrupleList.operandsStack.pop()
         type= quadrupleList.typesStack.pop()
         if isGlobalDimensional:
-            quadrupleList.addQuadruple("*",aux,varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid]+1,0,type)
+            quadrupleList.addQuadruple("*",aux,varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1,0,type)
         else:
-            quadrupleList.addQuadruple("*",aux,current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid]+1,0,type)
-        print("alvvvvvvvvvvvvvvvvvvv",aux,type)
+            quadrupleList.addQuadruple("*",aux,current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1,0,type)
+
 
     if DIMid>1:
         aux2= quadrupleList.operandsStack.pop()
@@ -1440,7 +1443,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case7.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

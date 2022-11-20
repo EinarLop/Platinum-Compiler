@@ -20,26 +20,17 @@ class main {
             var int array2[6];
         }
         {
-              test1(ii)
+              param1= param1 + 1
+              write("estamos en test1")
         }
-        return 1
-    }
-
-    func int test2(float param2, int param3){
-        vars{
-            var float cc2;
-            var float zz2;
-            var int ii2;
-        }
-        {
-              write("hola test2")
-        }
-        return 900
+        return param1
     }
   }
   {
 
-    matrix[0][0]=2
+
+    prueba= test1(69)
+    write(prueba)
 
 
 

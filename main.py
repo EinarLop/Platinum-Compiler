@@ -276,7 +276,7 @@ def p_variable(p):
 
 def p_variable2(p):
     '''
-    variable2 : LEFTBRACKET exp np_verify_array_exp RIGHTBRACKET np_sum_baseA_array variable3
+    variable2 : LEFTBRACKET exp np_verify_array_exp RIGHTBRACKET  variable3 np_sum_baseA_array
               | empty
     '''
     if (len(p) == 5):
@@ -286,7 +286,7 @@ def p_variable2(p):
 
 def p_variable3(p):
     '''
-    variable3 : LEFTBRACKET exp RIGHTBRACKET
+    variable3 : LEFTBRACKET np_DIM_plus exp np_verify_array_exp RIGHTBRACKET
               | empty
     '''
     if (len(p) == 4):
@@ -339,7 +339,7 @@ def p_call(p): #asignar la variable a un temporal despues del go sub
 
 def p_call2(p):
     '''
-    call2 : exp np_generate_quad_parameter   np_check_func_params_counter call3
+    call2 : exp np_generate_quad_parameter np_check_func_params_counter call3
           | empty
     '''
     if (len(p) == 3):
@@ -500,6 +500,13 @@ def p_error(p):
 
 
 ##### NEURALGIC POINTS ######
+def addConstantsTable(constantAdd):
+    global ci_counter
+    if constantAdd not in constantsTable:
+        constantsTable[constantAdd] = CI[0] + ci_counter
+        ci_counter += 1
+    else:
+        pass
 
 def p_np_generate_goto_main(p):
     '''
@@ -586,12 +593,13 @@ def p_np_set_var_type_matrix(p):
     np_set_var_type_matrix : empty
     '''
     global isMatrix
-    global d2
+    global sizesMatrix
+    sizesMatrix=[]
     isMatrix = True
-
+    #size1 size2 sizetotal d2
     global current_dimension_size
     current_dimension_size = p[-5] * p[-2]
-    d2= p[-2] + 1
+    sizesMatrix=[p[-5],p[-2]]
 
 def p_np_get_var_name(p):
     '''
@@ -634,7 +642,7 @@ def p_np_save_var(p):
     '''
     global DIM
     global varAddDimensionalArray
-
+    global sizesMatrix
     DIM=[]
 
     #checar si es un arreglo o una matriz para darle valores a DIM para la tabla de variables
@@ -643,14 +651,12 @@ def p_np_save_var(p):
         varAddDimensional=0
     else:
         if isArray:
-
             DIM.append(current_dimension_size)
             varAddDimensional= current_dimension_size-1
         if isMatrix:
-
-            DIM.append(current_dimension_size)
-            DIM.append(d2)
-            varAddDimensional= current_dimension_size-1
+            for i in sizesMatrix:
+                DIM.append(i)
+            varAddDimensional= (DIM[0]*DIM[1])-1
 
     if global_memory_counter_flag:
 
@@ -835,6 +841,8 @@ def p_np_push_id_type(p):
         if idPush in vt.table:
             # print(idPush, vt.table[idPush].type)
             if vt.table[idPush].dim != None:
+                global DIMid
+                DIMid=1
                 quadrupleList.dimensionalOperandsStack.append(idPush)
                 quadrupleList.typesStack.append(vt.table[idPush].type)
                 quadrupleList.operatorsStack.append('(')
@@ -1331,53 +1339,84 @@ def p_np_verify_array_exp(p):
     '''
     np_verify_array_exp : empty
     '''
-    global ci_counter
+    global isGlobalDimensional
+    isGlobalDimensional =False
 
+    global isArrayCall
+    isArrayCall = True
     #checar si el cero esta en la tabla de constantes
-    constant = 0
-    if constant not in constantsTable:
-        constantsTable[constant] = CI[0] + ci_counter
-        ci_counter += 1
+    addConstantsTable(0)
 
 
 
     ##cosas para sacar el limite superior
     global idArray
-    global countVarsPile
-    countVarsPile=len(varsTablesPile)-1
     idArray = quadrupleList.dimensionalOperandsStack[-1]
-
     #duda
     ##buscar mucho en vt
-    for vt in reversed(varsTablesPile):
-        if  idArray in vt.table:
-            Lsuperior= vt.table[quadrupleList.dimensionalOperandsStack[-1]].dim[0]
-        else:
-            countVarsPile=countVarsPile-1
+    if idArray in current_varsTable.table:
+        Lsuperior= current_varsTable.table[idArray].dim[DIMid-1]
+
+        if len(current_varsTable.table[idArray].dim) > 1:
+            isArrayCall = False
+
+    elif idArray in varsTablesPile[0].table:
+        Lsuperior= varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]
+        isGlobalDimensional = True
+
+        if len(varsTablesPile[0].table[idArray].dim) > 1:
+            isArrayCall = False
 
     #si el limite superior no esta en la tabla de constantes se mete
-    if Lsuperior not in constantsTable:
-        constantsTable[Lsuperior] = CI[0] + ci_counter
-        ci_counter += 1
+    addConstantsTable(Lsuperior)
 
-    #cuadruplo verify
+
+
     quadrupleList.addQuadrupleVerifyArray(quadrupleList.operandsStack[-1],constantsTable[0],constantsTable[Lsuperior])
+
+    #if nextPointer(list) paso 3
+    if DIMid == 1:
+        print("matrizazzzzzzzzzzzzzzzzzz")
+        aux= quadrupleList.operandsStack.pop()
+        type= quadrupleList.typesStack.pop()
+        if isGlobalDimensional:
+            quadrupleList.addQuadruple("*",aux,varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid]+1,0,type)
+        else:
+            quadrupleList.addQuadruple("*",aux,current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid]+1,0,type)
+        print("alvvvvvvvvvvvvvvvvvvv",aux,type)
+
+    if DIMid>1:
+        aux2= quadrupleList.operandsStack.pop()
+        type2= quadrupleList.typesStack.pop()
+        aux1=quadrupleList.operandsStack.pop()
+        type1= quadrupleList.typesStack.pop()
+        typeSC, err = semanticCube.semantic(type1, type2, "+")
+        quadrupleList.addQuadruple("+",aux1,aux2,0,typeSC)
+
+
+def p_np_DIM_plus(p):
+    '''
+    np_DIM_plus : empty
+    '''
+    global DIMid
+    DIMid=DIMid+1
+
 
 def p_np_sum_baseA_array(p):
     '''
     np_sum_baseA_array : empty
     '''
     global idArray
-    global countVarsPile
-    global ci_counter
-    #duda
-    ##buscar mucho en vt
+    global isGlobalDimensional
 
-    baseAdd =varsTablesPile[countVarsPile].table[idArray].address
+    #si es falso esta en la current si no esta en globals
+    if not isGlobalDimensional:
+        baseAdd =current_varsTable.table[idArray].address
+    else:
+        baseAdd =varsTablesPile[0].table[idArray].address
 
-    if baseAdd not in constantsTable:
-        constantsTable[baseAdd] = CI[0] + ci_counter
-        ci_counter += 1
+    addConstantsTable(baseAdd)
+
 
     quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
     quadrupleList.typesStack.pop()
@@ -1401,7 +1440,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case7.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1418,6 +1457,11 @@ case_correct_01 = parser.parse(content)
 # program.toString()
 
 #print("###############QuadrupleTests###############")
+
+#####ConstantsTable####
+
+
+#####ConstantsTable####
 
 
 f = open("ovejota.txt","w+")

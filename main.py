@@ -737,16 +737,16 @@ def p_np_push_func_id_globals(p):
     global global_memory_counter_matrix
 
     if current_var_type  == "int":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GI[0] + global_memory_counter_int,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GI[0] + global_memory_counter_int,None)
         global_memory_counter_int += 1
     elif current_var_type  == "float":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GF[0] + global_memory_counter_float,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GF[0] + global_memory_counter_float,None)
         global_memory_counter_float += 1
     elif current_var_type  == "char":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GC[0] + global_memory_counter_char,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GC[0] + global_memory_counter_char,None)
         global_memory_counter_char += 1
     elif current_var_type  == "bool":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GB[0] + global_memory_counter_bool,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GB[0] + global_memory_counter_bool,None)
         global_memory_counter_bool += 1
 
 
@@ -1440,7 +1440,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1480,6 +1480,14 @@ for func in program.functionsTable.table:
 
     f.write(f"{func}|{program.functionsTable.table[func].quadrupleStart}|{varCount}|{params},")
 f.write("\n")
+
+for key in program.varsTable.table:
+    if program.varsTable.table[key].scope == "globalFunction":
+        print("jejejejejejejjej")
+        f.write(f"{key}|{program.varsTable.table[key].address},")
+f.write("\n")
+
+
 f.close()
 
 print(constantsTable)

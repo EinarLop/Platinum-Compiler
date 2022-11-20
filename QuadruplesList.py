@@ -247,6 +247,9 @@ class QuadruplesList:
 
     ######################condition##########################
     def generateGoToFCondition(self):
+        if self.typesStack.pop() != "bool":
+            print(f"Conditional not bool")
+            exit()
         condition = self.operandsStack.pop()
         self.addQuadrupleCondition("gotoF",condition,'',None)
         self.jumpsStack.append(self.cont-1)

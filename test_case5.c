@@ -1,26 +1,28 @@
 class main {
   global vars{
-      var int prueba;
+      var bool sumOne;
+      var int aa, bb;
   }
   classes {
   }
   functions{
     func int sum(int elementOne, int elementTwo){
       vars{
-        var int aa;
+        var bool aa;
       }
       {
-        write(elementOne + elementTwo)
+        write("inside sum")
       }
-      return aa
+      return elementOne + elementTwo
     }
   }
-
   {
-    
-    sum(1,100)
-    sum(200, 300)
+    aa = sum(7,7)
+    bb = sum(5,5)
 
+    write(sum(aa, bb))
   }
+  
 }
+
  

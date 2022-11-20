@@ -853,15 +853,15 @@ def p_np_push_id_type(p):
 
             return
 
-    temp = "current_parameters_list" in globals()
-    if temp:
-        for parameter in current_parameters_list:
-            if idPush == parameter.id:
-                # print(idPush, parameter.type)
-                print("idPush", idPush)
-                quadrupleList.operandsStack.append(idPush)
-                quadrupleList.typesStack.append(parameter.type)
-                return
+    # temp = "current_parameters_list" in globals()
+    # if temp:
+    #     for parameter in current_parameters_list:
+    #         if idPush == parameter.id:
+    #             # print(idPush, parameter.type)
+    #             print("idPush", idPush)
+    #             quadrupleList.operandsStack.append(idPush)
+    #             quadrupleList.typesStack.append(parameter.type)
+    #             return
 
     print(f"Variable {idPush} not declared")
     exit()
@@ -1132,6 +1132,9 @@ def p_np_check_func_exists(p):
     if not functionId in current_functionsTable.table:
           print(f"Function {functionId} not declared")
           exit()
+    else: 
+        print("_________>...", current_functionsTable.table[functionId].type)
+        quadrupleList.typesStack.append(current_functionsTable.table[functionId].type)
 
     global parameter_counter
     parameter_counter = 0

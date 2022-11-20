@@ -740,16 +740,16 @@ def p_np_push_func_id_globals(p):
     global global_memory_counter_matrix
 
     if current_var_type  == "int":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GI[0] + global_memory_counter_int,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GI[0] + global_memory_counter_int,None)
         global_memory_counter_int += 1
     elif current_var_type  == "float":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GF[0] + global_memory_counter_float,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GF[0] + global_memory_counter_float,None)
         global_memory_counter_float += 1
     elif current_var_type  == "char":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GC[0] + global_memory_counter_char,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GC[0] + global_memory_counter_char,None)
         global_memory_counter_char += 1
     elif current_var_type  == "bool":
-        varsTablesPile[0].add(current_func_name, current_func_type, current_var_scope, GB[0] + global_memory_counter_bool,None)
+        varsTablesPile[0].add(current_func_name, current_func_type,  "globalFunction", GB[0] + global_memory_counter_bool,None)
         global_memory_counter_bool += 1
 
 
@@ -856,15 +856,15 @@ def p_np_push_id_type(p):
 
             return
 
-    temp = "current_parameters_list" in globals()
-    if temp:
-        for parameter in current_parameters_list:
-            if idPush == parameter.id:
-                # print(idPush, parameter.type)
-                print("idPush", idPush)
-                quadrupleList.operandsStack.append(idPush)
-                quadrupleList.typesStack.append(parameter.type)
-                return
+    # temp = "current_parameters_list" in globals()
+    # if temp:
+    #     for parameter in current_parameters_list:
+    #         if idPush == parameter.id:
+    #             # print(idPush, parameter.type)
+    #             print("idPush", idPush)
+    #             quadrupleList.operandsStack.append(idPush)
+    #             quadrupleList.typesStack.append(parameter.type)
+    #             return
 
     print(f"Variable {idPush} not declared")
     exit()
@@ -1135,6 +1135,9 @@ def p_np_check_func_exists(p):
     if not functionId in current_functionsTable.table:
           print(f"Function {functionId} not declared")
           exit()
+    else:
+        print("_________>...", current_functionsTable.table[functionId].type)
+        quadrupleList.typesStack.append(current_functionsTable.table[functionId].type)
 
     global parameter_counter
     parameter_counter = 0
@@ -1483,6 +1486,14 @@ for func in program.functionsTable.table:
 
     f.write(f"{func}|{program.functionsTable.table[func].quadrupleStart}|{varCount}|{params},")
 f.write("\n")
+
+for key in program.varsTable.table:
+    if program.varsTable.table[key].scope == "globalFunction":
+        print("jejejejejejejjej")
+        f.write(f"{key}|{program.varsTable.table[key].address},")
+f.write("\n")
+
+
 f.close()
 
 print(constantsTable)

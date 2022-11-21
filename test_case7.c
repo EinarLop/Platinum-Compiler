@@ -1,27 +1,32 @@
 class main {
   global vars{
-      var int array[9][9];
       var int aa,bb,cc;
   }
   classes {
   }
   functions{
+
+    func int sum(int elementOne, int elementTwo){
+      vars{
+        var bool bb;
+      }
+      {
+        for(aa=1 to 10) do
+        {
+          write(aa)
+        };
+      }
+      return aa
+    }
   }
-
   {
-    aa = 0
 
-    while(aa < 9) do
-    {
-        array[aa][aa] = 8 - aa
-        aa = aa + 1
-    };
-    aa = 0
-    while(aa < 9) do
-    {
-        write(array[aa][aa])
-        aa = aa + 1
-    };
+      write(aa)
+
+
+
+
+
 
   }
 }

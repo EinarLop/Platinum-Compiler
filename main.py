@@ -1111,7 +1111,38 @@ def p_np_for_push_id(p):
     #si el tipo del id no es un numero entonces typemismatch
     #if
     #else
-    quadrupleList.operandsStack.append(pushID)
+    ## Si este esta antes de siguiente da prioridad a variables
+    for vt in reversed(varsTablesPile):
+        if pushID in vt.table:
+            # print(idPush, vt.table[idPush].type)
+            if vt.table[pushID].dim != None:
+                global DIMid
+                DIMid=1
+                quadrupleList.dimensionalOperandsStack.append(pushID)
+                quadrupleList.typesStack.append(vt.table[pushID].type)
+                quadrupleList.operatorsStack.append('(')
+            elif vt.table[pushID].dim == None:
+                quadrupleList.operandsStack.append(vt.table[pushID].address)
+                quadrupleList.typesStack.append(vt.table[pushID].type)
+                if vt.table[pushID].type != "int" and vt.table[pushID].type != "float":
+                    print(f"Variable {idPush} not numeric type")
+                    exit()
+            #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
+
+            return
+
+    # temp = "current_parameters_list" in globals()
+    # if temp:
+    #     for parameter in current_parameters_list:
+    #         if idPush == parameter.id:
+    #             # print(idPush, parameter.type)
+    #             print("idPush", idPush)
+    #             quadrupleList.operandsStack.append(idPush)
+    #             quadrupleList.typesStack.append(parameter.type)
+    #             return
+
+    print(f"Variable {idPush} not declared")
+    exit()
 
 
 def p_np_for_FIRSTexp(p):
@@ -1464,7 +1495,8 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('arithmetic_exp_TC.c', 'r')
+#f = open('arithmetic_exp_TC.c', 'r')
+f = open('test_case8.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

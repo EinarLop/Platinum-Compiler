@@ -247,5 +247,5 @@ while True:
             #memoryManager.add(, value)
 
 
-            print(currentValue.pop())
+            #print(currentValue.pop())
     i+=1

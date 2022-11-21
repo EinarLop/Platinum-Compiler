@@ -403,5 +403,3 @@ class QuadruplesList:
             self.TC = [7000,7999]
             self.TB = [8000,8999]
             self.TP = [30000,30999]
-
-

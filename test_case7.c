@@ -1,6 +1,6 @@
 class main {
   global vars{
-      var int array[9];
+      var int array[9][9];
       var int aa,bb,cc;
   }
   classes {
@@ -10,19 +10,18 @@ class main {
 
   {
     aa = 0
-    
+
     while(aa < 9) do
     {
-        array[aa] = 8 - aa
+        array[aa][aa] = 8 - aa
         aa = aa + 1
     };
     aa = 0
     while(aa < 9) do
-    {   
-        write(array[aa])
+    {
+        write(array[aa][aa])
         aa = aa + 1
     };
-    
+
   }
 }
- 

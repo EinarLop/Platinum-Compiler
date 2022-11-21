@@ -4,7 +4,7 @@ from VirtualMemory import VirtualMemory
 from MemoryManager import MemoryManager
 
 memoryManager = MemoryManager()
-memoryManager.initGlobalMemory([20,20,20,20,20,20,20,20], "GLOBAL")
+memoryManager.initGlobalMemory([200,200,200,200,200,200,200,200], "GLOBAL")
 memoryManager.initConstantsMemory([10,10,10,10], "CONSTANTS")
 
 constants_table = linecache.getline(os.getcwd() + "/ovejota.txt", 1 )
@@ -31,14 +31,14 @@ for val in functions_table:
                 paramNames.append(current[0])
                 paramTypes.append(current[1])
 
-                
+
         functions_table_dict[name] = {
                 'qs': quadrupleStart,
                 'size': size,
                 'paramNames': paramNames,
                 'paramTypes': paramTypes
         }
-        
+
 global_functions =  linecache.getline(os.getcwd() + "/ovejota.txt", 3)
 global_functions  = global_functions.split(",")[:-1]
 global_functions_table = {}
@@ -69,16 +69,17 @@ while True:
 
     current_quad = txt_current_quad.split(",")
     current_quad[3] = current_quad[3][:-1]
-    
-    
+
+
     match current_quad[0]:
         case "WRITE":
             if current_quad[1][0] == '"' and current_quad[1][-1] == '"':
-                print(current_quad[1])   
+                print(current_quad[1])
             else:
                 print(memoryManager.get(current_quad[1]))
         case "=":
                 # Added str() to fix arrays
+
                 memoryManager.add(current_quad[3], str(memoryManager.get(current_quad[1])))
         case "+":
                 operandOne = memoryManager.get(current_quad[1])
@@ -86,18 +87,26 @@ while True:
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
                 #print("inside", [operandOne,operandTwo,current_quad[3] ])
-                
+
                 memoryManager.add(current_quad[3], operandOne + operandTwo)
         case "-":
+                #print("insidr menps looking for memories", memoryManager.local_memories)
+
                 operandOne = memoryManager.get(current_quad[1])
-                operandTwo = memoryManager.get(current_quad[2])
+
                 operandOne = castType(operandOne)
+
+                operandTwo = memoryManager.get(current_quad[2])
+
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne - operandTwo)
         case "*":
+
                 operandOne = memoryManager.get(current_quad[1])
-                operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
+
+                operandTwo = memoryManager.get(current_quad[2])
+                #print(",,,,,,,,",operandOne,operandTwo)
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne * operandTwo)
 
@@ -109,10 +118,13 @@ while True:
                 memoryManager.add(current_quad[3], operandOne / operandTwo)
 
         case "<":
+
+
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
+
                 memoryManager.add(current_quad[3], operandOne < operandTwo)
         case "goto":
                 jumpToLine = int(current_quad[3])
@@ -121,7 +133,7 @@ while True:
             if not memoryManager.get(current_quad[1]):
                 jumpToLine = int(current_quad[3])
                 i = offset + jumpToLine - 1
-        
+
         case "goSub":
                 returnFromFunctionStack.append(i+1)
                 jumpToLine = int(current_quad[3])
@@ -135,16 +147,24 @@ while True:
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
 
         case "param":
-                getParamValue = memoryManager.get(int(current_quad[1])) 
+                #print("xxxxxxxxxxxxxxxxxxxxxx",current_quad[1])
+                #print("brforeeeeee grt")
+                getParamValue = memoryManager.get(int(current_quad[1]))
+                #print(getParamValue, "insidr psrsm")
+
+
 
                 if str(getParamValue).find(".") == -1:
+                        #print("param countrt", paramIntCounter)
+                        #print("@@@@@@@@@@@@@@@@@@@@@@@@@Q", getParamValue)
+
                         memoryManager.add(10000+paramIntCounter, getParamValue)
                         paramIntCounter += 1
                 else:
                         memoryManager.add(11000+paramFloatCounter, getParamValue)
                         paramFloatCounter += 1
         case "verify":
-                
+
                 value = int(memoryManager.get(int(current_quad[1])))
                 lowerLimit = int(memoryManager.get(int(current_quad[2])))
                 upperLimit =  int(memoryManager.get(int(current_quad[3])))
@@ -155,4 +175,6 @@ while True:
                 address = global_functions_table[current_quad[1]]
                 value = memoryManager.get(current_quad[3])
                 memoryManager.add(address, value)
+                memoryManager.destroyLocalMemory()
+                i = returnFromFunctionStack.pop(-1) - 1
     i+=1

@@ -56,6 +56,7 @@ class VirtualMemory():
 
 
         if address>= self.I[0] and address <= self.I[1]:
+            #print("ddddddd",address - self.I[0])
             self.m_int[address - self.I[0]] = value
 
         elif address>= self.F[0] and address <= self.F[1]:
@@ -123,7 +124,7 @@ class VirtualMemory():
            # print("gettttt1", [address, self.get(self.m_PT[address - self.PT[0]])])
             #print("gettttt2", self.get(self.m_PT[address - self.PT[0]])
 
-            
+
             return self.get(self.m_PT[address - self.PT[0]])
 
 

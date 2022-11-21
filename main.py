@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_save_function np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable np_save_function block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_pop_varsTable np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -810,7 +810,8 @@ def p_np_save_function(p):
     '''
     np_save_function : empty
     '''
-    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile.pop(-1),initialQuadruple, current_funcTempTable)
+
+    current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile[-1],initialQuadruple, [0,0,0,0])
     del globals()["current_parameters_list"]
 
 def p_np_get_func_params(p):
@@ -1136,7 +1137,7 @@ def p_np_check_func_exists(p):
           print(f"Function {functionId} not declared")
           exit()
     else:
-        print("_________>...", current_functionsTable.table[functionId].type)
+        #print("_________>...", current_functionsTable.table[functionId].type)
         quadrupleList.typesStack.append(current_functionsTable.table[functionId].type)
 
     global parameter_counter
@@ -1188,6 +1189,11 @@ def p_np_init_func_tempTable(p):
     global current_funcTempTable
     current_funcTempTable = [0,0,0,0]
 
+def p_np_pop_varsTable(p):
+    '''
+    np_pop_varsTable : empty
+    '''
+    varsTablesPile.pop(-1)
 ############ Helper Functions ############
 
 def registerTempVariable(tempType):
@@ -1381,14 +1387,16 @@ def p_np_verify_array_exp(p):
     quadrupleList.addQuadrupleVerifyArray(quadrupleList.operandsStack[-1],constantsTable[0],constantsTable[Lsuperior])
 
     #if nextPointer(list) paso 3
-    if DIMid == 1:
+    if DIMid == 1 and not isArrayCall:
 
         aux= quadrupleList.operandsStack.pop()
         type= quadrupleList.typesStack.pop()
         if isGlobalDimensional:
-            quadrupleList.addQuadruple("*",aux,varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1,0,type)
+            addConstantsTable(varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1)
+            quadrupleList.addQuadruple("*",aux,constantsTable[varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1],0,type)
         else:
-            quadrupleList.addQuadruple("*",aux,current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1,0,type)
+            addConstantsTable(current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1)
+            quadrupleList.addQuadruple("*",aux,constantsTable[current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1],0,type)
 
 
     if DIMid>1:
@@ -1446,7 +1454,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case8.c', 'r')
+f = open('test_case5.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
@@ -1489,7 +1497,7 @@ f.write("\n")
 
 for key in program.varsTable.table:
     if program.varsTable.table[key].scope == "globalFunction":
-        print("jejejejejejejjej")
+        #print("jejejejejejejjej")
         f.write(f"{key}|{program.varsTable.table[key].address},")
 f.write("\n")
 

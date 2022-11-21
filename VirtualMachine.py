@@ -74,7 +74,7 @@ while True:
     match current_quad[0]:
         case "WRITE":
             if current_quad[1][0] == '"' and current_quad[1][-1] == '"':
-                print(current_quad[1])
+                print(eval(current_quad[1]))
             else:
                 print(memoryManager.get(current_quad[1]))
         case "=":
@@ -126,6 +126,61 @@ while True:
                 operandTwo = castType(operandTwo)
 
                 memoryManager.add(current_quad[3], operandOne < operandTwo)
+        case ">":
+
+
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+        case ">=":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne >= operandTwo)
+
+        case "<=":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne <= operandTwo)
+
+        case "==":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne is operandTwo)
+
+        case "<>":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne != operandTwo)
+
+        case "&&":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne and operandTwo)
+
+        case "||":
+                operandOne = memoryManager.get(current_quad[1])
+                operandTwo = memoryManager.get(current_quad[2])
+                operandOne = castType(operandOne)
+                operandTwo = castType(operandTwo)
+
+                memoryManager.add(current_quad[3], operandOne or operandTwo)
         case "goto":
                 jumpToLine = int(current_quad[3])
                 i = offset + jumpToLine - 1
@@ -177,4 +232,20 @@ while True:
                 memoryManager.add(address, value)
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
+
+        # case "READ":
+        #     currentValue = input()
+        #     currentValue = str(currentValue)
+        #
+        #     if str(operand).find(".") == -1:
+        #         return int(operand)
+        #     else:
+        #         return float(operand)
+        #
+        #
+        #     print(type(current_value))
+            #memoryManager.add(, value)
+
+
+            print(currentValue.pop())
     i+=1

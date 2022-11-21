@@ -204,7 +204,7 @@ class QuadruplesList:
 
 
     def generate_sExp_quad(self,leftOperator):
-        listOperandsSexp = ["<",">","<=",">=","<>"]
+        listOperandsSexp = ["<",">","<=",">=","<>","=="]
         if len(self.operatorsStack) != 0:
             if self.operatorsStack[-1] in listOperandsSexp:
                 ROperand = self.operandsStack.pop()

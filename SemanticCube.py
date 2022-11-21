@@ -16,7 +16,8 @@ class SemanticCube:
                     '>': 'bool',
                     '<=': 'bool',
                     '>=': 'bool',
-                    '=' : 'int'
+                    '=' : 'int',
+                    '==': 'bool'
                 },
                 'float': {
                     '+':'float',
@@ -43,7 +44,8 @@ class SemanticCube:
                     '>': 'bool',
                     '<=': 'bool',
                     '>=': 'bool',
-                    '=' : 'float'
+                    '=' : 'float',
+                    '==' : 'bool'
                   },
                   'int': {
                     '+':'float',
@@ -57,21 +59,24 @@ class SemanticCube:
                     '<=': 'bool',
                     '>=': 'bool'
                   }
-                  
+
             },
             'char':{
                 'char': {
-                    '=' :  'char', 
-                    '+' : 'char'
+                    '=' :  'char',
+                    '+' : 'char',
+                    '==' : 'bool'
+                }
+            },
+            'bool':{
+                'bool': {
+                    '&&' :  'bool',
+                    '||' : 'bool',
                 }
             }
-            
+
         }
     def semantic(self, operand1, operand2, operator):
         if operand1 in self.cube and operand2 in self.cube[operand1] and operator in self.cube[operand1][operand2]:
            return self.cube[operand1][operand2][operator], None
         else: return None, Error('Type Mismatch')
-
-
-
-

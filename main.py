@@ -391,7 +391,7 @@ def p_assignment2(p):
 
 def p_read(p):
     '''
-    read : READ LEFTPARENTHESIS variable np_generate_read_quadruple RIGHTPARENTHESIS
+    read : READ LEFTPARENTHESIS ID np_generate_read_quadruple RIGHTPARENTHESIS
 
     '''
     p[0] = ('rule read : ', p[1],p[2])
@@ -1060,8 +1060,18 @@ def p_np_generate_read_quadruple(p):
     '''
 
     global operand
-    operand=p[-1][1]
-    quadrupleList.addQuadrupleReadWrite("READ",operand,'','')
+    operand=p[-1]
+    for vt in reversed(varsTablesPile):
+        if operand in vt.table:
+            if vt.table[idPush].dim == None:
+                quadrupleList.addQuadrupleReadWrite("READ",vt.table[operand].address,'','')
+            #print(f"{idPush} ---> {vt.table[idPush].address} ---> {vt.table[idPush].type}")
+
+            return
+
+    print(f"Variable {idPush} not declared")
+    exit()
+
 
 #############################read#############################
 
@@ -1454,7 +1464,7 @@ def p_np_set_temp_global_flag(p):
     quadrupleList.changeScope()
 
 parser = yacc()
-f = open('test_case5.c', 'r')
+f = open('arithmetic_exp_TC.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

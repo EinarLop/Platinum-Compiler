@@ -11,16 +11,23 @@ class main {
             var int ii;
         }
         {
+          if(nn<2)
+          {
+            ii= 1
+          }
+          else
+          {
+            ii= test(nn-1)
+          }
 
-          ii= test(nn-1)
         }
-        return 1
+        return ii
     }
 
 
   }
   {
-    write(test(4))
+    write(test(1))
 
 
   }

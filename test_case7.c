@@ -20,13 +20,6 @@ class main {
     }
   }
   {
-
       write(aa)
-
-
-
-
-
-
   }
 }

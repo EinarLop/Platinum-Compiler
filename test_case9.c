@@ -1,7 +1,8 @@
 class main {
   global vars{
+      var int aa,bb,index;
       var int prueba[4];
-      var int matrix[2][2];
+      var int matrix[5][5];
   }
   classes {
   }
@@ -9,12 +10,38 @@ class main {
     }
   {
 
-     matrix[0][0] =70
-     matrix[0][1] =60
-     matrix[1][0] =50
-     write(matrix[0][0])
-     write(matrix[0][1])
-     write(matrix[1][0])
+    aa=0
+    bb= 0
+    index=5
+    while(aa<index)do
+    {
+
+      while(bb<index)do
+      {
+        matrix[aa][bb]=69
+        bb=bb+1
+      };
+      bb=0
+
+      aa=aa+1
+    };
+
+    aa=0
+    bb= 0
+    
+    while(aa<index)do
+    {
+
+      while(bb<index)do
+      {
+        write(matrix[aa][bb])
+        bb=bb+1
+      };
+      bb=0
+
+      aa=aa+1
+    };
+
 
 
   }

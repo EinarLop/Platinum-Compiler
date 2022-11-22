@@ -47,7 +47,7 @@ class VirtualMemory():
             self.m_char = [None] * size[2]
             self.m_bool = [None] * size[3]
 
-        self.m_PT = [None] * 10
+        self.m_PT = [None] * 200
         #meter fuera de los ifs los temporal pointers y colocar
         #self.m_tp = none *size
     def add(self, address, value):

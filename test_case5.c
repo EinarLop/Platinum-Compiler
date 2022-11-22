@@ -23,7 +23,7 @@ class main {
 
     write(sum(aa, bb))
 
-  
+
   }
 
 }

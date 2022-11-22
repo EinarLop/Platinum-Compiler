@@ -343,11 +343,11 @@ class QuadruplesList:
 
             self.addQuadrupleCycles("<",self.controlledVar[-1],self.finalVars[-1],current_temp_memory_address)
             self.jumpsStack.append(self.cont-1)
-            self.addQuadrupleCycles("GotoF",current_temp_memory_address,'',None)
+            self.addQuadrupleCycles("gotoF",current_temp_memory_address,'',None)
             self.jumpsStack.append(self.cont-1)
 
 
-    def forChangeVC(self):
+    def forChangeVC(self,oneConstant):
         current_temp_memory_address= 0
 
         if self.typesStack[-1]  == "int":
@@ -356,12 +356,12 @@ class QuadruplesList:
         elif self.typesStack[-1]  == "float":
                 current_temp_memory_address =  self.TF[0] + self.counter_tFloat
                 self.counter_tFloat+=1
-        self.addQuadrupleCycles("+",self.controlledVar[-1],1,current_temp_memory_address)
+        self.addQuadrupleCycles("+",self.controlledVar[-1],oneConstant,current_temp_memory_address)
         self.addQuadrupleCycles("=",current_temp_memory_address,'',self.controlledVar[-1])
         self.addQuadrupleCycles("=",current_temp_memory_address,'',self.operandsStack[-1])
         FIN = self.jumpsStack.pop()
         Retorno = self.jumpsStack.pop()
-        self.addQuadrupleCycles("Goto",'','',Retorno)
+        self.addQuadrupleCycles("goto",'','',Retorno)
         self.quadruples[FIN-1].temporal=self.cont
         self.operandsStack.pop()
         self.controlledVar.pop()

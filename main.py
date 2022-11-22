@@ -1161,8 +1161,8 @@ def p_np_for_changesVC(p):
     '''
     np_for_changesVC : empty
     '''
-
-    quadrupleList.forChangeVC()
+    addConstantsTable(1)
+    quadrupleList.forChangeVC(constantsTable[1])
 #############################for#############################
 
 #############################functions call#############################
@@ -1421,6 +1421,7 @@ def p_np_verify_array_exp(p):
             isArrayCall = False
 
     #si el limite superior no esta en la tabla de constantes se mete
+
     addConstantsTable(Lsuperior)
 
 
@@ -1496,7 +1497,7 @@ def p_np_set_temp_global_flag(p):
 
 parser = yacc()
 #f = open('arithmetic_exp_TC.c', 'r')
-f = open('test_case8.c', 'r')
+f = open('test_case12.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 

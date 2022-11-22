@@ -5,7 +5,7 @@ from MemoryManager import MemoryManager
 
 memoryManager = MemoryManager()
 memoryManager.initGlobalMemory([200,200,200,200,200,200,200,200], "GLOBAL")
-memoryManager.initConstantsMemory([10,10,10,10], "CONSTANTS")
+memoryManager.initConstantsMemory([100,100,100,100], "CONSTANTS")
 
 constants_table = linecache.getline(os.getcwd() + "/ovejota.txt", 1 )
 constants_table = constants_table.split(",")[:-1]
@@ -48,6 +48,7 @@ for value in global_functions:
         global_functions_table[current[0]] = int(current[1])
 
 def castType(operand):
+    #print("alvvv",operand)
     if str(operand).find(".") == -1:
         return int(operand)
     else:
@@ -79,15 +80,16 @@ while True:
                 print(memoryManager.get(current_quad[1]))
         case "=":
                 # Added str() to fix arrays
-
+                #print("algo igual a algo",current_quad[3],"=",memoryManager.get(current_quad[1]))
                 memoryManager.add(current_quad[3], str(memoryManager.get(current_quad[1])))
         case "+":
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
+                #print("algo + algo",operandOne,"+",operandTwo)
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
                 #print("inside", [operandOne,operandTwo,current_quad[3] ])
-
+                #print("algo + algo",operandOne,"+",operandTwo)
                 memoryManager.add(current_quad[3], operandOne + operandTwo)
         case "-":
                 #print("insidr menps looking for memories", memoryManager.local_memories)
@@ -124,6 +126,7 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
+                #print("algo < a algo",memoryManager.get(current_quad[1]),"<",memoryManager.get(current_quad[2]))
 
                 memoryManager.add(current_quad[3], operandOne < operandTwo)
         case ">":
@@ -131,8 +134,10 @@ while True:
 
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
+                #print(operandOne,">",operandTwo)
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
+                memoryManager.add(current_quad[3], operandOne > operandTwo)
 
         case ">=":
                 operandOne = memoryManager.get(current_quad[1])
@@ -182,8 +187,11 @@ while True:
 
                 memoryManager.add(current_quad[3], operandOne or operandTwo)
         case "goto":
+
                 jumpToLine = int(current_quad[3])
                 i = offset + jumpToLine - 1
+
+
         case "gotoF":
             if not memoryManager.get(current_quad[1]):
                 jumpToLine = int(current_quad[3])

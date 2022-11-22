@@ -47,7 +47,7 @@ class VirtualMemory():
             self.m_char = [None] * size[2]
             self.m_bool = [None] * size[3]
 
-        self.m_PT = [None] * 10
+        self.m_PT = [None] * 200
         #meter fuera de los ifs los temporal pointers y colocar
         #self.m_tp = none *size
     def add(self, address, value):
@@ -56,6 +56,7 @@ class VirtualMemory():
 
 
         if address>= self.I[0] and address <= self.I[1]:
+            #print("ddddddd",address - self.I[0])
             self.m_int[address - self.I[0]] = value
 
         elif address>= self.F[0] and address <= self.F[1]:
@@ -123,7 +124,7 @@ class VirtualMemory():
            # print("gettttt1", [address, self.get(self.m_PT[address - self.PT[0]])])
             #print("gettttt2", self.get(self.m_PT[address - self.PT[0]])
 
-            
+
             return self.get(self.m_PT[address - self.PT[0]])
 
 

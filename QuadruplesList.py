@@ -204,7 +204,7 @@ class QuadruplesList:
 
 
     def generate_sExp_quad(self,leftOperator):
-        listOperandsSexp = ["<",">","<=",">=","<>"]
+        listOperandsSexp = ["<",">","<=",">=","<>","=="]
         if len(self.operatorsStack) != 0:
             if self.operatorsStack[-1] in listOperandsSexp:
                 ROperand = self.operandsStack.pop()
@@ -283,15 +283,38 @@ class QuadruplesList:
         #primeramente se hace pop de tipos , si no es numero type-typemismatch
         #paso 1: expType=quadrupleList.typesStack.pop()
         # si no es numero typemismatch
-
+        expType=self.typesStack.pop()
+        if expType != "int" and expType != "float":
+            print(f"Variable {expType} not numeric, type mistmatch in first EXP in for cycle")
+            exit()
+        else:
         #else ----esto ya son los siguientes pasos
-        exp = self.operandsStack.pop()
-        Vcontrol = self.operandsStack[-1]
-        #tipos con semantica
-        self.addQuadrupleCycles("=",exp,'',Vcontrol)
-        self.addQuadrupleCycles("=",Vcontrol,'',self.temporals)
-        self.controlledVar.append(self.temporals)
-        self.temporals+=1
+            exp = self.operandsStack.pop()
+            Vcontrol = self.operandsStack[-1]
+            controlType= self.typesStack[-1]
+            current_temp_memory_address = 0
+            #tipos con semantica
+
+            typeTemp, err = semanticCube.semantic(expType, controlType, "=")
+            if err != None:
+                print(f"Type miss match between for assignation")
+                exit()
+
+            quad=Quadruple("=",exp,'',Vcontrol)
+            self.quadruples.append(quad)
+            self.cont+=1
+            if expType  == "int":
+                    current_temp_memory_address =  self.TI[0] + self.counter_tInt
+                    self.counter_tInt+=1
+            elif expType  == "float":
+                    current_temp_memory_address =  self.TF[0] + self.counter_tFloat
+                    self.counter_tFloat+=1
+
+            quad=Quadruple("=",Vcontrol,'',current_temp_memory_address)
+            self.quadruples.append(quad)
+            self.cont+=1
+
+            self.controlledVar.append(self.quadruples[-1].temporal)
 
     def generateVFinalQuadruple(self):
 
@@ -299,33 +322,51 @@ class QuadruplesList:
         #paso 1: expType=quadrupleList.typesStack.pop()
         # si no es numero typemismatch
 
-        #else ----esto ya son los siguientes pasos
-        exp = self.operandsStack.pop()
-        self.addQuadrupleCycles("=",exp,'',self.temporals)
-        self.finalVars.append(self.temporals)
-        self.temporals+=1
+        expType=self.typesStack.pop()
+        current_temp_memory_address = 0
+        if expType != "int" and expType != "float":
+            print(f"Variable {expType} not numeric, type mistmatch in first EXP in for cycle")
+            exit()
+        else:
+            exp = self.operandsStack.pop()
+            if expType  == "int":
+                    current_temp_memory_address =  self.TI[0] + self.counter_tInt
+                    self.counter_tInt+=1
+            elif expType  == "float":
+                    current_temp_memory_address =  self.TF[0] + self.counter_tFloat
+                    self.counter_tFloat+=1
+            self.addQuadrupleCycles("=",exp,'',current_temp_memory_address)
+            self.finalVars.append(current_temp_memory_address)
+
+            current_temp_memory_address =  self.TB[0] + self.counter_tBool
+            self.counter_tBool+=1
+
+            self.addQuadrupleCycles("<",self.controlledVar[-1],self.finalVars[-1],current_temp_memory_address)
+            self.jumpsStack.append(self.cont-1)
+            self.addQuadrupleCycles("gotoF",current_temp_memory_address,'',None)
+            self.jumpsStack.append(self.cont-1)
 
 
-        self.addQuadrupleCycles("<",self.controlledVar[-1],self.finalVars[-1],self.temporals)
-        self.jumpsStack.append(self.cont-1)
-        self.addQuadrupleCycles("GotoF",self.temporals,'',None)
-        self.jumpsStack.append(self.cont-1)
-        self.temporals+=1
+    def forChangeVC(self,oneConstant):
+        current_temp_memory_address= 0
 
-
-    def forChangeVC(self):
-        self.addQuadrupleCycles("+",self.controlledVar[-1],1,self.temporals)
-        self.addQuadrupleCycles("=",self.temporals,'',self.controlledVar[-1])
-        self.addQuadrupleCycles("=",self.temporals,'',self.operandsStack[-1])
-        self.temporals+=1
+        if self.typesStack[-1]  == "int":
+                current_temp_memory_address =  self.TI[0] + self.counter_tInt
+                self.counter_tInt+=1
+        elif self.typesStack[-1]  == "float":
+                current_temp_memory_address =  self.TF[0] + self.counter_tFloat
+                self.counter_tFloat+=1
+        self.addQuadrupleCycles("+",self.controlledVar[-1],oneConstant,current_temp_memory_address)
+        self.addQuadrupleCycles("=",current_temp_memory_address,'',self.controlledVar[-1])
+        self.addQuadrupleCycles("=",current_temp_memory_address,'',self.operandsStack[-1])
         FIN = self.jumpsStack.pop()
         Retorno = self.jumpsStack.pop()
-        self.addQuadrupleCycles("Goto",'','',Retorno)
+        self.addQuadrupleCycles("goto",'','',Retorno)
         self.quadruples[FIN-1].temporal=self.cont
         self.operandsStack.pop()
         self.controlledVar.pop()
         self.finalVars.pop()
-        #popear el tipo tambien
+        self.typesStack.pop()
 
     #######################funciones#######################
     def generateEndFuncModule(self):
@@ -364,6 +405,7 @@ class QuadruplesList:
         self.quadruples.append(quad)
 
         self.operandsStack.append(self.quadruples[-1].temporal)
+        self.cont+=1
     #######################Arrays#######################
 
     #######################toString#######################
@@ -403,5 +445,3 @@ class QuadruplesList:
             self.TC = [7000,7999]
             self.TB = [8000,8999]
             self.TP = [30000,30999]
-
-

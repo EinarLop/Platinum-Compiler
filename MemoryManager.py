@@ -22,8 +22,8 @@ class MemoryManager():
         self.constants_memory = VirtualMemory(size, scope)
 
     def initLocalMemory(self, size, scope):
-        self.local_memories.append(VirtualMemory(size, scope))
-
+        self.local_memories.append(VirtualMemory([10,10,10,10,10,10,10,10], "LOCAL"))
+        
 
 
 
@@ -49,7 +49,7 @@ class MemoryManager():
 
 
 
-    def get(self, address):
+    def get(self, address, prev=False):
         address = int(address)
 
         if address>= self.global_range[0] and  address <= self.global_range[1]:
@@ -59,6 +59,9 @@ class MemoryManager():
            return self.constants_memory.get(address)
 
         elif address>= self.local_range[0] and  address <= self.local_range[1]:
+            # Remove the 2 following lines if program breaks
+            if prev and len(self.local_memories) > 1:
+              return self.local_memories[-2].get(address)
             return self.local_memories[-1].get(address)
 
         elif address>= self.pointers_global_range[0] and  address <= self.pointers_global_range[1]:

@@ -6,25 +6,51 @@ class main {
   }
   functions{
 
-    func int test(int nn){
+   func int test3(int nn){
         vars{
             var int ii;
         }
         {
-          if(nn<2)
-          {
-            ii= 1
-          }
-          else
-          {
-            ii= test(nn-1)
-          }
+          write("Test3")
 
         }
-        return ii
+        return nn
     }
 
+     func int test2(int nn){
+        vars{
+            var int ii;
+        }
+        {
+          write("Test2")
 
+        }
+        return test3(nn)
+    }
+
+     func int test(int nn){
+        vars{
+            var int ii;
+        }
+        {
+          write("Test1")
+        }
+        return test2(nn)
+    }
+    func int fact(int nn){
+       vars{
+            var int value;
+        }
+      {
+      if(nn<=1){
+        value = 1
+      }
+      else{
+        value = nn*fact(nn-1)
+      };
+      }
+      return value 
+    }
   }
   {
     write(test(1))

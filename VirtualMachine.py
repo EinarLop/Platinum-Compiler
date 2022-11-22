@@ -207,25 +207,20 @@ while True:
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
         case "ERA":
+
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
-
         case "param":
-                #print("xxxxxxxxxxxxxxxxxxxxxx",current_quad[1])
-                #print("brforeeeeee grt")
-                getParamValue = memoryManager.get(int(current_quad[1]))
-                #print(getParamValue, "insidr psrsm")
 
-
-
+                getParamValue = memoryManager.get(int(current_quad[1]), True)
+                        
                 if str(getParamValue).find(".") == -1:
-                        #print("param countrt", paramIntCounter)
-                        #print("@@@@@@@@@@@@@@@@@@@@@@@@@Q", getParamValue)
-
                         memoryManager.add(10000+paramIntCounter, getParamValue)
                         paramIntCounter += 1
                 else:
                         memoryManager.add(11000+paramFloatCounter, getParamValue)
                         paramFloatCounter += 1
+
+                
         case "verify":
 
                 value = int(memoryManager.get(int(current_quad[1])))
@@ -238,8 +233,6 @@ while True:
                 address = global_functions_table[current_quad[1]]
                 value = memoryManager.get(current_quad[3])
                 memoryManager.add(address, value)
-                memoryManager.destroyLocalMemory()
-                i = returnFromFunctionStack.pop(-1) - 1
 
         # case "READ":
         #     currentValue = input()

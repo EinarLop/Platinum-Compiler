@@ -16,7 +16,9 @@ class main {
           {
             factorial=factorial*ii
           };
+          write("factorial de",fact)
         }
+
         return factorial
     }
 

@@ -90,7 +90,7 @@ def p_param2(p):
 
 def p_func_dec(p):
     '''
-    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE np_get_func_params VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable np_save_function block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_pop_varsTable np_generate_endfunc_quad func_dec3
+    func_dec : FUNC np_reset_temp_counter func_dec2 ID np_get_func_name np_start_local_memory_counter np_push_func_id_globals LEFTPARENTHESIS np_create_varsTable param RIGHTPARENTHESIS LEFTCURLYBRACE  VARS  np_set_var_scope_function LEFTCURLYBRACE var_dec RIGHTCURLYBRACE np_destroy_varsTable np_init_func_tempTable np_save_function block RETURN h_exp  RIGHTCURLYBRACE np_generate_return_func np_pop_varsTable np_generate_endfunc_quad func_dec3
              | empty
     '''
     # p[0] = ('rule func_dec: ', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15],p[16])
@@ -141,8 +141,8 @@ def p_var_dec4(p):
 
 def p_var_dec5(p):
     '''
-    var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_arr var_dec9
-	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET np_set_var_type_matrix var_dec9
+    var_dec5 : LEFTBRACKET CTEI RIGHTBRACKET np_set_DIM_array var_dec9
+	         | LEFTBRACKET CTEI RIGHTBRACKET LEFTBRACKET CTEI RIGHTBRACKET np_set_DIM_matrix var_dec9
              | empty
     '''
     if (len(p) == 7):
@@ -276,7 +276,7 @@ def p_variable(p):
 
 def p_variable2(p):
     '''
-    variable2 : LEFTBRACKET exp np_verify_array_exp RIGHTBRACKET  variable3 np_sum_baseA_array
+    variable2 : LEFTBRACKET exp np_create_dimensional_quads RIGHTBRACKET  variable3 np_sum_baseA_array
               | empty
     '''
     if (len(p) == 5):
@@ -286,7 +286,7 @@ def p_variable2(p):
 
 def p_variable3(p):
     '''
-    variable3 : LEFTBRACKET np_DIM_plus exp np_verify_array_exp RIGHTBRACKET
+    variable3 : LEFTBRACKET np_DIM_plus exp np_create_dimensional_quads RIGHTBRACKET
               | empty
     '''
     if (len(p) == 4):
@@ -517,7 +517,7 @@ def p_np_generate_goto_main(p):
 
 def p_np_create_program(p):
     '''
-    np_create_program : empty
+        np_create_program : empty
     '''
     global program
     program = Program(classesTable, varsTablesPile.pop(-1), functionsTablesPile.pop(-1))
@@ -580,9 +580,9 @@ def p_np_get_var_type(p):
     global current_var_type
     current_var_type = p[-1]
 
-def p_np_set_var_type_arr(p):
+def p_np_set_DIM_array(p):
     '''
-    np_set_var_type_arr : empty
+    np_set_DIM_array : empty
     '''
     global isArray
     isArray=True
@@ -591,9 +591,9 @@ def p_np_set_var_type_arr(p):
     current_dimension_size = p[-2]
 
 
-def p_np_set_var_type_matrix(p):
+def p_np_set_DIM_matrix(p):
     '''
-    np_set_var_type_matrix : empty
+    np_set_DIM_matrix : empty
     '''
     global isMatrix
     global sizesMatrix
@@ -814,10 +814,6 @@ def p_np_save_function(p):
     current_functionsTable.add(current_func_name,current_func_type, current_parameters_list,varsTablesPile[-1],initialQuadruple, [0,0,0,0])
     del globals()["current_parameters_list"]
 
-def p_np_get_func_params(p):
-    '''
-    np_get_func_params : empty
-    '''
 
 # def p_np_init_func_var_count(p):
 #     '''
@@ -1388,9 +1384,9 @@ def p_np_saveConstantF(p):
 ##############
 
 ###########################arrays###########################
-def p_np_verify_array_exp(p):
+def p_np_create_dimensional_quads(p):
     '''
-    np_verify_array_exp : empty
+    np_create_dimensional_quads : empty
     '''
     global isGlobalDimensional
     isGlobalDimensional =False

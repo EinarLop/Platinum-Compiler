@@ -18,7 +18,7 @@ class main {
 
       while(bb<index)do
       {
-        matrix[aa][bb]=69
+        matrix[aa][bb]=10
         bb=bb+1
       };
       bb=0
@@ -28,7 +28,7 @@ class main {
 
     aa=0
     bb= 0
-    
+
     while(aa<index)do
     {
 

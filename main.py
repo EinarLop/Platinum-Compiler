@@ -1475,7 +1475,7 @@ def p_np_sum_baseA_array(p):
     quadrupleList.eliminateFakeVoid()
 ###########################arrays###########################
 
-##############################
+############################################################
 
 def p_np_reset_temp_counter(p):
     '''
@@ -1490,31 +1490,41 @@ def p_np_set_temp_global_flag(p):
     '''
     #print("popppppppppp")
     quadrupleList.changeScope()
+############################################################
+
+
+
+
+
+
 
 parser = yacc()
-#f = open('arithmetic_exp_TC.c', 'r')
-f = open('test_case12.c', 'r')
+
+f = open('fillMatrix.c', 'r')
 content = f.read()
 case_correct_01 = parser.parse(content)
 
 
 
-# vm.add(1000, 1)
-# vm.add(3000, 'c')
-# print(vm.get(1000))
-# print(vm.get(3000))
-# print(vm.m_char)
 
 
 
-# program.toString()
-
-#print("###############QuadrupleTests###############")
-
-#####ConstantsTable####
 
 
-#####ConstantsTable####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 f = open("ovejota.txt","w+")
@@ -1557,4 +1567,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-program.toString()
+#program.toString()

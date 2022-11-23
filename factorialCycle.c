@@ -25,7 +25,7 @@ class main {
 
   }
   {
-    write(factorial(10))
+    write(factorial(4))
 
 
   }

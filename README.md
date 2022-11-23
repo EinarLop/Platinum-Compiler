@@ -5,11 +5,7 @@
 2. Amauri Elian Pérez Cruz A01365611
 
 
-### Bugs
-- [ ] No se puede usar || o && o < > en expresiones normales (fuera de ciclos, ifs)
-- [ ] Cubo semantico no tiene entradas para char y bool
-- [ ] Agregar = a cubo
-- [ ] Error en scope de variables en block de main
+
 
 
 ### Avance 1:

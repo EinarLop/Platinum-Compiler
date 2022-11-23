@@ -187,7 +187,7 @@ while True:
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
         case "ERA":
-                memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
+                memoryManager.initLocalMemory([100,100,100,100,100,100,100,100], "LOCAL")
 
         case "param":
                 getParamValue = memoryManager.get(int(current_quad[1]))

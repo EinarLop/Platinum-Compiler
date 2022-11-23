@@ -145,3 +145,5 @@ Generación de los cuadruplos de función (Sin ERA),y sin los cuadruplos de para
 #### Avance 6:
 Creación de la estructura de la memoria virtual, creación de máquina virtual con acción write() y primeros avances de cuadruplos de arreglos
 
+#### Avance 7:
+Se crean arreglos y se pueden asignar valores y recorrerlos o imprimirlos, las funciones funcionan con funciones simples, falta recursión

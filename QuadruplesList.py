@@ -42,10 +42,6 @@ class QuadruplesList:
             self.TB = [17000, 17999]
             self.TP = [31000,31999]
 
-    #pop de cada pila
-    #push de cada uno
-    #checar tipos
-
 
     def generateGoToMainQuad(self):
         current_quadruple= Quadruple('goto','','',None)
@@ -57,8 +53,6 @@ class QuadruplesList:
         self.quadruples[self.jumpsStack.pop()-1].temporal=self.cont
 
     def addQuadruple(self,operator,leftOperand,rightOperand,temporal, typeTemp):
-    # def addQuadruple(self,operator,leftOperand,rightOperand,temporal):
-        #print(typeTemp)
         current_temp_memory_address = 0
         if typeTemp  == "int":
             if operator != "=" :
@@ -81,21 +75,16 @@ class QuadruplesList:
                 current_temp_memory_address =  self.TP[0] + self.counter_tPointer
                 self.counter_tPointer+=1
         if temporal < 1000:
-                #current_quadruple= Quadruple(operator,leftOperand,rightOperand,"t"+str(temporal)+typeTemp)
                 current_quadruple= Quadruple(operator,leftOperand,rightOperand, current_temp_memory_address )
         else:
             current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
-            #current_quadruple= Quadruple(operator,leftOperand,rightOperand,current_temp_memory_address)
 
         self.quadruples.append(current_quadruple)
         if current_quadruple.operator != "=" :
 
             self.temporals +=1
-            #self.operandsStack.append("t"+str(self.temporals-1)) #mete el ultimo temporal
             self.operandsStack.append(current_temp_memory_address)
             self.typesStack.append(typeTemp)
-
-            # print(f"temporal {self.temporals-1} with type {typeTemp}")
 
 
         self.cont +=1
@@ -113,7 +102,7 @@ class QuadruplesList:
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)
         self.cont +=1
-    #añade cuadruplo para ciclos while goto y gotof y seguramente tambien for
+    #añade cuadruplo para ciclos while goto y gotof y for
     def addQuadrupleCycles(self,operator,leftOperand,rightOperand,temporal):
         current_quadruple= Quadruple(operator,leftOperand,rightOperand,temporal)
         self.quadruples.append(current_quadruple)
@@ -196,7 +185,7 @@ class QuadruplesList:
                 if err != None:
                     print(f"Type miss match between {temporal} ({LType}) and {result} ({RType})")
                     exit()
-                #print(f"popopopo{temporal} ({LType}) and {result} ({RType})")
+
 
                 return self.addQuadruple(operator,result,ROperand,temporal, typeTemp)
 
@@ -346,7 +335,7 @@ class QuadruplesList:
             self.addQuadrupleCycles("gotoF",current_temp_memory_address,'',None)
             self.jumpsStack.append(self.cont-1)
 
-
+    #cambios de la variable de control de for
     def forChangeVC(self,oneConstant):
         current_temp_memory_address= 0
 
@@ -381,7 +370,6 @@ class QuadruplesList:
         operator="Ret"
         exp=self.operandsStack.pop()
         type=self.typesStack.pop()
-        #print(exp,"con tipo",type)
         self.addQuadruple(operator,funcName,'',exp, type)
 
     def assignGlobalFuncCall(self,varGlobal,typeVar):

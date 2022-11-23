@@ -5,11 +5,7 @@
 2. Amauri Elian Pérez Cruz A01365611
 
 
-### Bugs
-- [ ] No se puede usar || o && o < > en expresiones normales (fuera de ciclos, ifs)
-- [ ] Cubo semantico no tiene entradas para char y bool
-- [ ] Agregar = a cubo
-- [ ] Error en scope de variables en block de main
+
 
 
 ### Avance 1:
@@ -145,3 +141,5 @@ Generación de los cuadruplos de función (Sin ERA),y sin los cuadruplos de para
 #### Avance 6:
 Creación de la estructura de la memoria virtual, creación de máquina virtual con acción write() y primeros avances de cuadruplos de arreglos
 
+#### Avance 7:
+Se crean arreglos y se pueden asignar valores y recorrerlos o imprimirlos, las funciones funcionan con funciones simples, falta recursión

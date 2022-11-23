@@ -10,7 +10,6 @@ class MemoryManager():
         self.constant_range = [18000, 21999]
         self.pointers_global_range = [30000, 30999]
         self.pointers_local_range = [31000, 31999]
-        #self.lookPrev = False
 
 
 

@@ -16,14 +16,16 @@ class main {
           {
             factorial=factorial*ii
           };
+          write("factorial de",fact)
         }
+
         return factorial
     }
 
 
   }
   {
-    write(factorial(10))
+    write(factorial(4))
 
 
   }

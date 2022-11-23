@@ -10,7 +10,6 @@ memoryManager.initConstantsMemory([100,100,100,100], "CONSTANTS")
 constants_table = linecache.getline(os.getcwd() + "/ovejota.txt", 1 )
 constants_table = constants_table.split(",")[:-1]
 for value in constants_table:
-   # value|address
     current_value = value.split("|")
     memoryManager.add(current_value[1], current_value[0])
 
@@ -48,7 +47,6 @@ for value in global_functions:
         global_functions_table[current[0]] = int(current[1])
 
 def castType(operand):
-    #print("alvvv",operand)
     if str(operand).find(".") == -1:
         return int(operand)
     else:
@@ -79,36 +77,25 @@ while True:
             else:
                 print(memoryManager.get(current_quad[1]))
         case "=":
-                # Added str() to fix arrays
-                #print("algo igual a algo",current_quad[3],"=",memoryManager.get(current_quad[1]))
                 memoryManager.add(current_quad[3], str(memoryManager.get(current_quad[1])))
         case "+":
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
-                #print("algo + algo",operandOne,"+",operandTwo)
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-                #print("inside", [operandOne,operandTwo,current_quad[3] ])
-                #print("algo + algo",operandOne,"+",operandTwo)
                 memoryManager.add(current_quad[3], operandOne + operandTwo)
         case "-":
-                #print("insidr menps looking for memories", memoryManager.local_memories)
 
                 operandOne = memoryManager.get(current_quad[1])
-
                 operandOne = castType(operandOne)
-
                 operandTwo = memoryManager.get(current_quad[2])
-
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne - operandTwo)
         case "*":
 
                 operandOne = memoryManager.get(current_quad[1])
                 operandOne = castType(operandOne)
-
                 operandTwo = memoryManager.get(current_quad[2])
-                #print(",,,,,,,,",operandOne,operandTwo)
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne * operandTwo)
 
@@ -126,15 +113,12 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-                #print("algo < a algo",memoryManager.get(current_quad[1]),"<",memoryManager.get(current_quad[2]))
-
                 memoryManager.add(current_quad[3], operandOne < operandTwo)
         case ">":
 
 
                 operandOne = memoryManager.get(current_quad[1])
                 operandTwo = memoryManager.get(current_quad[2])
-                #print(operandOne,">",operandTwo)
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
                 memoryManager.add(current_quad[3], operandOne > operandTwo)
@@ -144,7 +128,6 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-
                 memoryManager.add(current_quad[3], operandOne >= operandTwo)
 
         case "<=":
@@ -152,7 +135,6 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-
                 memoryManager.add(current_quad[3], operandOne <= operandTwo)
 
         case "==":
@@ -160,7 +142,6 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-
                 memoryManager.add(current_quad[3], operandOne is operandTwo)
 
         case "<>":
@@ -176,7 +157,6 @@ while True:
                 operandTwo = memoryManager.get(current_quad[2])
                 operandOne = castType(operandOne)
                 operandTwo = castType(operandTwo)
-
                 memoryManager.add(current_quad[3], operandOne and operandTwo)
 
         case "||":
@@ -210,16 +190,9 @@ while True:
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
 
         case "param":
-                #print("xxxxxxxxxxxxxxxxxxxxxx",current_quad[1])
-                #print("brforeeeeee grt")
                 getParamValue = memoryManager.get(int(current_quad[1]))
-                #print(getParamValue, "insidr psrsm")
-
-
-
                 if str(getParamValue).find(".") == -1:
-                        #print("param countrt", paramIntCounter)
-                        #print("@@@@@@@@@@@@@@@@@@@@@@@@@Q", getParamValue)
+
 
                         memoryManager.add(10000+paramIntCounter, getParamValue)
                         paramIntCounter += 1
@@ -241,19 +214,4 @@ while True:
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
 
-        # case "READ":
-        #     currentValue = input()
-        #     currentValue = str(currentValue)
-        #
-        #     if str(operand).find(".") == -1:
-        #         return int(operand)
-        #     else:
-        #         return float(operand)
-        #
-        #
-        #     print(type(current_value))
-            #memoryManager.add(, value)
-
-
-            #print(currentValue.pop())
     i+=1

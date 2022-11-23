@@ -1482,7 +1482,7 @@ def p_np_set_temp_global_flag(p):
 
 parser = yacc()
 
-f = open('fillMatrix.c', 'r')
+f = open('arithmetic_exp_TC.c', 'r')
 
 
 content = f.read()

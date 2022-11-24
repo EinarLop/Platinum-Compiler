@@ -1,3 +1,5 @@
+import time
+start_time = time.time()
 import linecache
 import os
 from VirtualMemory import VirtualMemory
@@ -66,6 +68,8 @@ while True:
     txt_current_quad = linecache.getline(os.getcwd() + "/ovejota.txt", i )
 
     if txt_current_quad == "":
+        print("--- %s seconds ---" % (time.time() - start_time))
+
         exit()
 
     current_quad = txt_current_quad.split(",")
@@ -94,7 +98,7 @@ while True:
         case "-":
                 #print("insidr menps looking for memories", memoryManager.local_memories)
 
-                operandOne = memoryManager.get(current_quad[1])
+                operandOne = memoryManager.get(current_quad[1], True)
 
                 operandOne = castType(operandOne)
 
@@ -211,7 +215,7 @@ while True:
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
         case "param":
 
-                getParamValue = memoryManager.get(int(current_quad[1]), True)
+                getParamValue = memoryManager.get(int(current_quad[1]))
                         
                 if str(getParamValue).find(".") == -1:
                         memoryManager.add(10000+paramIntCounter, getParamValue)

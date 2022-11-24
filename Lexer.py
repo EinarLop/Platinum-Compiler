@@ -208,6 +208,11 @@ def t_EQUAL(t):
     r'='
     return t
 
+  
+def t_code_comment(t):
+     r'(/\*(.|\n)*?\*/)|(//.*)'
+     pass
+
 def t_ignore_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count('\n')

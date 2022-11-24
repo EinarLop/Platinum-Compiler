@@ -1,3 +1,4 @@
+#clase de objeto variable
 class Var:
     def __init__(self, type, scope, address,dim):
         self.type = type

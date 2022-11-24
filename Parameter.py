@@ -1,3 +1,4 @@
+#objeto parametro 
 class Parameter:
     def __init__(self, type, id):
         self.type = type

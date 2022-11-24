@@ -673,7 +673,7 @@ def p_np_save_var(p):
 
     if global_memory_counter_flag: #si es global con esta bandera se verifica
 
-
+        #variables para los contadores de memoria global
         global current_var_type
         global global_memory_counter_int
         global global_memory_counter_float
@@ -697,12 +697,13 @@ def p_np_save_var(p):
             global_memory_counter_bool += 1 + varAddDimensional
 
     else: #de lo contrario se hace lo mismo pero con contadores y direcciones base locales
+        #variables para los contadores de memoria local
         global local_memory_counter_int
         global local_memory_counter_float
         global local_memory_counter_char
         global local_memory_counter_bool
 
-
+        #dependiendo del tipo de variable se le suma la dirección base y se aumenta el contador local de ese tipo de variable
         if current_var_type  == "int":
             current_varsTable.add(current_var_name, current_var_type, current_var_scope, LI[0] + local_memory_counter_int,DIM)
             local_memory_counter_int += 1
@@ -980,13 +981,15 @@ def p_np_push_operator_hexp(p):
     global operPush
     operPush = p[-1]
     quadrupleList.operatorsStack.append(operPush)
-#definir operando izquierdo de s_exp
+#definir operando izquierdo de s_exp es decir Loperand < ROperand como ejemplo
 def p_np_define_LOperand_sexp(p):
     '''
     np_define_LOperand_sexp : empty
     '''
     global LOperandSexp
     LOperandSexp = quadrupleList.operandsStack.pop()
+
+#definir operando derecho de s_exp es decir Loperand < ROperand como ejemplo
 def p_np_define_ROperand_sexp(p):
     '''
     np_define_ROperand_sexp : empty
@@ -994,12 +997,15 @@ def p_np_define_ROperand_sexp(p):
     temporalType = quadrupleList.generate_sExp_quad(LOperandSexp)
     registerTempVariable(temporalType)
 
+#definir operando izquierdo de h_exp es decir Loperand && ROperand como ejemplo
 def p_np_define_LOperand_hexp(p):
     '''
     np_define_LOperand_hexp : empty
     '''
     global LOperandHexp
     LOperandHexp = quadrupleList.operandsStack.pop()
+
+#definir operando derecho de h_exp es decir Loperand && ROperand como ejemplo
 def p_np_define_ROperand_hexp(p):
     '''
     np_define_ROperand_hexp : empty
@@ -1010,6 +1016,8 @@ def p_np_define_ROperand_hexp(p):
 
 
 #############################if#############################
+
+#Crear cuadruplo sinn saber aun a donde ir de gotoF para despues de evaluar exp del parentesis de if
 def p_np_generate_gotoF_condition(p):
     '''
     np_generate_gotoF_condition : empty
@@ -1017,14 +1025,14 @@ def p_np_generate_gotoF_condition(p):
 
     quadrupleList.generateGoToFCondition()
 
-#fill de condicion if sola
+#fill de gotoF de condicion if
 def p_np_fill_gotoF_condition_if(p):
     '''
     np_fill_gotoF_condition_if : empty
     '''
     quadrupleList.fillgotoF_IF()
 
-#else
+#generar goto despues de encontrar un else
 def p_np_generate_goto_condition(p):
     '''
     np_generate_goto_condition : empty
@@ -1035,7 +1043,7 @@ def p_np_generate_goto_condition(p):
 
 
 #############################write#############################
-
+#pushear letrero a pila de operadores
 def p_np_push_signboard(p):
     '''
     np_push_signboard : empty
@@ -1044,7 +1052,7 @@ def p_np_push_signboard(p):
     oper=p[-1]
     quadrupleList.operandsStack.append(oper)
 
-
+#generar cuadruplo write con el pop de pilaOperadores
 def p_np_generate_write_quadruple(p):
     '''
     np_generate_write_quadruple : empty
@@ -1055,6 +1063,7 @@ def p_np_generate_write_quadruple(p):
 #############################write#############################
 
 #############################read#############################
+#generar cuadruplo read con operando que viene antes
 def p_np_generate_read_quadruple(p):
     '''
     np_generate_read_quadruple : empty
@@ -1077,12 +1086,14 @@ def p_np_generate_read_quadruple(p):
 #############################read#############################
 
 #############################while#############################
+#pushear actual cuadruplo a la pila de saltos para regresar despues para llenarlo
 def p_np_while_push_jumpStack(p):
     '''
     np_while_push_jumpStack : empty
     '''
     quadrupleList.jumpsStack.append(quadrupleList.cont)
 
+#generar gotoF despues de while
 def p_np_while_generate_gotoF(p):
 
     '''
@@ -1091,6 +1102,7 @@ def p_np_while_generate_gotoF(p):
 
     quadrupleList.generateGoToFWhile()
 
+#generar goto para regresar a inicio de evaluacion de exp de while
 def p_np_while_generate_goto(p):
     '''
     np_while_generate_goto : empty
@@ -1101,6 +1113,7 @@ def p_np_while_generate_goto(p):
 
 
 #############################for#############################
+#pushear la variable a la que se le va  asignar una exp para saber si ya esta declarada
 def p_np_for_push_id(p):
     '''
     np_for_push_id : empty
@@ -1133,19 +1146,21 @@ def p_np_for_push_id(p):
     print(f"Variable {idPush} not declared")
     exit()
 
-
+#resolver la primera exp a la cual vamos a asignar al id anterior y asignarlo como la VC
 def p_np_for_FIRSTexp(p):
     '''
     np_for_FIRSTexp : empty
     '''
     quadrupleList.generateVControlQuadruple()
 
+#resolver la exp que va despues de TO para saber hasta donde se tiene que llegar
 def p_np_for_SECONDexp(p):
     '''
     np_for_SECONDexp : empty
     '''
     quadrupleList.generateVFinalQuadruple()
 
+#hacer el cambio en la variable de control del for
 def p_np_for_changesVC(p):
     '''
     np_for_changesVC : empty
@@ -1155,6 +1170,7 @@ def p_np_for_changesVC(p):
 #############################for#############################
 
 #############################functions call#############################
+#checar que el id antes de () exista para saber si la funcion existe en la tabla de funciones
 def p_np_check_func_exists(p):
     '''
     np_check_func_exists : empty
@@ -1172,6 +1188,7 @@ def p_np_check_func_exists(p):
     global parameter_counter
     parameter_counter = 0
 
+#checar la cantidad de parametros respecto a los que tenemos en lista para saber si coincide el numero
 def p_np_check_func_params(p):
     '''
     np_check_func_params : empty
@@ -1192,7 +1209,7 @@ def p_np_check_func_params(p):
 
     del globals()["parameter_counter"]
 
-
+#aumentar el numero de parametros que se llevan en la llamada es decir cada que encuentre un parametro en la llamada aumenta el contador
 def p_np_check_func_params_counter(p):
     '''
     np_check_func_params_counter : empty
@@ -1200,7 +1217,7 @@ def p_np_check_func_params_counter(p):
     global parameter_counter
     parameter_counter +=1
 
-
+#despues de declarar una clase se verifica que no este duplicada
 def p_np_check_class_exists(p):
     '''
     np_check_class_exists : empty
@@ -1210,7 +1227,7 @@ def p_np_check_class_exists(p):
         print(f"Class {className} already exists")
         exit()
 
-
+#se crea el arreglo con la cantidad de temporales de una funcion para llevar su conteo
 def p_np_init_func_tempTable(p):
     '''
     np_init_func_tempTable : empty
@@ -1218,13 +1235,14 @@ def p_np_init_func_tempTable(p):
     global current_funcTempTable
     current_funcTempTable = [0,0,0,0]
 
+#hacer pop de la pila de tabla de variables para destruirla despues de su uso
 def p_np_pop_varsTable(p):
     '''
     np_pop_varsTable : empty
     '''
     varsTablesPile.pop(-1)
 ############ Helper Functions ############
-
+#aumentar el contador de cada tipo de temporal para irlo registrando en la lista de cantidad de temporales que ocupa una funcion
 def registerTempVariable(tempType):
 
 
@@ -1242,25 +1260,28 @@ def registerTempVariable(tempType):
         current_funcTempTable[3]+=1
 
 ######################Quadruples function call Amauri################
+#generar cuadruplo de ENDFUNC despues del final de una funcion
 def p_np_generate_endfunc_quad(p):
     '''
     np_generate_endfunc_quad : empty
     '''
     quadrupleList.generateEndFuncModule()
 
+#generar cuadruplo ERA de la llamada
 def p_np_generate_ERA_quad_func_call(p):
     '''
     np_generate_ERA_quad_func_call : empty
     '''
     quadrupleList.generateERAFuncCall(idVerify)
 
+#generar cuadruplo de goSub del id de llamada y con su cuadruplo de inicio
 def p_np_generate_goSub_function_call(p):
     '''
     np_generate_goSub_function_call : empty
     '''
 
     quadrupleList.generateGoSubFuncCall(idVerify,current_functionsTable.table[idVerify].quadrupleStart)
-
+#generar cuadruplo RET ya que en todas nuestras funciones tienen RET
 def p_np_generate_return_func(p):
     '''
     np_generate_return_func : empty
@@ -1268,6 +1289,7 @@ def p_np_generate_return_func(p):
 
     quadrupleList.generateFuncReturnQuad(current_func_name)
 
+#despues de pasar por una función si es que se llama se asigna el valor de la variable que se encuentra en variables globales, asignar su valor nuevo en un temporal para futuras operacioes
 def p_np_assign_global_to_temporal_func_call(p):
     '''
     np_assign_global_to_temporal_func_call : empty
@@ -1279,7 +1301,7 @@ def p_np_assign_global_to_temporal_func_call(p):
 
 
 #########################################Memory##################################################
-
+#iniciar los contadores de memoria global para al contador al declarar una variable sumarle su direccion base correspondientes
 def p_np_start_global_memory_counter(p):
     '''
     np_start_global_memory_counter : empty
@@ -1307,7 +1329,7 @@ def p_np_start_global_memory_counter(p):
 
     quadrupleList.resetTemporalsCounter()
 
-
+#iniciar los contadores de memoria local para al contador al declarar una variable sumarle su direccion base correspondientes
 def p_np_start_local_memory_counter(p):
     '''
     np_start_local_memory_counter : empty
@@ -1324,14 +1346,14 @@ def p_np_start_local_memory_counter(p):
     global local_memory_counter_bool
     local_memory_counter_bool = 0
 
-
+#despues de acabar con las variables globales se detiene el contador de globales para usar ahora los contadores de locales
 def p_np_stop_global_memory_counter(p):
     '''
     np_stop_global_memory_counter : empty
     '''
     global global_memory_counter_flag
     global_memory_counter_flag = False
-
+#generar cuadruplo por cada parametro en llamada a funcion
 def p_np_generate_quad_parameter(p):
     '''
     np_generate_quad_parameter : empty
@@ -1340,7 +1362,7 @@ def p_np_generate_quad_parameter(p):
     paramPop = quadrupleList.operandsStack.pop()
     quadrupleList.addQuadrupleParamFuncCall(paramPop,parameter_counter)
 ###########################################################################################
-
+#rellenar cuadruplo de goto a main
 def p_np_fill_goto_main_quad(p):
     '''
     np_fill_goto_main_quad : empty
@@ -1348,6 +1370,7 @@ def p_np_fill_goto_main_quad(p):
     quadrupleList.fillGoToMainQuad()
 
 ############Constants############
+#guardar constante
 def p_np_saveConstantI(p):
     '''
     np_saveConstantI : empty
@@ -1358,7 +1381,7 @@ def p_np_saveConstantI(p):
     if constant not in constantsTable:
         constantsTable[constant] = CI[0] + ci_counter
         ci_counter += 1
-
+#guardar constante flotante
 def p_np_saveConstantF(p):
     '''
     np_saveConstantF : empty
@@ -1374,13 +1397,15 @@ def p_np_saveConstantF(p):
 
 
 ###########################arrays###########################
+# en esta parte se crean los cuadruplos para variables dimensionadas
 def p_np_create_dimensional_quads(p):
     '''
     np_create_dimensional_quads : empty
     '''
+    #bool para saber si es una variable global para saber si buscar en tabla actual o en la primer tabla de variables
     global isGlobalDimensional
     isGlobalDimensional =False
-
+    #bool para saber si es un arreglo si es falso, significa que es una matriz
     global isArrayCall
     isArrayCall = True
 
@@ -1388,10 +1413,10 @@ def p_np_create_dimensional_quads(p):
 
 
 
-    ## sacar el limite superior
+    ## sacar el limite superior de variable
     global idArray
     idArray = quadrupleList.dimensionalOperandsStack[-1]
-
+    # se saca el limite superior para las operaciones y se checa si es un arreglo o matriz y si es global o no la variable para saber donde buscar exactamente
     if idArray in current_varsTable.table:
         Lsuperior= current_varsTable.table[idArray].dim[DIMid-1]
 
@@ -1410,14 +1435,15 @@ def p_np_create_dimensional_quads(p):
     addConstantsTable(Lsuperior)
 
 
-
+    #generarr cuadruplo de verify para saber si esta dentro del limite del arreglo
     quadrupleList.addQuadrupleVerifyArray(quadrupleList.operandsStack[-1],constantsTable[0],constantsTable[Lsuperior])
 
-
+    #si la dimension es 1 y no es un arreglo, significa que primero se debe multiplicar por d2 porque es una matriz
     if DIMid == 1 and not isArrayCall:
 
         aux= quadrupleList.operandsStack.pop()
         type= quadrupleList.typesStack.pop()
+        #y se checa si es una variable global o local y dependiendo de eso es donde se busca
         if isGlobalDimensional:
             addConstantsTable(varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1)
             quadrupleList.addQuadruple("*",aux,constantsTable[varsTablesPile[0].table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1],0,type)
@@ -1425,7 +1451,7 @@ def p_np_create_dimensional_quads(p):
             addConstantsTable(current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1)
             quadrupleList.addQuadruple("*",aux,constantsTable[current_varsTable.table[quadrupleList.dimensionalOperandsStack[-1]].dim[DIMid-1]+1],0,type)
 
-
+    #despues de eso se debe sumar s2 con el temporal anterior que es s1*d2
     if DIMid>1:
         aux2= quadrupleList.operandsStack.pop()
         type2= quadrupleList.typesStack.pop()
@@ -1434,7 +1460,7 @@ def p_np_create_dimensional_quads(p):
         typeSC, err = semanticCube.semantic(type1, type2, "+")
         quadrupleList.addQuadruple("+",aux1,aux2,0,typeSC)
 
-
+#se aumenta la dimension despues de encontrarse que hay un indice extra es decir, que es matriz
 def p_np_DIM_plus(p):
     '''
     np_DIM_plus : empty
@@ -1442,7 +1468,7 @@ def p_np_DIM_plus(p):
     global DIMid
     DIMid=DIMid+1
 
-
+#suma la dirección base que es la operacion final y se busca la dirección base de la variable en la tabla de variables
 def p_np_sum_baseA_array(p):
     '''
     np_sum_baseA_array : empty
@@ -1458,36 +1484,38 @@ def p_np_sum_baseA_array(p):
 
     addConstantsTable(baseAdd)
 
-
+    # se crea el cuadruplo de suma de direccion base y se almacena en un temporal pointer
     quadrupleList.addQuadruple("+",quadrupleList.operandsStack.pop(),constantsTable[baseAdd],0,"pointer")
     quadrupleList.typesStack.pop()
     quadrupleList.eliminateFakeVoid()
 ###########################arrays###########################
 
 ############################################################
-
+# se resetea el contador de temporales despues de cada funcion
 def p_np_reset_temp_counter(p):
     '''
     np_reset_temp_counter : empty
     '''
     quadrupleList.resetTemporalsCounter()
 
-
+# se cambia el scope de las variables para saber si es global o local
 def p_np_set_temp_global_flag(p):
     '''
     np_set_temp_global_flag : empty
     '''
     quadrupleList.changeScope()
 ############################################################
-
+#se parsea con yacc
 parser = yacc()
 
-f = open('arithmetic_exp_TC.c', 'r')
+#archivo en donde esta todo nuestro codigo
+f = open('matrixMultiplications.c', 'r')
 
-
+# se lee el archivo y se hace parse
 content = f.read()
 case_correct_01 = parser.parse(content)
 
+#en esta sección se mete al ovejota: constantes y sus direcciones, cuadruplos y todas las funciones
 f = open("ovejota.txt","w+")
 for key in constantsTable:
     f.write(f"{key}|{constantsTable[key]},")
@@ -1520,4 +1548,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-#program.toString()
+program.toString()

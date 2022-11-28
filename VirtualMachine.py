@@ -214,6 +214,7 @@ while True:
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
         case "ERA":
+
                 memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
                 memoryManager.prev = True
         case "param":

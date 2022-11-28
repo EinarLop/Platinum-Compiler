@@ -1509,7 +1509,7 @@ def p_np_set_temp_global_flag(p):
 parser = yacc()
 
 #archivo en donde esta todo nuestro codigo
-f = open('test.c', 'r')
+f = open('testcase.c', 'r')
 
 # se lee el archivo y se hace parse
 content = f.read()
@@ -1563,4 +1563,4 @@ quadrupleList.quadrupleListToString()
 
 
 
-program.toString()
+#program.toString()

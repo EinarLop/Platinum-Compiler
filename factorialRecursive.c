@@ -19,11 +19,11 @@ class main {
         value = nn*valueTwo
       };
       }
-      return value 
+      return value
     }
   }
   {
-    num = fact(1500)
+    num = fact(6)
     write(num)
 
 

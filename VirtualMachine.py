@@ -11,7 +11,7 @@ memoryManager = MemoryManager()
 programSize  = linecache.getline(os.getcwd() + "/ovejota.txt", 4 )
 programSize = programSize.split(",")
 programSize = [int(i) for i in programSize]
-programSize[0] = 20
+programSize[0] = 100
 programSize[1] = 20
 
 
@@ -32,7 +32,7 @@ for value in constants_table:
                 constants_table_float_counter+=1
 
 memoryManager.initConstantsMemory([constants_table_int_counter,constants_table_float_counter,0,0], "CONSTANTS")
-                
+
 for value in constants_table:
     current_value = value.split("|")
     memoryManager.add(current_value[1], current_value[0])

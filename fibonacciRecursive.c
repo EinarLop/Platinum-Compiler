@@ -24,7 +24,7 @@ class main {
     }
   }
   {
-    num = fibo(30)
+    num = fibo(9)
     write(num)
   }
 }

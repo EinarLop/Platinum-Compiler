@@ -1,3 +1,4 @@
+#clase de objeto de funcion
 from VarsTable import VarsTable
 
 class Function:

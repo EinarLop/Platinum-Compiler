@@ -1,3 +1,4 @@
+#tabla de funciones
 from Function import Function
 from Error import Error
 from VarsTable import VarsTable
@@ -5,12 +6,12 @@ from VarsTable import VarsTable
 class FunctionsTable:
     def __init__(self):
         self.table = {}
-
+    #añadir funcion si es que aun no existe en la tabla con sus cantidad de temporales y variables necesarias para su llamada a memoria
     def add(self,name,type,parameters,varsTable,quadrupleStart, tempTable=[]):
         if name in self.table:
             print(f"Function  {name} already declared")
             exit()
-        
+
                         # I,F,C,B
         variablesCount = [0,0,0,0]
         for var in varsTable.table:

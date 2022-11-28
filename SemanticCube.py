@@ -1,3 +1,4 @@
+#cubo semantico para saber quien puede "bailar" con quien y con que operador y que tipo genera dicha operacion 
 from Error import Error
 
 

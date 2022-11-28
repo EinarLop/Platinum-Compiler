@@ -1,17 +1,43 @@
+import time
+start_time = time.time()
 import linecache
 import os
 from VirtualMemory import VirtualMemory
 from MemoryManager import MemoryManager
 
+
 memoryManager = MemoryManager()
-memoryManager.initGlobalMemory([200,200,200,200,200,200,200,200], "GLOBAL")
-memoryManager.initConstantsMemory([100,100,100,100], "CONSTANTS")
+
+programSize  = linecache.getline(os.getcwd() + "/ovejota.txt", 4 )
+programSize = programSize.split(",")
+programSize = [int(i) for i in programSize]
+programSize[0] = 100
+programSize[1] = 20
+
+
+
+memoryManager.initGlobalMemory(programSize, "GLOBAL")
+
 
 constants_table = linecache.getline(os.getcwd() + "/ovejota.txt", 1 )
 constants_table = constants_table.split(",")[:-1]
+constants_table_int_counter = 0
+constants_table_float_counter = 0
+
+for value in constants_table:
+        current_value = value.split("|")
+        if str(current_value[0]).find(".") == -1:
+                constants_table_int_counter+=1
+        else:
+                constants_table_float_counter+=1
+
+memoryManager.initConstantsMemory([constants_table_int_counter,constants_table_float_counter,0,0], "CONSTANTS")
+
 for value in constants_table:
     current_value = value.split("|")
     memoryManager.add(current_value[1], current_value[0])
+
+
 
 functions_table_dict = {}
 functions_table =  linecache.getline(os.getcwd() + "/ovejota.txt", 2 )
@@ -57,13 +83,14 @@ returnFromFunctionStack = []
 paramIntCounter = 0
 paramFloatCounter = 0
 
-offset = 3
+offset = 4
 i = 1 + offset
 while True:
 
     txt_current_quad = linecache.getline(os.getcwd() + "/ovejota.txt", i )
 
     if txt_current_quad == "":
+        print("Execution time: %s seconds" % (time.time() - start_time))
         exit()
 
     current_quad = txt_current_quad.split(",")
@@ -187,8 +214,9 @@ while True:
                 memoryManager.destroyLocalMemory()
                 i = returnFromFunctionStack.pop(-1) - 1
         case "ERA":
-                memoryManager.initLocalMemory([100,100,100,100,100,100,100,100], "LOCAL")
 
+                memoryManager.initLocalMemory([10,10,10,10,10,10,10,10], "LOCAL")
+                memoryManager.prev = True
         case "param":
                 getParamValue = memoryManager.get(int(current_quad[1]))
                 if str(getParamValue).find(".") == -1:

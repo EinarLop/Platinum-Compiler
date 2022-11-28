@@ -1,3 +1,4 @@
+#tabla de variables 
 from Var import Var
 from Error import Error
 from Var import Var

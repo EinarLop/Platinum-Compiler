@@ -1,3 +1,4 @@
+#tabla de clases
 from Error import Error
 from Class import Class
 
@@ -5,19 +6,19 @@ class ClassesTable:
     def __init__(self):
         self.table = {}
         self.tempGlobalVars = None
-
+    #añadir a la tabla de clases
     def add(self,name,functionsTable,varsTable):
         variablesCount = [0,0,0,0,0,0,0,0]
         for func in functionsTable.table:
             variablesCount = [sum(x) for x in zip(variablesCount, functionsTable.table[func].variablesCount)]
-        
+
         currentClass = Class(functionsTable,varsTable,variablesCount)
         if name in self.table:
             return Error("Class already declared")
         else:
             self.table[name] = currentClass
             return None
-    
+
     def search(self,name):
         if name in self.table:
             return self.table[name], None

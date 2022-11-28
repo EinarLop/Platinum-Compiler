@@ -1,3 +1,4 @@
+#clase programa que programa tiene tabla de funciones y las funciones a su vez tienen tablas de variables
 class Program:
     def __init__(self, classesTable, varsTable, functionsTable):
         self.classesTable = classesTable
@@ -8,7 +9,7 @@ class Program:
         for func in functionsTable.table:
             self.variablesCount = [sum(x) for x in zip(self.variablesCount, functionsTable.table[func].variablesCount)]
 
-        # for var in varsTable = 
+        # for var in varsTable =
 
     def toString(self):
         print("---------- Program ----------")

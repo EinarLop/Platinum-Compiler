@@ -12,6 +12,7 @@ class MemoryManager():
         self.constant_range = [18000, 21999]
         self.pointers_global_range = [30000, 30999]
         self.pointers_local_range = [31000, 31999]
+        self.prev = False
 
 
 
@@ -61,6 +62,9 @@ class MemoryManager():
            return self.constants_memory.get(address)
 
         elif address>= self.local_range[0] and  address <= self.local_range[1]:
+            if self.prev and len(self.local_memories) > 1:
+              self.prev = False
+              return self.local_memories[-2].get(address)
             return self.local_memories[-1].get(address)
 
         elif address>= self.pointers_global_range[0] and  address <= self.pointers_global_range[1]:

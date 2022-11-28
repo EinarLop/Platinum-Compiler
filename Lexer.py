@@ -199,7 +199,6 @@ def t_CTEI(t):
 	return t
 
 
-
 def t_EQUALITY(t):
     r'=='
     return t
@@ -207,6 +206,10 @@ def t_EQUALITY(t):
 def t_EQUAL(t):
     r'='
     return t
+
+def t_code_comment(t):
+     r'(/\*(.|\n)*?\*/)|(//.*)'
+     pass
 
 def t_ignore_newline(t):
     r'\n+'

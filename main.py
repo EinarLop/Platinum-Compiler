@@ -1509,7 +1509,7 @@ def p_np_set_temp_global_flag(p):
 parser = yacc()
 
 #archivo en donde esta todo nuestro codigo
-f = open('matrixMultiplications.c', 'r')
+f = open('test.c', 'r')
 
 # se lee el archivo y se hace parse
 content = f.read()
@@ -1537,6 +1537,21 @@ for key in program.varsTable.table:
     if program.varsTable.table[key].scope == "globalFunction":
 
         f.write(f"{key}|{program.varsTable.table[key].address},")
+f.write("\n")
+
+print(program.variablesCount)
+
+program.variablesCount[4] =  quadrupleList.counter_tInt
+program.variablesCount[5] =  quadrupleList.counter_tFloat
+program.variablesCount[6] = quadrupleList.counter_tChar
+program.variablesCount[7] = quadrupleList.counter_tBool
+
+programVarCount = ','.join(str(v) for v in program.variablesCount)
+
+
+
+
+f.write(programVarCount)
 f.write("\n")
 
 
